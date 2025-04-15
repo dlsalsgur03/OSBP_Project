@@ -16,7 +16,7 @@ void showBookingOptions(BuildContext context) {
               title: Text('버스 예매'),
               onTap: () {
                 Navigator.of(context).pop(); // 팝업 닫기
-
+                launchURL('https://www.kobus.co.kr/main.do'); // 고속버스 예매 사이트로 이동
               },
             ),
             ListTile(
@@ -24,7 +24,7 @@ void showBookingOptions(BuildContext context) {
               title: Text('기차 예매'),
               onTap: () {
                 Navigator.of(context).pop(); // 팝업 닫기
-
+                launchURL('https://www.letskorail.com/'); // 기차 예매 사이트로 이동
               },
             ),
           ],
@@ -32,4 +32,16 @@ void showBookingOptions(BuildContext context) {
       );
     },
   );
+}
+// URL 실행 함수
+Future<void> launchURL(String url) async {
+  Uri uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication, // 외부 애플리케이션에서 열기
+    );
+  } else {
+    throw 'Could not launch $url';
+  }
 }
