@@ -59,7 +59,24 @@ class _CalendarState extends State<Calendar> {
           this.selectedDay = selectedDay;
           focusDay = focusedDay;
         });
-        fetchWeatherOrRecommendation(context, selectedDay);
+
+        if (selectedDay.isBefore(DateTime.now())) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("알림"),
+              content: Text("과거입니다"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("닫기"),
+                ),
+              ],
+            ),
+          );
+        } else {
+          fetchWeatherOrRecommendation(context, selectedDay);
+        }
       },
       selectedDayPredicate: (DateTime day) {
         return isSameDay(selectedDay, day);
@@ -152,42 +169,30 @@ class _CalendarState extends State<Calendar> {
       String recommendation) {
     showDialog(
       context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+      builder: (context) => AlertDialog(
+        title: Text("날씨 정보"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("최저 온도: ${tempMin.toStringAsFixed(1)}℃"),
+            Text("최고 온도: ${tempMax.toStringAsFixed(1)}℃"),
+            SizedBox(height: 20),
+            Text("추천 준비물"),
+            Text(recommendation),
+          ],
         ),
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.4,
-          height: MediaQuery.of(context).size.height * 0.3,
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("날씨 정보",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              SizedBox(height: 10),
-              Text("최저 온도: ${tempMin.toStringAsFixed(1)}℃"),
-              Text("최고 온도: ${tempMax.toStringAsFixed(1)}℃"),
-              SizedBox(height: 20),
-              Text("추천 준비물",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              SizedBox(height: 10),
-              Text(recommendation, textAlign: TextAlign.center),
-              SizedBox(height: 20),
-              TextButton(
-                  onPressed: () => Navigator.pop(context), child: Text("닫기"))
-            ],
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("닫기"),
           ),
-        ),
+        ],
       ),
     );
   }
 
   void showRecommendationByMonth(BuildContext context, DateTime selectedDay) {
-    String message =
-        "현재 내 날짜 기준으로 5일 뒤의 정보는 가까운 날짜가 아니라 정보를 자세히 표시해 드릴 수 없습니다.";
     String recommendation = "";
-
     switch (selectedDay.month) {
       case 1:
       case 12:
@@ -217,30 +222,15 @@ class _CalendarState extends State<Calendar> {
 
     showDialog(
       context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("날짜 정보",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              SizedBox(height: 10),
-              Text(message),
-              SizedBox(height: 20),
-              Text("추천 준비물",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              SizedBox(height: 10),
-              Text(recommendation, textAlign: TextAlign.center),
-              SizedBox(height: 20),
-              TextButton(
-                  onPressed: () => Navigator.pop(context), child: Text("닫기"))
-            ],
+      builder: (context) => AlertDialog(
+        title: Text("추천 준비물"),
+        content: Text(recommendation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("닫기"),
           ),
-        ),
+        ],
       ),
     );
   }
