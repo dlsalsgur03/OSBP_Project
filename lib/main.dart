@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'reservation/transportation_popup.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(const MyApp()));
@@ -46,6 +48,15 @@ class HomePage extends StatelessWidget {
         },
         child: const Icon(Icons.add),
       ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko', 'KR'), // 한국어 지원
+        Locale('en', ''),   // 영어 기본
+      ],
     );
   }
 }
@@ -75,31 +86,25 @@ class _CalendarState extends State<Calendar> {
       daysOfWeekHeight: 30,
       calendarBuilders: CalendarBuilders(
         dowBuilder: (context, day) {
-          switch (day.weekday) {
+          switch(day.weekday) {
             case 1:
-              return Center(child: Text('월'));
+              return Center(child: Text('월'),);
             case 2:
-              return Center(child: Text('화'));
+              return Center(child: Text('화'),);
             case 3:
-              return Center(child: Text('수'));
+              return Center(child: Text('수'),);
             case 4:
-              return Center(child: Text('목'));
+              return Center(child: Text('목'),);
             case 5:
-              return Center(child: Text('금'));
+              return Center(child: Text('금'),);
             case 6:
               return Center(
-                  child: Text(
-                    '토',
-                    style: TextStyle(color: Color(0xffa7385c)),
-                  ));
+                child: Text('토', style: TextStyle(color: Color(0xffa7385c)),),);
             case 7:
               return Center(
-                  child: Text(
-                    '일',
-                    style: TextStyle(color: Color(0xffa7385c)),
-                  ));
+                child: Text('일', style: TextStyle(color: Color(0xffa7385c)),),);
           }
-        },
+        }
       ),
       headerStyle: HeaderStyle(
         formatButtonVisible: false,
@@ -137,6 +142,7 @@ class _CalendarState extends State<Calendar> {
         return isSameDay(selectedDay, day);
       },
     );
+
   }
 }
 
