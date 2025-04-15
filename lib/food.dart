@@ -68,7 +68,6 @@ class _CalendarState extends State<Calendar> {
   }
 
   void fetchWeatherOrRecommendation(BuildContext context, DateTime selectedDay) {
-    // 날짜 차이에 따라 다르게 처리
     if (selectedDay.difference(DateTime.now()).inDays > 4) {
       showRecommendationByMonth(context, selectedDay);
     } else {
@@ -88,6 +87,7 @@ class _CalendarState extends State<Calendar> {
         double tempMin = double.infinity;
         double tempMax = double.negativeInfinity;
         String weatherDescription = "";
+        int cloudCoverage = 0;
 
         for (var entry in data['list']) {
           DateTime dateTime = DateTime.parse(entry['dt_txt']);
@@ -96,11 +96,12 @@ class _CalendarState extends State<Calendar> {
             tempMin = temp < tempMin ? temp : tempMin;
             tempMax = temp > tempMax ? temp : tempMax;
             weatherDescription = entry['weather'][0]['description'];
+            cloudCoverage = entry['clouds']['all'];
           }
         }
 
         String recommendation =
-        getRecommendation(tempMin, tempMax, weatherDescription);
+        getRecommendation(tempMin, tempMax, weatherDescription, cloudCoverage);
         showWeatherDialog(context, tempMin, tempMax, recommendation);
       } else {
         print('Failed to fetch weather');
@@ -108,6 +109,43 @@ class _CalendarState extends State<Calendar> {
     } catch (e) {
       print('Error: $e');
     }
+  }
+
+  String getRecommendation(
+      double tempMin, double tempMax, String weatherDescription, int cloudCoverage) {
+    String baseRecommendation = "";
+
+    if (weatherDescription.contains("rain")) {
+      if (tempMin <= 10 && tempMax <= 15) {
+        baseRecommendation = "우산, 따뜻한 외투";
+      } else if (tempMin >= 9) {
+        baseRecommendation = "우산, 가벼운 겉옷";
+      } else if (tempMin >= 20) {
+        baseRecommendation = "우산, 반팔";
+      } else if (tempMax <= 10) {
+        baseRecommendation = "우산, 패딩";
+      } else {
+        baseRecommendation = "우산";
+      }
+    } else {
+      if (tempMin <= 10 && tempMax <= 15) {
+        baseRecommendation = "따뜻한 외투";
+      } else if (tempMin >= 9) {
+        baseRecommendation = "가벼운 겉옷";
+      } else if (tempMin >= 20) {
+        baseRecommendation = "반팔, 선크림";
+      } else if (tempMax <= 10) {
+        baseRecommendation = "패딩";
+      } else {
+        baseRecommendation = "";
+      }
+    }
+
+    if (cloudCoverage <= 25) {
+      baseRecommendation += ", 선크림";
+    }
+
+    return baseRecommendation;
   }
 
   void showWeatherDialog(BuildContext context, double tempMin, double tempMax,
@@ -143,35 +181,6 @@ class _CalendarState extends State<Calendar> {
         ),
       ),
     );
-  }
-
-  String getRecommendation(
-      double tempMin, double tempMax, String weatherDescription) {
-    if (weatherDescription.contains("rain")) {
-      if (tempMin <= 10 && tempMax <= 15) {
-        return "우산, 따뜻한 외투";
-      } else if (tempMin >= 9) {
-        return "우산, 가벼운 겉옷";
-      } else if (tempMin >= 20) {
-        return "우산, 반팔";
-      } else if (tempMax <= 10) {
-        return "우산, 패딩";
-      } else {
-        return "우산";
-      }
-    } else {
-      if (tempMin <= 10 && tempMax <= 15) {
-        return "따뜻한 외투";
-      } else if (tempMin >= 9) {
-        return "가벼운 겉옷";
-      } else if (tempMin >= 20) {
-        return "반팔, 선크림";
-      } else if (tempMax <= 10) {
-        return "패딩";
-      } else {
-        return "";
-      }
-    }
   }
 
   void showRecommendationByMonth(BuildContext context, DateTime selectedDay) {
