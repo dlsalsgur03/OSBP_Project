@@ -12,20 +12,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Calendar(),
-            IconButton(
-              padding: EdgeInsets.all(0.0),
-              color: Color(0xffa7385c),
-              icon: Icon(Icons.add_circle_rounded, size: 50.0),
-              onPressed: () {},
-            )
-          ],
-        ),
-      )
+        home: Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Calendar(),
+              IconButton(
+                padding: EdgeInsets.all(0.0),
+                color: Color(0xffa7385c),
+                icon: Icon(Icons.add_circle_rounded, size: 50.0),
+                onPressed: () {},
+              )
+            ],
+          ),
+        )
     );
   }
 }
@@ -40,9 +40,9 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
 
   DateTime selectedDay = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day
   );
   DateTime focusDay = DateTime.now();
 
@@ -55,26 +55,26 @@ class _CalendarState extends State<Calendar> {
       locale: 'ko-KR',
       daysOfWeekHeight: 30,
       calendarBuilders: CalendarBuilders(
-        dowBuilder: (context, day) {
-          switch(day.weekday) {
-            case 1:
-              return Center(child: Text('월'),);
-            case 2:
-              return Center(child: Text('화'),);
-            case 3:
-              return Center(child: Text('수'),);
-            case 4:
-              return Center(child: Text('목'),);
-            case 5:
-              return Center(child: Text('금'),);
-            case 6:
-              return Center(
-                child: Text('토', style: TextStyle(color: Color(0xffa7385c)),),);
-            case 7:
-              return Center(
-                child: Text('일', style: TextStyle(color: Color(0xffa7385c)),),);
+          dowBuilder: (context, day) {
+            switch(day.weekday) {
+              case 1:
+                return Center(child: Text('월'),);
+              case 2:
+                return Center(child: Text('화'),);
+              case 3:
+                return Center(child: Text('수'),);
+              case 4:
+                return Center(child: Text('목'),);
+              case 5:
+                return Center(child: Text('금'),);
+              case 6:
+                return Center(
+                  child: Text('토', style: TextStyle(color: Color(0xffa7385c)),),);
+              case 7:
+                return Center(
+                  child: Text('일', style: TextStyle(color: Color(0xffa7385c)),),);
+            }
           }
-        }
       ),
 
       headerStyle: HeaderStyle(
@@ -83,33 +83,33 @@ class _CalendarState extends State<Calendar> {
       ),
 
       calendarStyle: CalendarStyle(
-        defaultTextStyle: TextStyle(color: Color(0xff000000)),
-        weekendTextStyle: TextStyle(color: Color(0xffa7385c)),
-        outsideDaysVisible: true,
-        outsideTextStyle: TextStyle(
-          color: Colors.grey
-        ),
-        isTodayHighlighted: false,
-        todayDecoration: BoxDecoration(
-          color: Colors.transparent,
-          shape: BoxShape.circle,
-          border: Border.all(color: Color(0xffa7385c), width: 1.5)
-        ),
+          defaultTextStyle: TextStyle(color: Color(0xff000000)),
+          weekendTextStyle: TextStyle(color: Color(0xffa7385c)),
+          outsideDaysVisible: true,
+          outsideTextStyle: TextStyle(
+              color: Colors.grey
+          ),
+          isTodayHighlighted: false,
+          todayDecoration: BoxDecoration(
+              color: Colors.transparent,
+              shape: BoxShape.circle,
+              border: Border.all(color: Color(0xffa7385c), width: 1.5)
+          ),
 
-        todayTextStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Color(0xffa7385c)
-        ),
+          todayTextStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xffa7385c)
+          ),
 
-        selectedDecoration: BoxDecoration(
-          color: Colors.transparent,
-          shape: BoxShape.circle,
-          border: Border.all(color: Color(0xffa7385c), width: 1.5)
-        ),
-        selectedTextStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Color(0xffa7385c)
-        )
+          selectedDecoration: BoxDecoration(
+              color: Colors.transparent,
+              shape: BoxShape.circle,
+              border: Border.all(color: Color(0xffa7385c), width: 1.5)
+          ),
+          selectedTextStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xffa7385c)
+          )
       ),
 
       calendarFormat: CalendarFormat.month,
@@ -125,5 +125,3 @@ class _CalendarState extends State<Calendar> {
     );
   }
 }
-
-
