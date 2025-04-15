@@ -24,7 +24,6 @@ void showBookingOptions(BuildContext context) {
               title: Text('기차 예매'),
               onTap: () {
                 Navigator.of(context).pop(); // 팝업 닫기
-
               },
             ),
           ],

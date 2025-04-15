@@ -14,6 +14,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko', 'KR'), // 한국어 지원
+        Locale('en', ''),   // 영어 기본
+      ],
+
       home: HomePage(),
     );
   }
@@ -48,15 +58,6 @@ class HomePage extends StatelessWidget {
         },
         child: const Icon(Icons.add),
       ),
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('ko', 'KR'), // 한국어 지원
-        Locale('en', ''),   // 영어 기본
-      ],
     );
   }
 }
@@ -65,7 +66,7 @@ class Calendar extends StatefulWidget {
   const Calendar({super.key});
 
   @override
-  _CalendarState createState() => _CalendarState();
+  State<Calendar> createState() => _CalendarState();
 }
 
 class _CalendarState extends State<Calendar> {
@@ -194,8 +195,9 @@ class SchedulePopup extends StatelessWidget {
             print("장소: ${locationController.text}");
             print("날짜 범위: ${dateController.text}");
             Navigator.of(context).pop(); // 팝업창 닫기
+            showBookingOptions(context);
           },
-          child: const Text("저장"),
+          child: const Text("다음"),
         ),
       ],
     );
