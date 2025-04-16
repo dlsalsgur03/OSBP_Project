@@ -27,6 +27,12 @@ void showBookingOptions(BuildContext context) {
                 launchURL('https://www.letskorail.com/'); // 기차 예매 사이트로 이동
               },
             ),
+            ListTile(
+              title: Text('다음에 예매'),
+              onTap: () {
+                Navigator.of(context).pop();
+              }
+            )
           ],
         ),
       );
