@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
         Locale('ko', 'KR'), // 한국어 지원
         Locale('en', ''),   // 영어 기본
       ],
-      home: const HomePage(),
+
+      home: HomePage(),
     );
   }
 }
@@ -45,7 +46,8 @@ class HomePage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Expanded(
+          Expanded(
+
             child: Calendar(), // 달력 위치
           ),
         ],
@@ -114,7 +116,8 @@ class _CalendarState extends State<Calendar> {
           return const Center();
         },
       ),
-      headerStyle: const HeaderStyle(
+
+      headerStyle: HeaderStyle(
         formatButtonVisible: false,
         titleCentered: true,
       ),
@@ -122,21 +125,21 @@ class _CalendarState extends State<Calendar> {
         defaultTextStyle: const TextStyle(color: Color(0xff000000)),
         weekendTextStyle: const TextStyle(color: Color(0xffa7385c)),
         outsideDaysVisible: true,
-        outsideTextStyle: const TextStyle(color: Colors.grey),
+        outsideTextStyle: TextStyle(color: Colors.grey),
         isTodayHighlighted: false,
         todayDecoration: BoxDecoration(
           color: Colors.transparent,
           shape: BoxShape.circle,
-          border: Border.all(color: const Color(0xffa7385c), width: 1.5),
+          border: Border.all(color: Color(0xffa7385c), width: 1.5),
         ),
-        todayTextStyle: const TextStyle(
+        todayTextStyle: TextStyle(
             fontWeight: FontWeight.bold, color: Color(0xffa7385c)),
         selectedDecoration: BoxDecoration(
           color: Colors.transparent,
           shape: BoxShape.circle,
-          border: Border.all(color: const Color(0xffa7385c), width: 1.5),
+          border: Border.all(color: Color(0xffa7385c), width: 1.5),
         ),
-        selectedTextStyle: const TextStyle(
+        selectedTextStyle: TextStyle(
             fontWeight: FontWeight.bold, color: Color(0xffa7385c)),
       ),
       calendarFormat: CalendarFormat.month,
@@ -168,6 +171,7 @@ class _CalendarState extends State<Calendar> {
         return isSameDay(selectedDay, day);
       },
     );
+
   }
 
   void fetchWeatherOrRecommendation(BuildContext context, DateTime selectedDay) {
