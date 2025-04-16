@@ -332,32 +332,78 @@ class SchedulePopup extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController locationController = TextEditingController();
-    final TextEditingController dateController = TextEditingController();
+    final TextEditingController startDateController = TextEditingController();
+    final TextEditingController endDateController = TextEditingController();
+    final TextEditingController memoController = TextEditingController();
 
     return AlertDialog(
       title: const Text("일정 추가"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: titleController,
-            decoration: const InputDecoration(
-              labelText: "일정 제목",
+      content: SizedBox(
+        width: 300,
+        height: 350,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(
+                labelText: "일정 제목",
+              ),
             ),
-          ),
-          TextField(
-            controller: locationController,
-            decoration: const InputDecoration(
-              labelText: "장소",
+            TextField(
+              controller: locationController,
+              decoration: const InputDecoration(
+                labelText: "장소",
+              ),
             ),
-          ),
-          TextField(
-            controller: dateController,
-            decoration: const InputDecoration(
-              labelText: "날짜 범위",
+            TextField(
+              controller: startDateController,
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: "일정 시작",
+                suffixIcon: Icon(Icons.calendar_today),
+              ),
+              onTap: () async{
+                DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                );
+                if(pickedDate != null){
+                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                  startDateController.text = formattedDate;
+                }
+              },
             ),
-          ),
-        ],
+            TextField(
+              controller: endDateController,
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: "일정 종료",
+                suffixIcon: Icon(Icons.calendar_today),
+              ),
+              onTap: () async{
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                );
+                if(pickedDate != null){
+                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                  endDateController.text = formattedDate;
+                }
+              },
+            ),
+            TextField(
+              controller: memoController,
+              decoration: const InputDecoration(
+                labelText: "메모",
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -371,7 +417,9 @@ class SchedulePopup extends StatelessWidget {
             // 입력 데이터 처리 로직
             print("제목: ${titleController.text}");
             print("장소: ${locationController.text}");
-            print("날짜 범위: ${dateController.text}");
+            print("일정 시작: ${startDateController.text}");
+            print("일정 종료: ${endDateController.text}");
+            print("메모: ${titleController.text}");
             Navigator.of(context).pop(); // 팝업창 닫기
             showBookingOptions(context);
           },
