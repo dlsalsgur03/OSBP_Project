@@ -6,11 +6,12 @@ Future<void> save_schedule({
   required String title,
   required String location,
   required DateTime firstdate,
+  required DateTime lastdate,
 }) async {
   try {
     // csv 데이터
     final List<List<dynamic>> rows = [
-      ['제목','장소','날짜 범위'],
+      ['제목','장소','일정 시작','일정 종료',],
       [
         title,
         location,
