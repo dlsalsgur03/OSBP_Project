@@ -42,7 +42,13 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("캘린더 앱"),
+        centerTitle: true,
+        title: const Text("Miri Calendar"),
+        titleTextStyle: TextStyle(
+          fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold
+        ),
+        backgroundColor: Color(0xffa7385c),
+        shadowColor: Color(0xff8e2d4d),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
