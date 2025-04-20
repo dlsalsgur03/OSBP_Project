@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'reservation/transportation_popup.dart';
-import 'reservation/readtocsv.dart';
+import 'reservation/reading_json.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -423,10 +423,21 @@ class SchedulePopup extends StatelessWidget {
           onPressed: () {
             // 입력 데이터 처리 로직
             print("제목: ${titleController.text}");
+            final String title = titleController.text;
             print("장소: ${locationController.text}");
+            final String location = locationController.text;
             print("일정 시작: ${startDateController.text}");
+            final String startDate = startDateController.text;
             print("일정 종료: ${endDateController.text}");
+            final String endDate = endDateController.text;
             print("메모: ${titleController.text}");
+            save_schedule(
+            title: title,
+            location : location,
+            firstdate : startDate,
+            lastdate : endDate,
+            );
+
             Navigator.of(context).pop(); // 팝업창 닫기
             showBookingOptions(context);
           },
