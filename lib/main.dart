@@ -159,12 +159,12 @@ class _CalendarState extends State<Calendar> {
         if (selectedDay.isBefore(DateTime.now())) {
           showDialog(
             context: context,
-            builder: (context) => const AlertDialog(
+            builder: (context) => AlertDialog(
               title: Text("알림"),
-              content: Text("과거입니다"),
+              content: Text("과거는 지원하지 않습니다."),
               actions: [
                 TextButton(
-                  onPressed: null,
+                  onPressed: () => Navigator.pop(context),
                   child: Text("닫기"),
                 ),
               ],
@@ -190,19 +190,25 @@ class _CalendarState extends State<Calendar> {
   }
 
   Future<void> fetchWeather(BuildContext context, DateTime day) async {
-    final String url =
+    final String weatherUrl =
         'https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=$apiKey&units=metric';
+    final String airQualityUrl =
+        'https://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid=$apiKey';
 
     try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+      final weatherResponse = await http.get(Uri.parse(weatherUrl));
+      final airQualityResponse = await http.get(Uri.parse(airQualityUrl));
+
+      if (weatherResponse.statusCode == 200) {
+        final weatherData = json.decode(weatherResponse.body);
+        final airQualityData = json.decode(airQualityResponse.body);
+
         double tempMin = double.infinity;
         double tempMax = double.negativeInfinity;
         String weatherDescription = "";
         int cloudCoverage = 0;
 
-        for (var entry in data['list']) {
+        for (var entry in weatherData['list']) {
           DateTime dateTime = DateTime.parse(entry['dt_txt']);
           if (isSameDay(dateTime, day)) {
             double temp = entry['main']['temp'];
@@ -213,9 +219,11 @@ class _CalendarState extends State<Calendar> {
           }
         }
 
+        int airQualityIndex = airQualityData['list'][0]['main']['aqi'];
+        String airQuality = getAirQualityDescription(airQualityIndex);
         String recommendation =
-        getRecommendation(tempMin, tempMax, weatherDescription, cloudCoverage);
-        showWeatherDialog(context, tempMin, tempMax, recommendation);
+        getRecommendation(tempMin, tempMax, weatherDescription, cloudCoverage, airQuality);
+        showWeatherDialog(context, tempMin, tempMax, airQuality, recommendation);
       } else {
         print('Failed to fetch weather');
       }
@@ -224,8 +232,15 @@ class _CalendarState extends State<Calendar> {
     }
   }
 
-  String getRecommendation(
-      double tempMin, double tempMax, String weatherDescription, int cloudCoverage) {
+  String getAirQualityDescription(int aqi) {
+    if(aqi == 1) return "좋음";
+    else if(aqi == 2) return "보통";
+    else if(aqi == 3) return "약간나쁨";
+    else if(aqi == 4) return "나쁨";
+    else return "매우나쁨";
+  }
+
+  String getRecommendation(double tempMin, double tempMax, String weatherDescription, int cloudCoverage, String airQuality) {
     String baseRecommendation = "";
 
     if (weatherDescription.contains("rain")) {
@@ -257,12 +272,17 @@ class _CalendarState extends State<Calendar> {
     if (cloudCoverage <= 25) {
       baseRecommendation += ", 선크림";
     }
+    if (cloudCoverage < 10) {
+      baseRecommendation += ", 양산";
+    }
+    if(airQuality != "좋음" && airQuality != "보통") {
+      baseRecommendation += ", 마스크";
+    }
 
     return baseRecommendation;
   }
 
-  void showWeatherDialog(BuildContext context, double tempMin, double tempMax,
-      String recommendation) {
+  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -272,6 +292,8 @@ class _CalendarState extends State<Calendar> {
           children: [
             Text("최저 온도: ${tempMin.toStringAsFixed(1)}℃"),
             Text("최고 온도: ${tempMax.toStringAsFixed(1)}℃"),
+            const SizedBox(height: 20),
+            Text("미세먼지 상태: $airQuality"),
             const SizedBox(height: 20),
             const Text("추천 준비물"),
             Text(recommendation),
