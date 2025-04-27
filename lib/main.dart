@@ -198,14 +198,17 @@ class _CalendarState extends State<Calendar> {
     try {
       final weatherResponse = await http.get(Uri.parse(weatherUrl));
       final airQualityResponse = await http.get(Uri.parse(airQualityUrl));
+
       if (weatherResponse.statusCode == 200) {
-        final data = json.decode(weatherResponse.body);
+        final weatherData = json.decode(weatherResponse.body);
+        final airQualityData = json.decode(airQualityResponse.body);
+
         double tempMin = double.infinity;
         double tempMax = double.negativeInfinity;
         String weatherDescription = "";
         int cloudCoverage = 0;
 
-        for (var entry in data['list']) {
+        for (var entry in weatherData['list']) {
           DateTime dateTime = DateTime.parse(entry['dt_txt']);
           if (isSameDay(dateTime, day)) {
             double temp = entry['main']['temp'];
@@ -216,15 +219,25 @@ class _CalendarState extends State<Calendar> {
           }
         }
 
+        int airQualityIndex = airQualityData['list'][0]['main']['aqi'];
+        String airQuality = getAirQualityDescription(airQualityIndex);
         String recommendation =
-        getRecommendation(tempMin, tempMax, weatherDescription, cloudCoverage);
-        showWeatherDialog(context, tempMin, tempMax, recommendation);
+        getRecommendation(tempMin, tempMax, weatherDescription, cloudCoverage, airQuality);
+        showWeatherDialog(context, tempMin, tempMax, airQuality, recommendation);
       } else {
         print('Failed to fetch weather');
       }
     } catch (e) {
       print('Error: $e');
     }
+  }
+
+  String getAirQualityDescription(int aqi) {
+    if(aqi == 1) return "좋음";
+    else if(aqi == 2) return "보통";
+    else if(aqi == 3) return "약간나쁨";
+    else if(aqi == 4) return "나쁨";
+    else return "매우나쁨";
   }
 
   String getRecommendation(
