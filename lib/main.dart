@@ -35,15 +35,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final _calendarKey = GlobalKey<_CalendarState>();
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +45,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         title: const Text("Miri Calendar"),
         titleTextStyle: TextStyle(
-          fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold
+            fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold
         ),
         backgroundColor: Color(0xffa7385c),
         shadowColor: Color(0xff8e2d4d),
@@ -62,30 +55,23 @@ class _HomePageState extends State<HomePage> {
         children: [
           Expanded(
 
-            child: Calendar(key: _calendarKey), // 달력 위치, 위젯에 키 넘겨주기
+            child: Calendar(), // 달력 위치
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // 팝업창 호출시 위젯에 접근할 수 있도록 콜백함수 전달
+          // 팝업창 호출
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return SchedulePopup(onScheduleAdded: _addSchedule);
+              return const SchedulePopup();
             },
           );
         },
         child: const Icon(Icons.add),
       ),
     );
-  }
-  //캘린더 위젯에 이벤트 상태를 업데이트
-  void _addSchedule(DateTime date, Event event) {
-    final calendarState = _calendarKey.currentState;
-    if (calendarState != null) {
-      calendarState._addEvent(date, event);
-    }
   }
 }
 
@@ -103,17 +89,6 @@ class _CalendarState extends State<Calendar> {
     DateTime.now().day,
   );
   DateTime focusDay = DateTime.now();
-  final Map<DateTime, List<Event>> _events = {};
-
-  void _addEvent(DateTime date, Event event) {
-    setState(() {
-      if (_events[date] == null) {
-        _events[date] = [event];
-      } else {
-        _events[date]!.add(event);
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +122,6 @@ class _CalendarState extends State<Calendar> {
           }
           return const Center();
         },
-
       ),
 
       headerStyle: HeaderStyle(
@@ -380,19 +354,8 @@ class _CalendarState extends State<Calendar> {
   }
 }
 
-class Event {
-  final String title;
-  final String location;
-  Event(this.title, this.location);
-
-  @override
-  String toString() => title;
-}
-
 class SchedulePopup extends StatelessWidget {
-  final Function(DateTime, Event) onScheduleAdded;
-
-  const SchedulePopup({super.key, required this.onScheduleAdded});
+  const SchedulePopup({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -431,10 +394,10 @@ class SchedulePopup extends StatelessWidget {
               ),
               onTap: () async{
                 DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
                 );
                 if(pickedDate != null){
                   String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
@@ -480,34 +443,25 @@ class SchedulePopup extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // 팝업창 닫기
-          },
-          child: const Text("취소"),
-        ),
-        TextButton(
-          onPressed: () {
+            // 입력 데이터 처리 로직
+            print("제목: ${titleController.text}");
             final String title = titleController.text;
+            print("장소: ${locationController.text}");
             final String location = locationController.text;
-            final String startDateStr = startDateController.text;
-            final String endDateStr = endDateController.text;
+            print("일정 시작: ${startDateController.text}");
+            final String startDate = startDateController.text;
+            print("일정 종료: ${endDateController.text}");
+            final String endDate = endDateController.text;
+            print("메모: ${titleController.text}");
+            save_schedule(
+              title: title,
+              location : location,
+              firstdate : startDate,
+              lastdate : endDate,
+            );
 
-            if (title.isNotEmpty && startDateStr.isNotEmpty && endDateStr.isNotEmpty) {
-              DateTime startDate = DateTime.parse(startDateStr);
-              DateTime endDate = DateTime.parse(endDateStr);
-
-              // 시작 날짜와 종료 날짜 사이의 모든 날짜에 이벤트를 추가
-              for (var date = startDate; date.isBefore(endDate.add(const Duration(days: 1))); date = date.add(const Duration(days: 1))) {
-                onScheduleAdded(date, Event(title, location));
-              }
-
-              Navigator.of(context).pop(); // 팝업창 닫기
-              showBookingOptions(context); // 이 부분은 필요에 따라 수정하세요.
-            } else {
-              // 필수 정보가 입력되지 않았을 경우에 대한 처리 (예: 스낵바 알림)
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('제목과 시작/종료 날짜를 입력해주세요.')),
-              );
-            }
+            Navigator.of(context).pop(); // 팝업창 닫기
+            showBookingOptions(context);
           },
           child: const Text("다음"),
         ),
