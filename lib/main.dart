@@ -240,8 +240,7 @@ class _CalendarState extends State<Calendar> {
     else return "매우나쁨";
   }
 
-  String getRecommendation(
-      double tempMin, double tempMax, String weatherDescription, int cloudCoverage) {
+  String getRecommendation(double tempMin, double tempMax, String weatherDescription, int cloudCoverage, String airQuality) {
     String baseRecommendation = "";
 
     if (weatherDescription.contains("rain")) {
@@ -273,12 +272,14 @@ class _CalendarState extends State<Calendar> {
     if (cloudCoverage <= 25) {
       baseRecommendation += ", 선크림";
     }
+    if(airQuality != "좋음" && airQuality != "보통") {
+      baseRecommendation += ", 마스크";
+    }
 
     return baseRecommendation;
   }
 
-  void showWeatherDialog(BuildContext context, double tempMin, double tempMax,
-      String recommendation) {
+  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -288,6 +289,8 @@ class _CalendarState extends State<Calendar> {
           children: [
             Text("최저 온도: ${tempMin.toStringAsFixed(1)}℃"),
             Text("최고 온도: ${tempMax.toStringAsFixed(1)}℃"),
+            const SizedBox(height: 20),
+            Text("미세먼지 상태: $airQuality"),
             const SizedBox(height: 20),
             const Text("추천 준비물"),
             Text(recommendation),
