@@ -190,13 +190,16 @@ class _CalendarState extends State<Calendar> {
   }
 
   Future<void> fetchWeather(BuildContext context, DateTime day) async {
-    final String url =
+    final String weatherUrl =
         'https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=$apiKey&units=metric';
+    final String airQualityUrl =
+        'https://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid=$apiKey';
 
     try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+      final weatherResponse = await http.get(Uri.parse(weatherUrl));
+      final airQualityResponse = await http.get(Uri.parse(airQualityUrl));
+      if (weatherResponse.statusCode == 200) {
+        final data = json.decode(weatherResponse.body);
         double tempMin = double.infinity;
         double tempMax = double.negativeInfinity;
         String weatherDescription = "";
