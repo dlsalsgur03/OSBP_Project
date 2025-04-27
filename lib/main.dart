@@ -159,12 +159,12 @@ class _CalendarState extends State<Calendar> {
         if (selectedDay.isBefore(DateTime.now())) {
           showDialog(
             context: context,
-            builder: (context) => const AlertDialog(
+            builder: (context) => AlertDialog(
               title: Text("알림"),
-              content: Text("과거입니다"),
+              content: Text("과거는 지원하지 않습니다."),
               actions: [
                 TextButton(
-                  onPressed: null,
+                  onPressed: () => Navigator.pop(context),
                   child: Text("닫기"),
                 ),
               ],
@@ -271,6 +271,9 @@ class _CalendarState extends State<Calendar> {
 
     if (cloudCoverage <= 25) {
       baseRecommendation += ", 선크림";
+    }
+    if (cloudCoverage < 10) {
+      baseRecommendation += ", 양산";
     }
     if(airQuality != "좋음" && airQuality != "보통") {
       baseRecommendation += ", 마스크";
