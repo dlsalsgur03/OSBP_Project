@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
         centerTitle: true,
         title: const Text("Miri Calendar"),
         titleTextStyle: TextStyle(
-            fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold
+          fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold
         ),
         backgroundColor: Color(0xffa7385c),
         shadowColor: Color(0xff8e2d4d),
@@ -354,6 +354,16 @@ class _CalendarState extends State<Calendar> {
   }
 }
 
+class Event {
+  final String title;
+  final String location;
+  Event(this.title, this.location);
+
+  @override
+  String toString() => title;
+}
+
+Map<DateTime, List<Event>> events = {}; // 날짜별 일정 저장
 class SchedulePopup extends StatelessWidget {
   const SchedulePopup({super.key});
 
@@ -394,10 +404,10 @@ class SchedulePopup extends StatelessWidget {
               ),
               onTap: () async{
                 DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
                 );
                 if(pickedDate != null){
                   String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
@@ -443,21 +453,17 @@ class SchedulePopup extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            // 입력 데이터 처리 로직
-            print("제목: ${titleController.text}");
+
             final String title = titleController.text;
-            print("장소: ${locationController.text}");
             final String location = locationController.text;
-            print("일정 시작: ${startDateController.text}");
             final String startDate = startDateController.text;
-            print("일정 종료: ${endDateController.text}");
             final String endDate = endDateController.text;
-            print("메모: ${titleController.text}");
+
             save_schedule(
-              title: title,
-              location : location,
-              firstdate : startDate,
-              lastdate : endDate,
+            title: title,
+            location : location,
+            firstdate : startDate,
+            lastdate : endDate,
             );
 
             Navigator.of(context).pop(); // 팝업창 닫기
