@@ -10,6 +10,7 @@ Future<void> save_schedule({
   required String location,
   required String firstdate,
   required String lastdate,
+  required String emoji,
 }) async {
   try {
     // 파일 경로 설정
