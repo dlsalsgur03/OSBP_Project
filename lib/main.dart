@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const SchedulePopup();
+              return SchedulePopup();
             },
           );
         },
@@ -365,7 +365,7 @@ class Event {
 
 Map<DateTime, List<Event>> events = {}; // 날짜별 일정 저장
 class SchedulePopup extends StatelessWidget {
-  const SchedulePopup({super.key});
+  SchedulePopup({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -403,15 +403,16 @@ class SchedulePopup extends StatelessWidget {
                 labelText: "일정 시작",
                 suffixIcon: Icon(Icons.calendar_today),
               ),
-              onTap: () async{
+              onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
                 );
-                if(pickedDate != null){
-                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                if (pickedDate != null) {
+                  String formattedDate = "${pickedDate.year}-${pickedDate
+                      .month}-${pickedDate.day}";
                   startDateController.text = formattedDate;
                 }
               },
@@ -423,15 +424,16 @@ class SchedulePopup extends StatelessWidget {
                 labelText: "일정 종료",
                 suffixIcon: Icon(Icons.calendar_today),
               ),
-              onTap: () async{
+              onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
                 );
-                if(pickedDate != null){
-                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                if (pickedDate != null) {
+                  String formattedDate = "${pickedDate.year}-${pickedDate
+                      .month}-${pickedDate.day}";
                   endDateController.text = formattedDate;
                 }
               },
@@ -443,17 +445,23 @@ class SchedulePopup extends StatelessWidget {
               ),
             ),
             Row(
-              children:[
-                Expanded(
-                  child: TextField(
-                    controller: emojiController,
-                    readOnly: true,
-                    decoration: const InputDecoration(
-                      labelText: "이모티콘",
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: emojiController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        labelText: "이모티콘",
+                      ),
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.emoji_emotions),
+                    onPressed: () {
+                      //_showEmojiPicker(context, emojiController);
+                    },
                   )
-                )
-              ]
+                ]
             )
           ],
         ),
@@ -467,17 +475,17 @@ class SchedulePopup extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-
             final String title = titleController.text;
             final String location = locationController.text;
             final String startDate = startDateController.text;
             final String endDate = endDateController.text;
+            final String emoji = emojiController.text;
 
             save_schedule(
-            title: title,
-            location : location,
-            firstdate : startDate,
-            lastdate : endDate,
+              title: title,
+              location: location,
+              firstdate: startDate,
+              lastdate: endDate,
             );
 
             Navigator.of(context).pop(); // 팝업창 닫기
