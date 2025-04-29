@@ -374,6 +374,7 @@ class SchedulePopup extends StatelessWidget {
     final TextEditingController startDateController = TextEditingController();
     final TextEditingController endDateController = TextEditingController();
     final TextEditingController memoController = TextEditingController();
+    final TextEditingController emojiController = TextEditingController();
 
     return AlertDialog(
       title: const Text("일정 추가"),
@@ -441,6 +442,19 @@ class SchedulePopup extends StatelessWidget {
                 labelText: "메모",
               ),
             ),
+            Row(
+              children:[
+                Expanded(
+                  child: TextField(
+                    controller: emojiController,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: "이모티콘",
+                    ),
+                  )
+                )
+              ]
+            )
           ],
         ),
       ),
