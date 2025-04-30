@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const SchedulePopup();
+              return SchedulePopup();
             },
           );
         },
@@ -359,8 +359,18 @@ class _CalendarState extends State<Calendar> {
   }
 }
 
+class Event {
+  final String title;
+  final String location;
+  Event(this.title, this.location);
+
+  @override
+  String toString() => title;
+}
+
+Map<DateTime, List<Event>> events = {}; // 날짜별 일정 저장
 class SchedulePopup extends StatelessWidget {
-  const SchedulePopup({super.key});
+  SchedulePopup({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -369,6 +379,7 @@ class SchedulePopup extends StatelessWidget {
     final TextEditingController startDateController = TextEditingController();
     final TextEditingController endDateController = TextEditingController();
     final TextEditingController memoController = TextEditingController();
+    final TextEditingController emojiController = TextEditingController();
 
     return AlertDialog(
       title: const Text("일정 추가"),
@@ -397,15 +408,16 @@ class SchedulePopup extends StatelessWidget {
                 labelText: "일정 시작",
                 suffixIcon: Icon(Icons.calendar_today),
               ),
-              onTap: () async{
+              onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
                 );
-                if(pickedDate != null){
-                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                if (pickedDate != null) {
+                  String formattedDate = "${pickedDate.year}-${pickedDate
+                      .month}-${pickedDate.day}";
                   startDateController.text = formattedDate;
                 }
               },
@@ -417,15 +429,16 @@ class SchedulePopup extends StatelessWidget {
                 labelText: "일정 종료",
                 suffixIcon: Icon(Icons.calendar_today),
               ),
-              onTap: () async{
+              onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
                 );
-                if(pickedDate != null){
-                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                if (pickedDate != null) {
+                  String formattedDate = "${pickedDate.year}-${pickedDate
+                      .month}-${pickedDate.day}";
                   endDateController.text = formattedDate;
                 }
               },
@@ -436,6 +449,25 @@ class SchedulePopup extends StatelessWidget {
                 labelText: "메모",
               ),
             ),
+            Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: emojiController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        labelText: "이모티콘",
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.emoji_emotions),
+                    onPressed: () {
+                      _showEmojiPicker(context, emojiController);
+                    },
+                  )
+                ]
+            )
           ],
         ),
       ),
@@ -448,21 +480,18 @@ class SchedulePopup extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            // 입력 데이터 처리 로직
-            print("제목: ${titleController.text}");
             final String title = titleController.text;
-            print("장소: ${locationController.text}");
             final String location = locationController.text;
-            print("일정 시작: ${startDateController.text}");
             final String startDate = startDateController.text;
-            print("일정 종료: ${endDateController.text}");
             final String endDate = endDateController.text;
-            print("메모: ${titleController.text}");
+            final String emoji = emojiController.text;
+
             save_schedule(
-            title: title,
-            location : location,
-            firstdate : startDate,
-            lastdate : endDate,
+              title: title,
+              location: location,
+              firstdate: startDate,
+              lastdate: endDate,
+              emoji: emoji,
             );
 
             Navigator.of(context).pop(); // 팝업창 닫기
@@ -473,4 +502,26 @@ class SchedulePopup extends StatelessWidget {
       ],
     );
   }
+  void _showEmojiPicker(BuildContext context, TextEditingController controller) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return GridView.count(
+          crossAxisCount: 5,
+          padding: const EdgeInsets.all(8.0),
+          children: List.generate(emojiList.length, (index) {
+            return IconButton(
+              onPressed: () {
+                controller.text = emojiList[index];
+                Navigator.pop(context);
+              },
+              icon: Text(emojiList[index], style: const TextStyle(fontSize: 24)),
+            );
+          }),
+        );
+      },
+    );
+  }
+
+  final List<String> emojiList = ["🌟"]; // 이모티콘란. 향후 더 추가 예정
 }
