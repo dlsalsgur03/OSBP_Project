@@ -6,12 +6,15 @@ import 'reservation/transportation_popup.dart';
 import 'reservation/reading_json.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// API 키 정의
-const String apiKey = '2bb7d1d04a4a7cd6b226ce87c31a0ece';
-
-void main() {
+void main() async {
+  await dotenv.load(); // .env 파일 로드
   initializeDateFormatting().then((_) => runApp(const MyApp()));
+}
+
+String getApiKey() {
+  return dotenv.env['MY_API_KEY'] ?? "";
 }
 
 class MyApp extends StatelessWidget {
@@ -190,6 +193,8 @@ class _CalendarState extends State<Calendar> {
   }
 
   Future<void> fetchWeather(BuildContext context, DateTime day) async {
+    final String apiKey = getApiKey(); // API 키 불러오기
+
     final String weatherUrl =
         'https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=$apiKey&units=metric';
     final String airQualityUrl =
