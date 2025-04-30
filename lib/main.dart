@@ -6,12 +6,15 @@ import 'reservation/transportation_popup.dart';
 import 'reservation/reading_json.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// API 키 정의
-// API 키 숨기기 위해 잠시 지움
-
-void main() {
+void main() async {
+  await dotenv.load(); // .env 파일 로드
   initializeDateFormatting().then((_) => runApp(const MyApp()));
+}
+
+String getApiKey() {
+  return dotenv.env['MY_API_KEY'] ?? "";
 }
 
 class MyApp extends StatelessWidget {
@@ -180,57 +183,59 @@ class _CalendarState extends State<Calendar> {
     );
 
   }
+  
+  void fetchWeatherOrRecommendation(BuildContext context, DateTime selectedDay) {
+    if (selectedDay.difference(DateTime.now()).inDays > 4) {
+      showRecommendationByMonth(context, selectedDay);
+    } else {
+      fetchWeather(context, selectedDay);
+    }
+  }
 
-  // void fetchWeatherOrRecommendation(BuildContext context, DateTime selectedDay) {
-  //   if (selectedDay.difference(DateTime.now()).inDays > 4) {
-  //     showRecommendationByMonth(context, selectedDay);
-  //   } else {
-  //     fetchWeather(context, selectedDay);
-  //   }
-  // }
+  Future<void> fetchWeather(BuildContext context, DateTime day) async {
+    final String apiKey = getApiKey(); // API 키 불러오기
 
-  // Future<void> fetchWeather(BuildContext context, DateTime day) async {
-  //   final String weatherUrl =
-  //       // 'https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=$apiKey&units=metric';
-  //   final String airQualityUrl =
-  //       'https://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid=$apiKey';
-  //
-  //   try {
-  //     final weatherResponse = await http.get(Uri.parse(weatherUrl));
-  //     final airQualityResponse = await http.get(Uri.parse(airQualityUrl));
-  //
-  //     if (weatherResponse.statusCode == 200) {
-  //       final weatherData = json.decode(weatherResponse.body);
-  //       final airQualityData = json.decode(airQualityResponse.body);
-  //
-  //       double tempMin = double.infinity;
-  //       double tempMax = double.negativeInfinity;
-  //       String weatherDescription = "";
-  //       int cloudCoverage = 0;
-  //
-  //       for (var entry in weatherData['list']) {
-  //         DateTime dateTime = DateTime.parse(entry['dt_txt']);
-  //         if (isSameDay(dateTime, day)) {
-  //           double temp = entry['main']['temp'];
-  //           tempMin = temp < tempMin ? temp : tempMin;
-  //           tempMax = temp > tempMax ? temp : tempMax;
-  //           weatherDescription = entry['weather'][0]['description'];
-  //           cloudCoverage = entry['clouds']['all'];
-  //         }
-  //       }
-  //
-  //       int airQualityIndex = airQualityData['list'][0]['main']['aqi'];
-  //       String airQuality = getAirQualityDescription(airQualityIndex);
-  //       String recommendation =
-  //       getRecommendation(tempMin, tempMax, weatherDescription, cloudCoverage, airQuality);
-  //       showWeatherDialog(context, tempMin, tempMax, airQuality, recommendation);
-  //     } else {
-  //       print('Failed to fetch weather');
-  //     }
-  //   } catch (e) {
-  //     print('Error: $e');
-  //   }
-  // }
+    final String weatherUrl =
+        'https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=$apiKey&units=metric';
+    final String airQualityUrl =
+        'https://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid=$apiKey';
+
+    try {
+      final weatherResponse = await http.get(Uri.parse(weatherUrl));
+      final airQualityResponse = await http.get(Uri.parse(airQualityUrl));
+
+      if (weatherResponse.statusCode == 200) {
+        final weatherData = json.decode(weatherResponse.body);
+        final airQualityData = json.decode(airQualityResponse.body);
+
+        double tempMin = double.infinity;
+        double tempMax = double.negativeInfinity;
+        String weatherDescription = "";
+        int cloudCoverage = 0;
+
+        for (var entry in weatherData['list']) {
+          DateTime dateTime = DateTime.parse(entry['dt_txt']);
+          if (isSameDay(dateTime, day)) {
+            double temp = entry['main']['temp'];
+            tempMin = temp < tempMin ? temp : tempMin;
+            tempMax = temp > tempMax ? temp : tempMax;
+            weatherDescription = entry['weather'][0]['description'];
+            cloudCoverage = entry['clouds']['all'];
+          }
+        }
+
+        int airQualityIndex = airQualityData['list'][0]['main']['aqi'];
+        String airQuality = getAirQualityDescription(airQualityIndex);
+        String recommendation =
+        getRecommendation(tempMin, tempMax, weatherDescription, cloudCoverage, airQuality);
+        showWeatherDialog(context, tempMin, tempMax, airQuality, recommendation);
+      } else {
+        print('Failed to fetch weather');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   String getAirQualityDescription(int aqi) {
     if(aqi == 1) return "좋음";
