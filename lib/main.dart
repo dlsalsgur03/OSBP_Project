@@ -174,7 +174,7 @@ class _CalendarState extends State<Calendar> {
             ),
           );
         } else {
-          fetchWeatherOrRecommendation(context, selectedDay);
+          // fetchWeatherOrRecommendation(context, selectedDay);
         }
       },
       selectedDayPredicate: (DateTime day) {
@@ -183,7 +183,7 @@ class _CalendarState extends State<Calendar> {
     );
 
   }
-
+  
   void fetchWeatherOrRecommendation(BuildContext context, DateTime selectedDay) {
     if (selectedDay.difference(DateTime.now()).inDays > 4) {
       showRecommendationByMonth(context, selectedDay);
