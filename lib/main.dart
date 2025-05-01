@@ -8,8 +8,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() async {
-  await dotenv.load(); // .env 파일 로드
+// API 키 정의
+const String apiKey = '2bb7d1d04a4a7cd6b226ce87c31a0ece';
+
+void main() {
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
@@ -174,7 +176,7 @@ class _CalendarState extends State<Calendar> {
             ),
           );
         } else {
-          // fetchWeatherOrRecommendation(context, selectedDay);
+          fetchWeatherOrRecommendation(context, selectedDay);
         }
       },
       selectedDayPredicate: (DateTime day) {
@@ -183,7 +185,7 @@ class _CalendarState extends State<Calendar> {
     );
 
   }
-  
+
   void fetchWeatherOrRecommendation(BuildContext context, DateTime selectedDay) {
     if (selectedDay.difference(DateTime.now()).inDays > 4) {
       showRecommendationByMonth(context, selectedDay);
@@ -193,8 +195,6 @@ class _CalendarState extends State<Calendar> {
   }
 
   Future<void> fetchWeather(BuildContext context, DateTime day) async {
-    final String apiKey = getApiKey(); // API 키 불러오기
-
     final String weatherUrl =
         'https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=$apiKey&units=metric';
     final String airQualityUrl =
@@ -408,16 +408,15 @@ class SchedulePopup extends StatelessWidget {
                 labelText: "일정 시작",
                 suffixIcon: Icon(Icons.calendar_today),
               ),
-              onTap: () async {
+              onTap: () async{
                 DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
                 );
-                if (pickedDate != null) {
-                  String formattedDate = "${pickedDate.year}-${pickedDate
-                      .month}-${pickedDate.day}";
+                if(pickedDate != null){
+                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                   startDateController.text = formattedDate;
                 }
               },
@@ -429,16 +428,15 @@ class SchedulePopup extends StatelessWidget {
                 labelText: "일정 종료",
                 suffixIcon: Icon(Icons.calendar_today),
               ),
-              onTap: () async {
+              onTap: () async{
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
                 );
-                if (pickedDate != null) {
-                  String formattedDate = "${pickedDate.year}-${pickedDate
-                      .month}-${pickedDate.day}";
+                if(pickedDate != null){
+                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                   endDateController.text = formattedDate;
                 }
               },
@@ -480,18 +478,21 @@ class SchedulePopup extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
+            // 입력 데이터 처리 로직
+            print("제목: ${titleController.text}");
             final String title = titleController.text;
+            print("장소: ${locationController.text}");
             final String location = locationController.text;
-            final String startDate = startDateController.text;
-            final String endDate = endDateController.text;
-            final String emoji = emojiController.text;
-
+            print("일정 시작: ${startDateController.text}");
+            final String firstdate = startDateController.text;
+            print("일정 종료: ${endDateController.text}");
+            final String lastdate = endDateController.text;
+            print("메모: ${titleController.text}");
             save_schedule(
-              title: title,
-              location: location,
-              firstdate: startDate,
-              lastdate: endDate,
-              emoji: emoji,
+              title : title,
+              location : location,
+              firstdate : firstdate,
+              lastdate : lastdate,
             );
 
             Navigator.of(context).pop(); // 팝업창 닫기

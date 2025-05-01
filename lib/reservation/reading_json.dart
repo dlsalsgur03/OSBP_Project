@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart'; // path_provider 패키지 필요
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final String scheduleFileName = 'schedule.json';
 final String directoryName = 'scheduler';
@@ -19,6 +21,7 @@ Future<void> save_schedule({
     final schedulePath = '$schedulerDirPath/$scheduleFileName';
     final schedulerDir = Directory(schedulerDirPath);
     final file = File(schedulePath);
+
 
     // 디렉토리 존재 확인 및 생성 (없으면 생성)
     if (!await schedulerDir.exists()) {
@@ -48,7 +51,8 @@ Future<void> save_schedule({
         print("파일 읽기 또는 JSON 파싱 오류: $e. 새 리스트로 시작합니다.");
         schedules = []; // 오류 시 빈 리스트로 초기화
       }
-    } else {
+    }
+    else {
       print("저장된 파일 없음.");
     }
 
@@ -59,12 +63,10 @@ Future<void> save_schedule({
       '일정 시작': firstdate,
       '일정 종료': lastdate,
     };
-
-    // 기존 리스트에 새로운 일정 추가
     schedules.add(newSchedule);
 
     // 업데이트된 전체 리스트 JSON 문자열로 인코딩
-    final encoder = JsonEncoder.withIndent(' ');
+    final encoder = JsonEncoder.withIndent('  ');
     final updatedJsonData = encoder.convert(schedules);
 
     // 파일에 최종 데이터 저장 (덮어쓰기)
@@ -73,5 +75,48 @@ Future<void> save_schedule({
   } catch (e) {
     // 파일 시스템 오류 등 예외 처리
     print('일정 저장 실패: $e');
+  }
+}
+
+Future<void> save_schedule_web({
+  required String title,
+  required String location,
+  required String firstdate,
+  required String lastdate,
+  required String emoji,
+}) async {
+  try{
+    final newSchedule = {
+      'title' : title,
+      'place' : location,
+      'startdate' : firstdate,
+      'enddate' : lastdate,
+      'emoji_' : emoji,
+    };
+
+    if(kIsWeb){
+        // 웹 전용 저장 로직
+      final prefs = await SharedPreferences.getInstance();
+      List<Map<String, dynamic>> schedules = [];
+
+      final existingData = prefs.getString('schedules');
+      if(existingData != null){
+        schedules = List<Map<String, dynamic>>.from(jsonDecode(existingData));
+      }
+
+      schedules.add(newSchedule);
+      await prefs.setString('schedules', jsonEncode(schedules));
+      }
+    else {
+        save_schedule(
+            title: title,
+            location: location,
+            firstdate: firstdate,
+            lastdate: lastdate,
+            emoji: emoji);
+      }
+
+  } catch (e) {
+    print('일정 저장 실패 : $e');
   }
 }
