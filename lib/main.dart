@@ -8,7 +8,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async{
+  await dotenv.load();
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
@@ -85,6 +86,7 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
+  final String apiKey = getApiKey();
   DateTime selectedDay = DateTime(
     DateTime.now().year,
     DateTime.now().month,
@@ -157,8 +159,10 @@ class _CalendarState extends State<Calendar> {
           this.selectedDay = selectedDay;
           focusDay = focusedDay;
         });
+        DateTime today = DateTime.now();
+        DateTime yesterday = today.subtract(Duration(days: 1));
 
-        if (selectedDay.isBefore(DateTime.now())) {
+        if (selectedDay.isBefore(yesterday)) {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
