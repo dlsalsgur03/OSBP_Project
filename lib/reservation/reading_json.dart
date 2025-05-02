@@ -12,7 +12,7 @@ Future<void> save_schedule({
   required String location,
   required String firstdate,
   required String lastdate,
-  required String emoji,
+  required String emoji_,
 }) async {
   try {
     // 파일 경로 설정
@@ -113,7 +113,7 @@ Future<void> save_schedule_web({
             location: location,
             firstdate: firstdate,
             lastdate: lastdate,
-            emoji: emoji);
+            emoji_: emoji);
       }
 
   } catch (e) {

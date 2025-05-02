@@ -8,9 +8,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// API 키 정의
-const String apiKey = '2bb7d1d04a4a7cd6b226ce87c31a0ece';
-
 void main() {
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
@@ -488,11 +485,12 @@ class SchedulePopup extends StatelessWidget {
             print("일정 종료: ${endDateController.text}");
             final String lastdate = endDateController.text;
             print("메모: ${titleController.text}");
-            save_schedule(
+            save_schedule_web(
               title : title,
               location : location,
               firstdate : firstdate,
               lastdate : lastdate,
+              emoji: '',
             );
 
             Navigator.of(context).pop(); // 팝업창 닫기
