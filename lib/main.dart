@@ -13,10 +13,6 @@ void main() async{
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
-String getApiKey() {
-  return dotenv.env['MY_API_KEY'] ?? "";
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -86,7 +82,6 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  final String apiKey = getApiKey();
   DateTime selectedDay = DateTime(
     DateTime.now().year,
     DateTime.now().month,
@@ -159,10 +154,8 @@ class _CalendarState extends State<Calendar> {
           this.selectedDay = selectedDay;
           focusDay = focusedDay;
         });
-        DateTime today = DateTime.now();
-        DateTime yesterday = today.subtract(Duration(days: 1));
 
-        if (selectedDay.isBefore(yesterday)) {
+        if (selectedDay.isBefore(DateTime.now())) {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -199,7 +192,7 @@ class _CalendarState extends State<Calendar> {
     final String weatherUrl =
         'https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=&units=metric';
     final String airQualityUrl =
-        'https://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid=';
+        'https://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid';
 
     try {
       final weatherResponse = await http.get(Uri.parse(weatherUrl));

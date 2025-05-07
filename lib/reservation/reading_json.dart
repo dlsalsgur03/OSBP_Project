@@ -26,6 +26,7 @@ Future<void> save_schedule({
     // 디렉토리 존재 확인 및 생성 (없으면 생성)
     if (!await schedulerDir.exists()) {
       await schedulerDir.create(recursive: true);
+      print("Scheduler directory created at : $schedulerDirPath");
     }
 
     // 기존 데이터 읽기
@@ -58,11 +59,14 @@ Future<void> save_schedule({
 
     // 새로운 일정 데이터 Map 생성, 일단 전부 문자열로 읽기
     final newSchedule = {
-      '제목': title,
-      '장소': location,
-      '일정 시작': firstdate,
-      '일정 종료': lastdate,
+      'title' : title,
+      'place' : location,
+      'startdate' : firstdate,
+      'enddate' : lastdate,
+      'emoji_' : emoji_,
     };
+
+    // 기존 리스트에 새로운 일정 추가
     schedules.add(newSchedule);
 
     // 업데이트된 전체 리스트 JSON 문자열로 인코딩
@@ -99,13 +103,14 @@ Future<void> save_schedule_web({
       final prefs = await SharedPreferences.getInstance();
       List<Map<String, dynamic>> schedules = [];
 
-      final existingData = prefs.getString('schedules');
+      final existingData = prefs.getString('schedules_web_storage');
       if(existingData != null){
         schedules = List<Map<String, dynamic>>.from(jsonDecode(existingData));
       }
 
       schedules.add(newSchedule);
-      await prefs.setString('schedules', jsonEncode(schedules));
+      await prefs.setString('schedules_web_storage', jsonEncode(schedules));
+      print("일정 저장 완료 (웹)");
       }
     else {
         save_schedule(
@@ -120,3 +125,45 @@ Future<void> save_schedule_web({
     print('일정 저장 실패 : $e');
   }
 }
+
+Future<bool> update_schedule_web_by_index({
+  required int index,
+  String? newTitle,
+  String? newLocation,
+  String? newFirstDate,
+  String? newLastDate,
+  String? newEmoji,
+}) async {
+  if (!kIsWeb) {
+    print("update_schedule_web_by_index 함수는 웹 전용입니다.");
+    return false;
+  }
+
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final existingData = prefs.getString('schedules_web_storage');
+    List<Map<String, dynamic>> schedules = [];
+
+    // 기존 일정 데이터 가져오기 (새 Map으로 복사하여 수정)
+    Map<String, dynamic> scheduleToUpdate = Map.from(schedules[index]);
+
+    // 전달된 값으로 업데이트 (null이 아닌 경우에만)
+    if (newTitle != null) scheduleToUpdate['title'] = newTitle;
+    if (newLocation != null) scheduleToUpdate['place'] = newLocation;
+    if (newFirstDate != null) scheduleToUpdate['startdate'] = newFirstDate;
+    if (newLastDate != null) scheduleToUpdate['enddate'] = newLastDate;
+    if (newEmoji != null) scheduleToUpdate['emoji_'] = newEmoji; // 저장 시 키는 'emoji_'
+
+    schedules[index] = scheduleToUpdate;
+
+    // 수정된 전체 리스트를 다시 SharedPreferences에 저장
+    await prefs.setString('schedules_web_storage', jsonEncode(schedules));
+    print("일정 업데이트 완료 (웹, 인덱스: $index)");
+    return true;
+
+  } catch (e) {
+    print('일정 업데이트 실패 (웹, 인덱스 기반): $e');
+    return false;
+  }
+}
+
