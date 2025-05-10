@@ -517,11 +517,12 @@ class SchedulePopup extends StatelessWidget {
             print("일정 종료: ${endDateController.text}");
             final String lastdate = endDateController.text;
             print("메모: ${titleController.text}");
+
             save_schedule_web(
               title : title,
               location : location,
-              firstdate : firstdate,
-              lastdate : lastdate,
+              firstdate : startDate,
+              lastdate : endDate,
               emoji: '',
             );
 
@@ -532,6 +533,16 @@ class SchedulePopup extends StatelessWidget {
         ),
       ],
     );
+  }
+  void save_schedule_web({ //firstdate, lastdate 는 Datetime타입으로 변경
+    required String title,
+    required String location,
+    DateTime? firstdate,
+    DateTime? lastdate,
+    required String emoji,
+  }) {
+    print("일정 시작: $firstdate"); //프로그램엔 영향 안주고 콘솔에 출력만 함
+    print("일정 종료: $lastdate");
   }
   void _showEmojiPicker(BuildContext context, TextEditingController controller) {
     showModalBottomSheet(
