@@ -407,6 +407,9 @@ class SchedulePopup extends StatelessWidget {
     final TextEditingController memoController = TextEditingController();
     final TextEditingController emojiController = TextEditingController();
 
+    DateTime? startDate;
+    DateTime? endDate;
+
     return AlertDialog(
       title: const Text("일정 추가"),
       content: SizedBox(
@@ -442,8 +445,8 @@ class SchedulePopup extends StatelessWidget {
                   lastDate: DateTime(2100),
                 );
                 if(pickedDate != null){
-                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                  startDateController.text = formattedDate;
+                  startDate = pickedDate; //선택한 날짜를 Datetime 변수로 저장
+                  startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                 }
               },
             ),
@@ -462,8 +465,8 @@ class SchedulePopup extends StatelessWidget {
                   lastDate: DateTime(2100),
                 );
                 if(pickedDate != null){
-                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                  endDateController.text = formattedDate;
+                  endDate = pickedDate; //선택한 날짜를 Datetime 변수로 저장
+                  endDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                 }
               },
             ),
