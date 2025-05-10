@@ -394,9 +394,27 @@ class Event {
   String toString() => title;
 }
 
+void save_schedule_web({ //firstdate, lastdate 는 Datetime타입으로 변경
+  required String title,
+  required String location,
+  DateTime? firstdate,
+  DateTime? lastdate,
+  required String emoji,
+}) {
+  print("일정 시작: $firstdate"); //프로그램엔 영향 안주고 콘솔에 출력만 함
+  print("일정 종료: $lastdate");
+}
+
 Map<DateTime, List<Event>> events = {}; // 날짜별 일정 저장
-class SchedulePopup extends StatelessWidget {
-  SchedulePopup({super.key});
+class SchedulePopup extends StatefulWidget {
+  const SchedulePopup({super.key});
+
+  @override
+  State<SchedulePopup> createState() => _SchedulePopupState();
+}
+  class _SchedulePopupState extends State<SchedulePopup> {
+  DateTime? startDate;
+  DateTime? endDate;
 
   @override
   Widget build(BuildContext context) {
@@ -442,8 +460,8 @@ class SchedulePopup extends StatelessWidget {
                   lastDate: DateTime(2100),
                 );
                 if(pickedDate != null){
-                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                  startDateController.text = formattedDate;
+                  startDate = pickedDate; //선택한 날짜를 Datetime 변수로 저장
+                  startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                 }
               },
             ),
@@ -462,8 +480,8 @@ class SchedulePopup extends StatelessWidget {
                   lastDate: DateTime(2100),
                 );
                 if(pickedDate != null){
-                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                  endDateController.text = formattedDate;
+                  endDate = pickedDate; //선택한 날짜를 Datetime 변수로 저장
+                  endDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                 }
               },
             ),
@@ -514,11 +532,12 @@ class SchedulePopup extends StatelessWidget {
             print("일정 종료: ${endDateController.text}");
             final String lastdate = endDateController.text;
             print("메모: ${titleController.text}");
+
             save_schedule_web(
               title : title,
               location : location,
-              firstdate : firstdate,
-              lastdate : lastdate,
+              firstdate : startDate,
+              lastdate : endDate,
               emoji: '',
             );
 
