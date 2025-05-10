@@ -310,7 +310,14 @@ class _CalendarState extends State<Calendar> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: isRainyDay ? Color(0xffd0eaff) : Colors.white,
-        title: const Text("날씨 정보"),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("날씨 정보"), // 원래 제목
+            if (isRainyDay) const SizedBox(width: 8),
+            if (isRainyDay) const Text("☔", style: TextStyle(fontSize: 24)),
+          ],
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
