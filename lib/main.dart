@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
         centerTitle: true,
         title: const Text("Miri Calendar"),
         titleTextStyle: TextStyle(
-          fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold
+            fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold
         ),
         backgroundColor: Color(0xffa7385c),
         shadowColor: Color(0xff8e2d4d),
@@ -93,6 +93,8 @@ class _CalendarState extends State<Calendar> {
     DateTime.now().day,
   );
   DateTime focusDay = DateTime.now();
+  Map<String, String> weatherData = {};
+  bool isRainyDay = false;
 
   @override
   Widget build(BuildContext context) {
@@ -137,11 +139,11 @@ class _CalendarState extends State<Calendar> {
         weekendTextStyle: const TextStyle(color: Color(0xffa7385c)),
         outsideDaysVisible: true,
         outsideTextStyle: TextStyle(color: Colors.grey),
-        isTodayHighlighted: false,
+        isTodayHighlighted: true,
         todayDecoration: BoxDecoration(
-          color: Colors.transparent,
+          color: Color(0xfff5d5db),
           shape: BoxShape.circle,
-          border: Border.all(color: Color(0xffa7385c), width: 1.5),
+          border: Border.all(color: Color(0xfff5d5db), width: 1.5),
         ),
         todayTextStyle: TextStyle(
             fontWeight: FontWeight.bold, color: Color(0xffa7385c)),
@@ -208,6 +210,9 @@ class _CalendarState extends State<Calendar> {
       if (weatherResponse.statusCode == 200) {
         final weatherData = json.decode(weatherResponse.body);
         final airQualityData = json.decode(airQualityResponse.body);
+        isRainyDay = false;
+        String selectedDateKey = selectedDay.toIso8601String().split("T")[0];
+        String todayKey = DateTime.now().toIso8601String().split("T")[0];
 
         double tempMin = double.infinity;
         double tempMax = double.negativeInfinity;
@@ -216,6 +221,18 @@ class _CalendarState extends State<Calendar> {
 
         for (var entry in weatherData['list']) {
           DateTime dateTime = DateTime.parse(entry['dt_txt']);
+          String dateKey = dateTime.toIso8601String().split("T")[0];
+          weatherData[dateKey] = entry['weather'][0]['main'].toLowerCase();
+          if (dateKey == selectedDateKey && weatherData[dateKey]?.contains("rain") == true) {
+            isRainyDay = true;
+          }
+          if (selectedDateKey == todayKey && !weatherData[todayKey]?.contains("rain")) {
+            isRainyDay = false;
+          }
+
+          if (isSameDay(dateTime, selectedDay) && weatherData[dateKey]?.contains("rain") == true) {
+            isRainyDay = true;
+          }
           if (isSameDay(dateTime, day)) {
             double temp = entry['main']['temp'];
             tempMin = temp < tempMin ? temp : tempMin;
@@ -266,9 +283,9 @@ class _CalendarState extends State<Calendar> {
         baseRecommendation = "따뜻한 외투";
       } else if (tempMin >= 9) {
         baseRecommendation = "가벼운 겉옷";
-      } else if (tempMin >= 20) {
+      } else if (tempMin >= 16) {
         baseRecommendation = "반팔, 선크림";
-      } else if (tempMax <= 10) {
+      } else if (tempMax <= 5) {
         baseRecommendation = "패딩";
       } else {
         baseRecommendation = "";
@@ -292,7 +309,15 @@ class _CalendarState extends State<Calendar> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("날씨 정보"),
+        backgroundColor: isRainyDay ? Color(0xffd0eaff) : Colors.white,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("날씨 정보"), // 원래 제목
+            if (isRainyDay) const SizedBox(width: 8),
+            if (isRainyDay) const Text("☔", style: TextStyle(fontSize: 24)),
+          ],
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -411,10 +436,10 @@ class SchedulePopup extends StatelessWidget {
               ),
               onTap: () async{
                 DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
                 );
                 if(pickedDate != null){
                   String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
