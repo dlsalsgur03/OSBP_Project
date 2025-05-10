@@ -223,6 +223,16 @@ class _CalendarState extends State<Calendar> {
           DateTime dateTime = DateTime.parse(entry['dt_txt']);
           String dateKey = dateTime.toIso8601String().split("T")[0];
           weatherData[dateKey] = entry['weather'][0]['main'].toLowerCase();
+          if (dateKey == selectedDateKey && weatherData[dateKey]?.contains("rain") == true) {
+            isRainyDay = true;
+          }
+          if (selectedDateKey == todayKey && !weatherData[todayKey]?.contains("rain")) {
+            isRainyDay = false;
+          }
+
+          if (isSameDay(dateTime, selectedDay) && weatherData[dateKey]?.contains("rain") == true) {
+            isRainyDay = true;
+          }
           if (isSameDay(dateTime, day)) {
             double temp = entry['main']['temp'];
             tempMin = temp < tempMin ? temp : tempMin;
