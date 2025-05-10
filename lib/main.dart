@@ -137,11 +137,11 @@ class _CalendarState extends State<Calendar> {
         weekendTextStyle: const TextStyle(color: Color(0xffa7385c)),
         outsideDaysVisible: true,
         outsideTextStyle: TextStyle(color: Colors.grey),
-        isTodayHighlighted: false,
+        isTodayHighlighted: true,
         todayDecoration: BoxDecoration(
-          color: Colors.transparent,
+          color: Color(0xfff5d5db),
           shape: BoxShape.circle,
-          border: Border.all(color: Color(0xffa7385c), width: 1.5),
+          border: Border.all(color: Color(0xfff5d5db), width: 1.5),
         ),
         todayTextStyle: TextStyle(
             fontWeight: FontWeight.bold, color: Color(0xffa7385c)),
@@ -266,9 +266,9 @@ class _CalendarState extends State<Calendar> {
         baseRecommendation = "따뜻한 외투";
       } else if (tempMin >= 9) {
         baseRecommendation = "가벼운 겉옷";
-      } else if (tempMin >= 20) {
+      } else if (tempMin >= 16) {
         baseRecommendation = "반팔, 선크림";
-      } else if (tempMax <= 10) {
+      } else if (tempMax <= 5) {
         baseRecommendation = "패딩";
       } else {
         baseRecommendation = "";
