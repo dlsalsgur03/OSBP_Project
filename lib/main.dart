@@ -120,6 +120,24 @@ class SettingsPopup extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
+            const Divider(thickness: 2.0),
+            ListTile(
+              title: const Center(
+                child: Text(
+                  "개발자",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const DeveloperInfoPopup();
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),
