@@ -45,3 +45,19 @@ def save_user_text():
         print(f"Error saving text to MongoDB: {e}")
         return jsonify({"message": "Failed to save text", "error": str(e)}), 500
 
+# 저장된 문자열 조회 API
+@app.route('/get-texts', methods=['GET'])
+def get_user_texts():
+    try:
+        all_texts = []
+        for doc in texts_collection.find().sort("createdAt", -1): # 최신순 정렬
+            doc['_id'] = str(doc['_id'])
+            all_texts.append(doc)
+        return jsonify(all_texts), 200
+    except Exception as e:
+        print(f"Error fetching texts: {e}")
+        return jsonify({"message": "Failed to fetch texts", "error": str(e)}), 500
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
