@@ -100,6 +100,33 @@ class HomePage extends StatelessWidget {
   }
 }
 
+class SettingsPopup extends StatelessWidget {
+  const SettingsPopup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.2,
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 10.0),
+              child: Text(
+                "설정",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class Calendar extends StatefulWidget {
   const Calendar({super.key});
 
