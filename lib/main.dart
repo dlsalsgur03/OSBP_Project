@@ -84,6 +84,14 @@ class HomePage extends StatelessWidget {
         children: [
           IconButton(
             icon: const Icon(Icons.settings),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const SettingsPopup();
+                  },
+                );
+              },
            ),
           ],
         ),
