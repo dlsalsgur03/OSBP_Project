@@ -169,6 +169,21 @@ class DeveloperInfoPopup extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("민혁의 카피바라들"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Text("인민혁"),
+          Text("김주완"),
+          Text("김윤태"),
+          Text("박민석"),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text("닫기"),
+        ),
+      ],
     );
   }
 }
