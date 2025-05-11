@@ -74,6 +74,20 @@ class HomePage extends StatelessWidget {
         },
         child: const Icon(Icons.add),
       ),
+
+    floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    bottomNavigationBar: BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 6.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+           ),
+          ],
+        ),
+      ),
     );
   }
 }
