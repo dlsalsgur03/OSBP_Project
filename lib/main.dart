@@ -162,6 +162,17 @@ class SettingsPopup extends StatelessWidget {
   }
 }
 
+class DeveloperInfoPopup extends StatelessWidget {
+  const DeveloperInfoPopup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("민혁의 카피바라들"),
+    );
+  }
+}
+
 class Calendar extends StatefulWidget {
   const Calendar({super.key});
 
