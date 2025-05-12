@@ -70,6 +70,116 @@ class HomePage extends StatelessWidget {
         },
         child: const Icon(Icons.add),
       ),
+
+    floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    bottomNavigationBar: BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 6.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const SettingsPopup();
+                  },
+                );
+              },
+           ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsPopup extends StatelessWidget {
+  const SettingsPopup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.2,
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 10.0),
+              child: Text(
+                "설정",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const Divider(thickness: 2.0),
+            ListTile(
+              title: const Center(
+                child: Text(
+                  "개발자",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const DeveloperInfoPopup();
+                  },
+                );
+              },
+            ),
+            const Divider(thickness: 2.0),
+            const Spacer(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    "닫기",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DeveloperInfoPopup extends StatelessWidget {
+  const DeveloperInfoPopup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("민혁의 카피바라들"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Text("인민혁"),
+          Text("김주완"),
+          Text("김윤태"),
+          Text("박민석"),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text("닫기"),
+        ),
+      ],
     );
   }
 }
