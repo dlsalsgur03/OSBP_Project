@@ -179,6 +179,17 @@ class _SettingsPopupState extends State<SettingsPopup> {
                       content: const Text(
                         "juwankim03@gmail.com\n문의 시 빠른 시일 내에 답변 드리겠습니다.",
                       ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            "닫기",
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     );
                   },
                 );
