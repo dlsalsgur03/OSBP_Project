@@ -143,7 +143,24 @@ class _SettingsPopupState extends State<SettingsPopup> {
                 );
               },
             ),
-
+            const Divider(thickness: 2.0),
+            ListTile(
+              title: const Center(
+                child: Text(
+                  "알림",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const NotificationSettingsPopup();
+                  },
+                );
+              },
+            ),
             const Divider(thickness: 2.0),
             const Spacer(),
             Align(
