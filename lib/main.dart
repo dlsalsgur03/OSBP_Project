@@ -100,9 +100,14 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class SettingsPopup extends StatelessWidget {
+class SettingsPopup extends StatefulWidget {
   const SettingsPopup({super.key});
 
+  @override
+  _SettingsPopupState createState() => _SettingsPopupState();
+}
+
+class _SettingsPopupState extends State<SettingsPopup> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -138,6 +143,7 @@ class SettingsPopup extends StatelessWidget {
                 );
               },
             ),
+
             const Divider(thickness: 2.0),
             const Spacer(),
             Align(
