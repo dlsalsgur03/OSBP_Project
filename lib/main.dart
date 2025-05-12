@@ -185,6 +185,18 @@ class _SettingsPopupState extends State<SettingsPopup> {
   }
 }
 
+class NotificationSettingsPopup extends StatefulWidget {
+  const NotificationSettingsPopup({super.key});
+
+  @override
+  _NotificationSettingsPopupState createState() =>
+      _NotificationSettingsPopupState();
+}
+
+class _NotificationSettingsPopupState extends State<NotificationSettingsPopup> {
+  bool notificationsEnabled = true;
+}
+
 class DeveloperInfoPopup extends StatelessWidget {
   const DeveloperInfoPopup({super.key});
 
