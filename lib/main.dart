@@ -214,6 +214,18 @@ class _NotificationSettingsPopupState extends State<NotificationSettingsPopup> {
           ),
         ],
       ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text(
+            "닫기",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
+    );
   }
 }
 
