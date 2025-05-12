@@ -111,6 +111,11 @@ Future<void> save_schedule_web({
       schedules.add(newSchedule);
       await prefs.setString('schedules_web_storage', jsonEncode(schedules));
       print("일정 저장 완료 (웹)");
+
+      final String? title = prefs.getString("schedules_web_storage");
+      print(title);
+
+
       }
     else {
         save_schedule(
@@ -124,6 +129,7 @@ Future<void> save_schedule_web({
   } catch (e) {
     print('일정 저장 실패 : $e');
   }
+
 }
 
 void read_firstdate() async {
