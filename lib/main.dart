@@ -45,19 +45,29 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu), // 햄버거 메뉴 아이콘으로 변경
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const SettingsPopup();
+              },
+            );
+          },
+        ),
         centerTitle: true,
         title: const Text("Miri Calendar"),
-        titleTextStyle: TextStyle(
-            fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold
+        titleTextStyle: const TextStyle(
+          fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold,
         ),
-        backgroundColor: Color(0xffa7385c),
-        shadowColor: Color(0xff8e2d4d),
+        backgroundColor: const Color(0xffa7385c),
+        shadowColor: const Color(0xff8e2d4d),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
-
             child: Calendar(), // 달력 위치
           ),
         ],
@@ -74,35 +84,19 @@ class HomePage extends StatelessWidget {
         },
         child: const Icon(Icons.add),
       ),
-
-    floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-    bottomNavigationBar: BottomAppBar(
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 6.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return const SettingsPopup();
-                  },
-                );
-              },
-           ),
-          ],
-        ),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
 
-class SettingsPopup extends StatelessWidget {
+class SettingsPopup extends StatefulWidget {
   const SettingsPopup({super.key});
 
+  @override
+  _SettingsPopupState createState() => _SettingsPopupState();
+}
+
+class _SettingsPopupState extends State<SettingsPopup> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -134,6 +128,58 @@ class SettingsPopup extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return const DeveloperInfoPopup();
+                  },
+                );
+              },
+            ),
+            const Divider(thickness: 2.0),
+            ListTile(
+              title: const Center(
+                child: Text(
+                  "알림",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const NotificationSettingsPopup();
+                  },
+                );
+              },
+            ),
+            const Divider(thickness: 2.0),
+            ListTile(
+              title: const Center(
+                child: Text(
+                  "오류 신고",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("오류 신고"),
+                      content: const Text(
+                        "juwankim03@gmail.com\n문의 시 빠른 시일 내에 답변 드리겠습니다.",
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            "닫기",
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    );
                   },
                 );
               },
@@ -182,6 +228,50 @@ class DeveloperInfoPopup extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text("닫기"),
+        ),
+      ],
+    );
+  }
+}
+
+class NotificationSettingsPopup extends StatefulWidget {
+  const NotificationSettingsPopup({super.key});
+
+  @override
+  _NotificationSettingsPopupState createState() =>
+      _NotificationSettingsPopupState();
+}
+
+class _NotificationSettingsPopupState extends State<NotificationSettingsPopup> {
+  bool notificationsEnabled = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("알림 설정"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CheckboxListTile(
+            title: const Text("더 이상 알림을 받지 않음"),
+            value: !notificationsEnabled,
+            onChanged: (bool? value) {
+              setState(() {
+                notificationsEnabled = !(value ?? true);
+              });
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text(
+            "닫기",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
         ),
       ],
     );
