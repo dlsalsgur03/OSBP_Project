@@ -170,7 +170,19 @@ class _SettingsPopupState extends State<SettingsPopup> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
-
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("오류 신고"),
+                      content: const Text(
+                        "juwankim03@gmail.com\n문의 시 빠른 시일 내에 답변 드리겠습니다.",
+                      ),
+                    );
+                  },
+                );
+              },
             ),
             const Divider(thickness: 2.0),
             const Spacer(),
