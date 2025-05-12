@@ -195,6 +195,26 @@ class NotificationSettingsPopup extends StatefulWidget {
 
 class _NotificationSettingsPopupState extends State<NotificationSettingsPopup> {
   bool notificationsEnabled = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("알림 설정"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CheckboxListTile(
+            title: const Text("더 이상 알림을 받지 않음"),
+            value: !notificationsEnabled,
+            onChanged: (bool? value) {
+              setState(() {
+                notificationsEnabled = !(value ?? true);
+              });
+            },
+          ),
+        ],
+      ),
+  }
 }
 
 class DeveloperInfoPopup extends StatelessWidget {
