@@ -5,14 +5,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final String scheduleFileName = 'schedule.json';
-final String directoryName = 'scheduler';
+final String directoryName = 'assets/scheduler';
 
 Future<void> save_schedule({
   required String title,
   required String location,
   required String firstdate,
   required String lastdate,
-  required String emoji_,
+  required String emoji,
 }) async {
   try {
     // 파일 경로 설정
@@ -63,7 +63,7 @@ Future<void> save_schedule({
       'place' : location,
       'startdate' : firstdate,
       'enddate' : lastdate,
-      'emoji_' : emoji_,
+      'emoji' : emoji,
     };
 
     // 기존 리스트에 새로운 일정 추가
@@ -95,7 +95,7 @@ Future<void> save_schedule_web({
       'place' : location,
       'startdate' : firstdate,
       'enddate' : lastdate,
-      'emoji_' : emoji,
+      'emoji' : emoji,
     };
 
     if(kIsWeb){
@@ -118,7 +118,7 @@ Future<void> save_schedule_web({
             location: location,
             firstdate: firstdate,
             lastdate: lastdate,
-            emoji_: emoji);
+            emoji: emoji);
       }
 
   } catch (e) {
@@ -126,44 +126,16 @@ Future<void> save_schedule_web({
   }
 }
 
-Future<bool> update_schedule_web_by_index({
-  required int index,
-  String? newTitle,
-  String? newLocation,
-  String? newFirstDate,
-  String? newLastDate,
-  String? newEmoji,
-}) async {
-  if (!kIsWeb) {
-    print("update_schedule_web_by_index 함수는 웹 전용입니다.");
-    return false;
-  }
-
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    final existingData = prefs.getString('schedules_web_storage');
-    List<Map<String, dynamic>> schedules = [];
-
-    // 기존 일정 데이터 가져오기 (새 Map으로 복사하여 수정)
-    Map<String, dynamic> scheduleToUpdate = Map.from(schedules[index]);
-
-    // 전달된 값으로 업데이트 (null이 아닌 경우에만)
-    if (newTitle != null) scheduleToUpdate['title'] = newTitle;
-    if (newLocation != null) scheduleToUpdate['place'] = newLocation;
-    if (newFirstDate != null) scheduleToUpdate['startdate'] = newFirstDate;
-    if (newLastDate != null) scheduleToUpdate['enddate'] = newLastDate;
-    if (newEmoji != null) scheduleToUpdate['emoji_'] = newEmoji; // 저장 시 키는 'emoji_'
-
-    schedules[index] = scheduleToUpdate;
-
-    // 수정된 전체 리스트를 다시 SharedPreferences에 저장
-    await prefs.setString('schedules_web_storage', jsonEncode(schedules));
-    print("일정 업데이트 완료 (웹, 인덱스: $index)");
-    return true;
-
-  } catch (e) {
-    print('일정 업데이트 실패 (웹, 인덱스 기반): $e');
-    return false;
-  }
+void read_firstdate() async {
+  final SharedPreferences pref = await SharedPreferences.getInstance();
+  try{
+    final String? title = pref.getString("title");
+    final String? location = pref.getString("location");
+    final String? firstdate = pref.getString("firstdate");
+    final String? lastdate = pref.getString("lastdate");
+    print(title);
+    print(location);
+    print(firstdate);
+    print(lastdate);
+  }catch(e){}
 }
-
