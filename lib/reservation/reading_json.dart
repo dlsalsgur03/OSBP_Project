@@ -136,3 +136,9 @@ void read_data() async {
     print(key);
   }catch(e){}
 }
+
+Future<void> SortingData() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<Map<String, dynamic>> schedules = [];
+
+}
