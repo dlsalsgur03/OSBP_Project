@@ -13,10 +13,6 @@ void main() async{
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
-String getApiKey() {
-  return dotenv.env['MY_API_KEY'] ?? "";
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -286,7 +282,6 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  final String apiKey = getApiKey();
   DateTime selectedDay = DateTime(
     DateTime.now().year,
     DateTime.now().month,
@@ -361,10 +356,8 @@ class _CalendarState extends State<Calendar> {
           this.selectedDay = selectedDay;
           focusDay = focusedDay;
         });
-        DateTime today = DateTime.now();
-        DateTime yesterday = today.subtract(Duration(days: 1));
 
-        if (selectedDay.isBefore(yesterday)) {
+        if (selectedDay.isBefore(DateTime.now())) {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -399,9 +392,9 @@ class _CalendarState extends State<Calendar> {
 
   Future<void> fetchWeather(BuildContext context, DateTime day) async {
     final String weatherUrl =
-        'https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=$apiKey&units=metric';
+        'https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=&units=metric';
     final String airQualityUrl =
-        'https://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid=$apiKey';
+        'https://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid';
 
     try {
       final weatherResponse = await http.get(Uri.parse(weatherUrl));
@@ -594,7 +587,7 @@ class Event {
   String toString() => title;
 }
 
-void save_schedule_web({ //firstdate, lastdate 는 Datetime타입으로 변경
+void save_schedule_web2({ //firstdate, lastdate 는 Datetime타입으로 변경
   required String title,
   required String location,
   DateTime? firstdate,
@@ -721,9 +714,9 @@ class SchedulePopup extends StatefulWidget {
           child: const Text("취소"),
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             // 입력 데이터 처리 로직
-            print("제목: ${titleController.text}");
+            //print("제목: ${titleController.text}");
             final String title = titleController.text;
             print("장소: ${locationController.text}");
             final String location = locationController.text;
@@ -733,13 +726,14 @@ class SchedulePopup extends StatefulWidget {
             final String lastdate = endDateController.text;
             print("메모: ${titleController.text}");
 
-            save_schedule_web(
+            await save_schedule_web(
               title : title,
               location : location,
-              firstdate : startDate,
-              lastdate : endDate,
+              firstdate : firstdate,
+              lastdate : lastdate,
               emoji: '',
             );
+            read_data();
 
             Navigator.of(context).pop(); // 팝업창 닫기
             showBookingOptions(context);
