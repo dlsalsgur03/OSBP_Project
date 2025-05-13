@@ -36,7 +36,6 @@ Future<void> saveTextToMongoDB({
     print("저장할 내용이 없습니다.");
     return;
   }
-
   final String baseUrl = getFlaskBaseUrl();
   final url = Uri.parse('$baseUrl/save-text'); // Flask API 엔드포인트
 
@@ -48,6 +47,17 @@ Future<void> saveTextToMongoDB({
       },
       body: jsonEncode(newSchedule),
     );
+
+    if (response.statusCode == 201) { // 201 Created
+      print('텍스트 MongoDB에 저장 성공: ${response.body}');
+    }
+    else {
+      print('텍스트 MongoDB 저장 실패: ${response.statusCode}');
+      print('응답 내용: ${response.body}');
+      // 실패 시 사용자에게 알림
+      throw Exception('Failed to save text. Status code: ${response.statusCode}');
+    }
+
   } catch (e) {
     print('MongoDB 저장 중 네트워크 또는 기타 오류: $e');
 

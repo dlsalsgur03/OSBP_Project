@@ -30,12 +30,15 @@ def save_user_text():
             return jsonify({"message": "textContent is required"}), 400
 
         # 저장할 문서 생성
-        text_document = {
-            "content": user_text_content,
-            "createdAt": datetime.utcnow() # UTC 기준 현재 시간 저장
-        }
+        schedule_document = {
+            'title' : title,
+            'place' : location,
+            'startdate' : firstdate,
+            'enddate' : lastdate,
+            'emoji_' : emoji
+            }
 
-        result = texts_collection.insert_one(text_document)
+        result = texts_collection.insert_one(schedule_document)
         inserted_id = str(result.inserted_id)
 
         print(f"문자열 저장 성공: {user_text_content}, ID: {inserted_id}")

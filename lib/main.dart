@@ -497,7 +497,7 @@ class Event {
   String toString() => title;
 }
 
-void save_schedule_web({ //firstdate, lastdate 는 Datetime타입으로 변경
+void save_schedule_web2({ //firstdate, lastdate 는 Datetime타입으로 변경
   required String title,
   required String location,
   DateTime? firstdate,
@@ -624,9 +624,9 @@ class SchedulePopup extends StatefulWidget {
           child: const Text("취소"),
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             // 입력 데이터 처리 로직
-            print("제목: ${titleController.text}");
+            //print("제목: ${titleController.text}");
             final String title = titleController.text;
             print("장소: ${locationController.text}");
             final String location = locationController.text;
@@ -636,13 +636,14 @@ class SchedulePopup extends StatefulWidget {
             final String lastdate = endDateController.text;
             print("메모: ${titleController.text}");
 
-            save_schedule_web(
+            await save_schedule_web(
               title : title,
               location : location,
-              firstdate : startDate,
-              lastdate : endDate,
+              firstdate : firstdate,
+              lastdate : lastdate,
               emoji: '',
             );
+            read_data();
 
             Navigator.of(context).pop(); // 팝업창 닫기
             showBookingOptions(context);

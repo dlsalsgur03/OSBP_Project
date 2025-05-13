@@ -57,6 +57,7 @@ Future<void> save_schedule({
       print("저장된 파일 없음.");
     }
 
+    final prefs = await SharedPreferences.getInstance();
     // 새로운 일정 데이터 Map 생성, 일단 전부 문자열로 읽기
     final newSchedule = {
       'title' : title,
@@ -74,7 +75,7 @@ Future<void> save_schedule({
     final updatedJsonData = encoder.convert(schedules);
 
     // 파일에 최종 데이터 저장 (덮어쓰기)
-    await file.writeAsString(updatedJsonData);
+    await prefs.setString('schedules_storage', jsonEncode(updatedJsonData));
 
   } catch (e) {
     // 파일 시스템 오류 등 예외 처리
@@ -112,10 +113,6 @@ Future<void> save_schedule_web({
       await prefs.setString('schedules_web_storage', jsonEncode(schedules));
       print("일정 저장 완료 (웹)");
 
-      final String? title = prefs.getString("schedules_web_storage");
-      print(title);
-
-
       }
     else {
         save_schedule(
@@ -132,16 +129,10 @@ Future<void> save_schedule_web({
 
 }
 
-void read_firstdate() async {
+void read_data() async {
   final SharedPreferences pref = await SharedPreferences.getInstance();
   try{
-    final String? title = pref.getString("title");
-    final String? location = pref.getString("location");
-    final String? firstdate = pref.getString("firstdate");
-    final String? lastdate = pref.getString("lastdate");
-    print(title);
-    print(location);
-    print(firstdate);
-    print(lastdate);
+    final String? key = pref.getString("schedules_web_storage");
+    print(key);
   }catch(e){}
 }
