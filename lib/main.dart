@@ -464,45 +464,20 @@ class _CalendarState extends State<Calendar> {
   }
 
   String getRecommendation(double tempMin, double tempMax, String weatherDescription, int cloudCoverage, String airQuality) {
-    String baseRecommendation = "";
+    List<String> recommendations = [];
 
-    if (weatherDescription.contains("rain")) {
-      if (tempMin <= 10 && tempMax <= 15) {
-        baseRecommendation = "우산, 따뜻한 외투";
-      } else if (tempMin >= 9) {
-        baseRecommendation = "우산, 가벼운 겉옷";
-      } else if (tempMin >= 20) {
-        baseRecommendation = "우산, 반팔";
-      } else if (tempMax <= 10) {
-        baseRecommendation = "우산, 패딩";
-      } else {
-        baseRecommendation = "우산";
-      }
-    } else {
-      if (tempMin <= 10 && tempMax <= 15) {
-        baseRecommendation = "따뜻한 외투";
-      } else if (tempMin >= 9) {
-        baseRecommendation = "가벼운 겉옷";
-      } else if (tempMin >= 16) {
-        baseRecommendation = "반팔, 선크림";
-      } else if (tempMax <= 5) {
-        baseRecommendation = "패딩";
-      } else {
-        baseRecommendation = "";
-      }
-    }
+    if (weatherDescription.contains("rain")) recommendations.add("우산");
 
-    if (cloudCoverage <= 25) {
-      baseRecommendation += ", 선크림";
-    }
-    if (cloudCoverage < 10) {
-      baseRecommendation += ", 양산";
-    }
-    if(airQuality != "좋음" && airQuality != "보통") {
-      baseRecommendation += ", 마스크";
-    }
+    if (tempMin <= 10 && tempMax <= 15) recommendations.add("따뜻한 외투");
+    else if (tempMin >= 9) recommendations.add("가벼운 겉옷");
+    else if (tempMin >= 16) recommendations.add("반팔, 선크림");
+    else if (tempMax <= 5) recommendations.add("패딩");
 
-    return baseRecommendation;
+    if (cloudCoverage <= 25) recommendations.add("선크림");
+    if (cloudCoverage < 10) recommendations.add("양산");
+    if (airQuality != "좋음" && airQuality != "보통") recommendations.add("마스크");
+
+    return recommendations.join(", ");
   }
 
   void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation) {
