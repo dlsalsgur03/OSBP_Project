@@ -193,7 +193,21 @@ class _SettingsPopupState extends State<SettingsPopup> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("공지사항"),
+                      content: const Text(
+                        "공지사항이 없습니다.",
+                      ),
 
+                    );
+                  },
+                );
+              },
+            ),
             const Divider(thickness: 2.0),
             const Spacer(),
             Align(
