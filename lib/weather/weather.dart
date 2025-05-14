@@ -115,33 +115,9 @@ class WeatherService {
   }
 
   void showRecommendationByMonth(BuildContext context, DateTime selectedDay) {
-    String recommendation = "";
-    switch (selectedDay.month) {
-      case 1:
-      case 12:
-        recommendation = "패딩";
-        break;
-      case 2:
-      case 11:
-        recommendation = "따뜻한 외투";
-        break;
-      case 3:
-      case 10:
-        recommendation = "따뜻한 외투 또는 가벼운 겉옷";
-        break;
-      case 4:
-      case 5:
-        recommendation = "가벼운 겉옷";
-        break;
-      case 6:
-      case 7:
-      case 8:
-      case 9:
-        recommendation = "반팔";
-        break;
-      default:
-        recommendation = "알 수 없음";
-    }
+    List<String> recommendations = ["패딩", "따뜻한 외투", "따뜻한 외투 또는 가벼운 겉옷", "가벼운 겉옷", "반팔"];
+    String recommendation = recommendations[(selectedDay.month - 1) ~/ 2];
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
