@@ -16,33 +16,30 @@ class WeatherService {
       final weatherResponse = await http.get(Uri.parse(weatherUrl));
       final airQualityResponse = await http.get(Uri.parse(airQualityUrl));
 
-      if (weatherResponse.statusCode == 200) {
+      if (weatherResponse.statusCode == 200 && airQualityResponse.statusCode == 200) {
         final weatherData = json.decode(weatherResponse.body);
         final airQualityData = json.decode(airQualityResponse.body);
 
-        bool isRainyDay = false;
-        String selectedDateKey = day.toIso8601String().split("T")[0];
-
-        double tempMin = double.infinity;
-        double tempMax = double.negativeInfinity;
+        double tempMin = double.infinity, tempMax = double.negativeInfinity;
         String weatherDescription = "";
         int cloudCoverage = 0;
+        String selectedDateKey = day.toIso8601String().split("T")[0];
+        bool isRainyDay = false;
 
-        for (var entry in weatherData['list']) {
-          DateTime dateTime = DateTime.parse(entry['dt_txt']);
-          String dateKey = dateTime.toIso8601String().split("T")[0];
+          for (var entry in weatherData['list']) {
+            DateTime dateTime = DateTime.parse(entry['dt_txt']);
+            String dateKey = dateTime.toIso8601String().split("T")[0];
 
-          if (dateKey == selectedDateKey && entry['weather'][0]['main'].toLowerCase().contains("rain")) {
-            isRainyDay = true;
+            if (dateKey == selectedDateKey) {
+              double temp = entry['main']['temp'];
+              tempMin = temp < tempMin ? temp : tempMin;
+              tempMax = temp > tempMax ? temp : tempMax;
+              weatherDescription = entry['weather'][0]['description'];
+              cloudCoverage = entry['clouds']['all'];
+              if (entry['weather'][0]['main'].toLowerCase().contains("rain"))
+                isRainyDay = true;
+            }
           }
-          if (dateKey == selectedDateKey) {
-            double temp = entry['main']['temp'];
-            tempMin = temp < tempMin ? temp : tempMin;
-            tempMax = temp > tempMax ? temp : tempMax;
-            weatherDescription = entry['weather'][0]['description'];
-            cloudCoverage = entry['clouds']['all'];
-          }
-        }
 
         int airQualityIndex = airQualityData['list'][0]['main']['aqi'];
         String airQuality = getAirQualityDescription(airQualityIndex);
@@ -50,7 +47,7 @@ class WeatherService {
 
         showWeatherDialog(context, tempMin, tempMax, airQuality, recommendation, isRainyDay);
       } else {
-        print('Failed to fetch weather');
+        print('Failed to fetch weather or air quality data');
       }
     } catch (e) {
       print('Error: $e');
@@ -66,39 +63,20 @@ class WeatherService {
   }
 
   String getRecommendation(double tempMin, double tempMax, String weatherDescription, int cloudCoverage, String airQuality) {
-    String baseRecommendation = "";
+    List<String> recommendations = [];
 
-    if (weatherDescription.contains("rain")) {
-      if (tempMin <= 10 && tempMax <= 15) {
-        baseRecommendation = "우산, 따뜻한 외투";
-      } else if (tempMin >= 9) {
-        baseRecommendation = "우산, 가벼운 겉옷";
-      } else if (tempMin >= 20) {
-        baseRecommendation = "우산, 반팔";
-      } else if (tempMax <= 10) {
-        baseRecommendation = "우산, 패딩";
-      } else {
-        baseRecommendation = "우산";
-      }
-    } else {
-      if (tempMin <= 10 && tempMax <= 15) {
-        baseRecommendation = "따뜻한 외투";
-      } else if (tempMin >= 9) {
-        baseRecommendation = "가벼운 겉옷";
-      } else if (tempMin >= 16) {
-        baseRecommendation = "반팔, 선크림";
-      } else if (tempMax <= 5) {
-        baseRecommendation = "패딩";
-      } else {
-        baseRecommendation = "";
-      }
-    }
+    if (weatherDescription.contains("rain")) recommendations.add("우산");
 
-    if (cloudCoverage <= 25) baseRecommendation += ", 선크림";
-    if (cloudCoverage < 10) baseRecommendation += ", 양산";
-    if (airQuality != "좋음" && airQuality != "보통") baseRecommendation += ", 마스크";
+    if (tempMin <= 10 && tempMax <= 15) recommendations.add("따뜻한 외투");
+    else if (tempMin >= 9) recommendations.add("가벼운 겉옷");
+    else if (tempMin >= 16) recommendations.add("반팔, 선크림");
+    else if (tempMax <= 5) recommendations.add("패딩");
 
-    return baseRecommendation;
+    if (cloudCoverage <= 25) recommendations.add("선크림");
+    if (cloudCoverage < 10) recommendations.add("양산");
+    if (airQuality != "좋음" && airQuality != "보통") recommendations.add("마스크");
+
+    return recommendations.join(", ");
   }
 
   void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation, bool isRainyDay) {
@@ -164,7 +142,6 @@ class WeatherService {
       default:
         recommendation = "알 수 없음";
     }
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
