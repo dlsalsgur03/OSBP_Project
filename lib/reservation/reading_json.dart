@@ -140,5 +140,16 @@ void read_data() async {
 Future<void> SortingData() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   List<Map<String, dynamic>> schedules = [];
+  try {
+    final String? existingData = prefs.getString('schedules_web_storage');
+    // JSON형 문자열 파싱
+    if(existingData != null) {
+      final dynamic decodedData = jsonDecode(existingData);
+      // 디코딩된 데이터가 리스트 형태인지 확인하고 캐스팅
+      if (decodedData is List) {
+        schedules = decodedData.whereType<Map<String, dynamic>>().toList();
+      }
+    }
 
+  }catch(e) {}
 }
