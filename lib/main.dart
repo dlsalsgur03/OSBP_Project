@@ -185,6 +185,16 @@ class _SettingsPopupState extends State<SettingsPopup> {
               },
             ),
             const Divider(thickness: 2.0),
+            ListTile(
+              title: const Center(
+                child: Text(
+                  "공지사항",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+
+            const Divider(thickness: 2.0),
             const Spacer(),
             Align(
               alignment: Alignment.bottomRight,
