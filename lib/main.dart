@@ -202,7 +202,17 @@ class _SettingsPopupState extends State<SettingsPopup> {
                       content: const Text(
                         "공지사항이 없습니다.",
                       ),
-
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            "닫기",
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     );
                   },
                 );
