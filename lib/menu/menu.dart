@@ -57,7 +57,24 @@ class _SettingsPopupState extends State<SettingsPopup> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return const DeveloperInfoPopup();
+                  return AlertDialog(
+                    title: const Text("민혁의 카피바라들"),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Text("인민혁"),
+                        Text("김주완"),
+                        Text("김윤태"),
+                        Text("박민석"),
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("닫기"),
+                        ),
+                      ],
+                    );
                   },
                 );
               },
@@ -168,32 +185,6 @@ class _SettingsPopupState extends State<SettingsPopup> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class DeveloperInfoPopup extends StatelessWidget {
-  const DeveloperInfoPopup({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text("민혁의 카피바라들"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Text("인민혁"),
-          Text("김주완"),
-          Text("김윤태"),
-          Text("박민석"),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text("닫기"),
-        ),
-      ],
     );
   }
 }
