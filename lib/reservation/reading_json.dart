@@ -175,7 +175,7 @@ void read_data() async {
 }
 
 
-Future<void> SortingData() async {
+Future<List<Map<String, dynamic>>> getSchedule() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   List<Map<String, dynamic>> schedules = [];
   try {
@@ -185,9 +185,14 @@ Future<void> SortingData() async {
       final dynamic decodedData = jsonDecode(existingData);
       // 디코딩된 데이터가 리스트 형태인지 확인, 리스트로 변환
       if (decodedData is List) {
-        schedules = decodedData.whereType<Map<String, dynamic>>().toList();
+        schedules = decodedData.whereType<Map<String, dynamic>>().map((json) => Map<String, dynamic>.from(json)).toList();
       }
     }
-
-  }catch(e) {}
+  }catch(e) {
+    print('데이터 읽기 실패: $e');
+    schedules=[];
+  }
+  return schedules;
 }
+
+
