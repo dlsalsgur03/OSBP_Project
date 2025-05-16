@@ -7,6 +7,43 @@ import 'package:shared_preferences/shared_preferences.dart';
 final String scheduleFileName = 'schedule.json';
 final String directoryName = 'assets/scheduler';
 
+class Schedule {
+  final String title;
+  final String location;
+  final String firstdate;
+  final String lastdate;
+  final String emoji;
+
+
+  Schedule({
+    required this.title,
+    required this.location,
+    required this.firstdate,
+    required this.lastdate,
+    required this.emoji,
+  });
+
+  factory Schedule.fromJson(Map<String, dynamic> json) {
+    return Schedule(
+      title: json['title'],
+      location: json['location'],
+      firstdate: json['firstdate'],
+      lastdate: json['lastdate'],
+      emoji: json['emoji'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'location': location,
+      'firstdate': firstdate,
+      'lastdate': lastdate,
+      'emoji': emoji,
+    };
+  }
+}
+
 Future<void> save_schedule({
   required String title,
   required String location,
@@ -137,6 +174,7 @@ void read_data() async {
   }catch(e){}
 }
 
+
 Future<void> SortingData() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   List<Map<String, dynamic>> schedules = [];
@@ -145,7 +183,7 @@ Future<void> SortingData() async {
     // JSON형 문자열 파싱
     if(existingData != null) {
       final dynamic decodedData = jsonDecode(existingData);
-      // 디코딩된 데이터가 리스트 형태인지 확인하고 캐스팅
+      // 디코딩된 데이터가 리스트 형태인지 확인, 리스트로 변환
       if (decodedData is List) {
         schedules = decodedData.whereType<Map<String, dynamic>>().toList();
       }
