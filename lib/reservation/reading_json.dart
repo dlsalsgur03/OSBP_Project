@@ -7,6 +7,43 @@ import 'package:shared_preferences/shared_preferences.dart';
 final String scheduleFileName = 'schedule.json';
 final String directoryName = 'assets/scheduler';
 
+class Schedule {
+  final String title;
+  final String location;
+  final String firstdate;
+  final String lastdate;
+  final String emoji;
+
+
+  Schedule({
+    required this.title,
+    required this.location,
+    required this.firstdate,
+    required this.lastdate,
+    required this.emoji,
+  });
+
+  factory Schedule.fromJson(Map<String, dynamic> json) {
+    return Schedule(
+      title: json['title'] ?? '',
+      location: json['location'] ?? '',
+      firstdate: json['firstdate'] ?? '',
+      lastdate: json['lastdate'] ?? '',
+      emoji: json['emoji'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'location': location,
+      'firstdate': firstdate,
+      'lastdate': lastdate,
+      'emoji': "",
+    };
+  }
+}
+
 Future<void> save_schedule({
   required String title,
   required String location,
@@ -61,9 +98,9 @@ Future<void> save_schedule({
     // 새로운 일정 데이터 Map 생성, 일단 전부 문자열로 읽기
     final newSchedule = {
       'title' : title,
-      'place' : location,
-      'startdate' : firstdate,
-      'enddate' : lastdate,
+      'location' : location,
+      'firstdate' : firstdate,
+      'lastdate' : lastdate,
       'emoji' : emoji,
     };
 
@@ -93,9 +130,9 @@ Future<void> save_schedule_web({
   try{
     final newSchedule = {
       'title' : title,
-      'place' : location,
-      'startdate' : firstdate,
-      'enddate' : lastdate,
+      'location' : location,
+      'firstdate' : firstdate,
+      'lastdate' : lastdate,
       'emoji' : emoji,
     };
 
@@ -137,19 +174,41 @@ void read_data() async {
   }catch(e){}
 }
 
-Future<void> SortingData() async {
+
+Future<List<Schedule>> getSchedule(String firstdate) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<Map<String, dynamic>> schedules = [];
+  List<Schedule> schedules = [];
   try {
     final String? existingData = prefs.getString('schedules_web_storage');
     // JSON형 문자열 파싱
     if(existingData != null) {
       final dynamic decodedData = jsonDecode(existingData);
-      // 디코딩된 데이터가 리스트 형태인지 확인하고 캐스팅
+      // 디코딩된 데이터가 리스트 형태인지 확인, 리스트로 변환
       if (decodedData is List) {
-        schedules = decodedData.whereType<Map<String, dynamic>>().toList();
+        print('data 파싱중...');
+        schedules = decodedData.whereType<Map<String, dynamic>>().map((json) => Schedule.fromJson(json)).toList();
       }
     }
-
-  }catch(e) {}
+  }catch(e) {
+    print('데이터 읽기 실패: $e');
+    schedules=[];
+  }
+  // firstdate에 따라 일정 필터링
+  final List<Schedule> foundSchedules = schedules.where((schedule) => schedule.firstdate == firstdate).toList();
+  if (foundSchedules.isNotEmpty) {
+    print('일정 필터링 완료. 찾은 일정 개수: ${foundSchedules.length}');
+    for (Schedule schedule in foundSchedules) {
+      print('--- Schedule ---');
+      print('  Title: ${schedule.title}');
+      print('  Location: ${schedule.location}');
+      print('  First Date: ${schedule.firstdate}');
+      print('  Last Date: ${schedule.lastdate}');
+      print('  Emoji: ${schedule.emoji}');
+      print('----------------');
+    }
+  } else {
+    print('일정 필터링 완료: 해당 날짜에 일정이 없습니다.');
+  }
+  return foundSchedules;
 }
+

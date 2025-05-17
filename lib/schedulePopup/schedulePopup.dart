@@ -138,6 +138,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
               emoji: '',
             );
             read_data();
+            getSchedule(firstdate);
 
             Navigator.of(context).pop(); // 팝업창 닫기
             showBookingOptions(context);
