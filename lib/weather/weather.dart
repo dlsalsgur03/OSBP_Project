@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../reservation/reading_json.dart';
 
 class WeatherService {
   final String apiKey = dotenv.env['MY_API_KEY'] ?? "";
@@ -45,7 +46,7 @@ class WeatherService {
         String airQuality = getAirQualityDescription(airQualityIndex);
         String recommendation = getRecommendation(tempMin, tempMax, weatherDescription, cloudCoverage, airQuality);
 
-        showWeatherDialog(context, tempMin, tempMax, airQuality, recommendation, isRainyDay);
+        showWeatherDialog(context, tempMin, tempMax, airQuality, recommendation, isRainyDay, selectedDateKey);
       } else {
         print('Failed to fetch weather or air quality data');
       }
@@ -79,7 +80,7 @@ class WeatherService {
     return recommendations.join(", ");
   }
 
-  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation, bool isRainyDay) {
+  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation, bool isRainyDay, String day) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -87,7 +88,7 @@ class WeatherService {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("날씨 정보"),
+            const Text("날씨 정보 및 일정 정보"),
             if (isRainyDay) const SizedBox(width: 8),
             if (isRainyDay) const Text("☔", style: TextStyle(fontSize: 24)),
           ],
@@ -102,6 +103,8 @@ class WeatherService {
             const SizedBox(height: 20),
             const Text("추천 준비물"),
             Text(recommendation),
+            const SizedBox(height: 20),
+
           ],
         ),
         actions: [
