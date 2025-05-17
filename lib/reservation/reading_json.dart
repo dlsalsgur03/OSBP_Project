@@ -39,7 +39,7 @@ class Schedule {
       'location': location,
       'firstdate': firstdate,
       'lastdate': lastdate,
-      'emoji': emoji,
+      'emoji': "",
     };
   }
 }
@@ -98,9 +98,9 @@ Future<void> save_schedule({
     // 새로운 일정 데이터 Map 생성, 일단 전부 문자열로 읽기
     final newSchedule = {
       'title' : title,
-      'place' : location,
-      'startdate' : firstdate,
-      'enddate' : lastdate,
+      'location' : location,
+      'firstdate' : firstdate,
+      'lastdate' : lastdate,
       'emoji' : emoji,
     };
 
@@ -130,9 +130,9 @@ Future<void> save_schedule_web({
   try{
     final newSchedule = {
       'title' : title,
-      'place' : location,
-      'startdate' : firstdate,
-      'enddate' : lastdate,
+      'location' : location,
+      'firstdate' : firstdate,
+      'lastdate' : lastdate,
       'emoji' : emoji,
     };
 
@@ -185,6 +185,7 @@ Future<List<Schedule>> getSchedule(String firstdate) async {
       final dynamic decodedData = jsonDecode(existingData);
       // 디코딩된 데이터가 리스트 형태인지 확인, 리스트로 변환
       if (decodedData is List) {
+        print('data 파싱중...');
         schedules = decodedData.whereType<Map<String, dynamic>>().map((json) => Schedule.fromJson(json)).toList();
       }
     }
@@ -194,5 +195,19 @@ Future<List<Schedule>> getSchedule(String firstdate) async {
   }
   // firstdate에 따라 일정 필터링
   final List<Schedule> foundSchedules = schedules.where((schedule) => schedule.firstdate == firstdate).toList();
+  if (foundSchedules.isNotEmpty) {
+    print('일정 필터링 완료. 찾은 일정 개수: ${foundSchedules.length}');
+    for (Schedule schedule in foundSchedules) {
+      print('--- Schedule ---');
+      print('  Title: ${schedule.title}');
+      print('  Location: ${schedule.location}');
+      print('  First Date: ${schedule.firstdate}');
+      print('  Last Date: ${schedule.lastdate}');
+      print('  Emoji: ${schedule.emoji}');
+      print('----------------');
+    }
+  } else {
+    print('일정 필터링 완료: 해당 날짜에 일정이 없습니다.');
+  }
   return foundSchedules;
 }

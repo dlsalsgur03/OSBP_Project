@@ -331,6 +331,14 @@ class _SchedulePopupState extends State<SchedulePopup> {
             );
             read_data();
 
+            List<Schedule> schedulesOnDate = await getSchedule(firstdate);
+            if(schedulesOnDate.isNotEmpty){
+              print(schedulesOnDate);
+            } else {
+              print("일정이 없습니다.");
+            }
+
+
             Navigator.of(context).pop(); // 팝업창 닫기
             showBookingOptions(context);
           },
