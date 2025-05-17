@@ -25,11 +25,11 @@ class Schedule {
 
   factory Schedule.fromJson(Map<String, dynamic> json) {
     return Schedule(
-      title: json['title'],
-      location: json['location'],
-      firstdate: json['firstdate'],
-      lastdate: json['lastdate'],
-      emoji: json['emoji'],
+      title: json['title'] ?? '',
+      location: json['location'] ?? '',
+      firstdate: json['firstdate'] ?? '',
+      lastdate: json['lastdate'] ?? '',
+      emoji: json['emoji'] ?? '',
     );
   }
 
@@ -175,9 +175,9 @@ void read_data() async {
 }
 
 
-Future<List<Map<String, dynamic>>> getSchedule() async {
+Future<List<Schedule>> getSchedule(String firstdate) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<Map<String, dynamic>> schedules = [];
+  List<Schedule> schedules = [];
   try {
     final String? existingData = prefs.getString('schedules_web_storage');
     // JSON형 문자열 파싱
@@ -185,14 +185,14 @@ Future<List<Map<String, dynamic>>> getSchedule() async {
       final dynamic decodedData = jsonDecode(existingData);
       // 디코딩된 데이터가 리스트 형태인지 확인, 리스트로 변환
       if (decodedData is List) {
-        schedules = decodedData.whereType<Map<String, dynamic>>().map((json) => Map<String, dynamic>.from(json)).toList();
+        schedules = decodedData.whereType<Map<String, dynamic>>().map((json) => Schedule.fromJson(json)).toList();
       }
     }
   }catch(e) {
     print('데이터 읽기 실패: $e');
     schedules=[];
   }
-  return schedules;
+  // firstdate에 따라 일정 필터링
+  final List<Schedule> foundSchedules = schedules.where((schedule) => schedule.firstdate == firstdate).toList();
+  return foundSchedules;
 }
-
-
