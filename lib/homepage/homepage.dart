@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../calendar/calendar.dart';
 import '../schedulePopup/schedulePopup.dart';
+import '../menu/drawer.dart';
 import '../menu/menu.dart';
 
 
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
-        leading: const MenuButton(), // menu.dart에서 가져온 MenuButton 사용
+        leading: MenuButton(scaffoldKey: scaffoldKey,), // menu.dart에서 가져온 MenuButton 사용
         centerTitle: true,
         title: const Text("Miri Calendar"),
         titleTextStyle: const TextStyle(
@@ -22,7 +25,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: const Color(0xffa7385c),
         shadowColor: const Color(0xff8e2d4d),
       ),
-      drawer: Drawer(),
+      drawer: MenuDrawer(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
