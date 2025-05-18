@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import '../calendar/calendar.dart';
 import '../schedulePopup/schedulePopup.dart';
+import '../menu/drawer.dart';
 import '../menu/menu.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -27,8 +30,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
-        leading: const MenuButton(), // menu.dart에서 가져온 MenuButton 사용
+        leading: MenuButton(scaffoldKey: scaffoldKey,), // menu.dart에서 가져온 MenuButton 사용
         centerTitle: true,
         title: const Text("Miri Calendar"),
         titleTextStyle: const TextStyle(
@@ -37,7 +41,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color(0xffa7385c),
         shadowColor: const Color(0xff8e2d4d),
       ),
-      drawer: Drawer(),
+      drawer: MenuDrawer(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
