@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void>_requestNotificationPermission() async {
-
+    await [Permission.notification].request();
   }
 
   Widget build(BuildContext context) {
