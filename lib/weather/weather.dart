@@ -80,7 +80,7 @@ class WeatherService {
     return recommendations.join(", ");
   }
 
-  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation, bool isRainyDay, String day) {
+  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation, bool isRainyDay, String day){
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

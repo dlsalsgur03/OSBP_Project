@@ -28,15 +28,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _initialization() async {
-    AndroidInitializationSettings android =
-    const AndroidInitializationSettings("@mipmap/ic_launcher");
+    AndroidInitializationSettings android = const AndroidInitializationSettings("@mipmap/ic_launcher");
     DarwinInitializationSettings ios = const DarwinInitializationSettings(
       requestSoundPermission: false,
       requestBadgePermission: false,
       requestAlertPermission: false,
     );
-    InitializationSettings settings =
-    InitializationSettings(android: android, iOS: ios);
+    InitializationSettings settings = InitializationSettings(android: android, iOS: ios);
     await _local.initialize(settings);
   }
 
