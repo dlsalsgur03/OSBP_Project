@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 import '../reservation/transportation_popup.dart';
 import '../reservation/reading_json.dart';
@@ -152,22 +153,13 @@ class _SchedulePopupState extends State<SchedulePopup> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return GridView.count(
-          crossAxisCount: 5,
-          padding: const EdgeInsets.all(8.0),
-          children: List.generate(emojiList.length, (index) {
-            return IconButton(
-              onPressed: () {
-                controller.text = emojiList[index];
-                Navigator.pop(context);
-              },
-              icon: Text(emojiList[index], style: const TextStyle(fontSize: 24)),
-            );
-          }),
+        return EmojiPicker(
+          onEmojiSelected: (category, emoji) {
+            controller.text = emoji.emoji;
+            Navigator.pop(context);
+          },
         );
       },
     );
   }
-
-  final List<String> emojiList = ["🌟"]; // 이모티콘란. 향후 더 추가 예정
 }

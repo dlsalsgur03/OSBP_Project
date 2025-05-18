@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  emoji_picker_flutter: ^1.6.1
 
   flutter_localizations:
       sdk: flutter
