@@ -85,9 +85,6 @@ class _CalendarState extends State<Calendar> {
           focusDay = focusedDay;
         });
 
-        DateTime today = DateTime.now();
-        DateTime yesterday = today.subtract(const Duration(days: 1));
-
         showBottomSheetModal(context, selectedDay);
       },
       selectedDayPredicate: (DateTime day) {
