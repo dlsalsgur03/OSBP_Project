@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        leading: MenuButton(scaffoldKey: scaffoldKey,), // menu.dart에서 가져온 MenuButton 사용
+        leading: MenuButton(scaffoldKey: scaffoldKey,),
         centerTitle: true,
         title: const Text("Miri Calendar"),
         titleTextStyle: const TextStyle(

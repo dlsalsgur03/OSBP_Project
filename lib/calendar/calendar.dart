@@ -1,3 +1,4 @@
+import 'package:OBSP_Project/calendar/dateInfo/show_date_info.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -88,19 +89,7 @@ class _CalendarState extends State<Calendar> {
         DateTime yesterday = today.subtract(const Duration(days: 1));
 
         if (selectedDay.isBefore(yesterday)) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text("알림"),
-              content: const Text("과거는 지원하지 않습니다."),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("닫기"),
-                ),
-              ],
-            ),
-          );
+          showBottomSheetModal(context, selectedDay);
         } else {
           fetchWeatherOrRecommendation(context, selectedDay);
         }
