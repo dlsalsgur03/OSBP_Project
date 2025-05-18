@@ -4,6 +4,7 @@ import '../schedulePopup/schedulePopup.dart';
 import '../menu/drawer.dart';
 import '../menu/menu.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -14,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -24,10 +26,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<void>_requestNotificationPermission() async {
-    await [Permission.notification].request();
+  void _requestNotificationPermission() async {
+    if (await Permission.notification.isDenied &&
+        !await Permission.notification.isPermanentlyDenied) {
+      await [Permission.notification].request();
+    }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,

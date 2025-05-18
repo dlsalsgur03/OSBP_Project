@@ -199,7 +199,7 @@ Future<List<Schedule>> getSchedule(String firstdate) async {
     print('일정 필터링 완료. 찾은 일정 개수: ${foundSchedules.length}');
     for (Schedule schedule in foundSchedules) {
       print('--- Schedule ---');
-      print('  Title: ${schedule.title}');
+      print('  Title: ${foundSchedules.first.title}');
       print('  Location: ${schedule.location}');
       print('  First Date: ${schedule.firstdate}');
       print('  Last Date: ${schedule.lastdate}');
