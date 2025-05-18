@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../reservation/reading_json.dart';
 
 class WeatherService {
   final String apiKey = dotenv.env['MY_API_KEY'] ?? "";
