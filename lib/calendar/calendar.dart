@@ -88,23 +88,11 @@ class _CalendarState extends State<Calendar> {
         DateTime today = DateTime.now();
         DateTime yesterday = today.subtract(const Duration(days: 1));
 
-        if (selectedDay.isBefore(yesterday)) {
-          showBottomSheetModal(context, selectedDay);
-        } else {
-          fetchWeatherOrRecommendation(context, selectedDay);
-        }
+        showBottomSheetModal(context, selectedDay);
       },
       selectedDayPredicate: (DateTime day) {
         return isSameDay(selectedDay, day);
       },
     );
-  }
-
-  void fetchWeatherOrRecommendation(BuildContext context, DateTime selectedDay) {
-    if (selectedDay.difference(DateTime.now()).inDays > 4) {
-      weatherService.showRecommendationByMonth(context, selectedDay);
-    } else {
-      weatherService.fetchWeather(context, selectedDay);
-    }
   }
 }

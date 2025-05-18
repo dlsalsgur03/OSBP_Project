@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../reservation/reading_json.dart';
+import '../../weather/weather.dart';
+
+DateTime today = DateTime.now();
+DateTime yesterday = today.subtract(const Duration(days: 1));
+
+final WeatherService weatherService = WeatherService();
 
 void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
 
@@ -46,10 +52,31 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
               padding: EdgeInsets.all(10.0),
               child:
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("준비물"),
-                    Text("과거는 지원하지 않습니다."),
+                    TextButton(
+                      onPressed: () {
+                        if (selectedDate.isBefore(yesterday)){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("준비물"),
+                              content: const Text("과거는 지원하지 않습니다."),
+                              actions: [
+                                TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("닫기")
+                                )
+                              ],
+                            )
+                          );
+                        }
+                        else {
+                          fetchWeatherOrRecommendation(context, selectedDate);
+                        }
+                      },
+                      child: const Text("준비물"),
+                    )
                   ],
                 )
             )
@@ -60,3 +87,10 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
   );
 }
 
+void fetchWeatherOrRecommendation(BuildContext context, DateTime selectedDay) {
+  if (selectedDay.difference(DateTime.now()).inDays > 4) {
+    weatherService.showRecommendationByMonth(context, selectedDay);
+  } else {
+    weatherService.fetchWeather(context, selectedDay);
+  }
+}
