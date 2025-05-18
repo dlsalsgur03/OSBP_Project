@@ -150,6 +150,16 @@ class _SchedulePopupState extends State<SchedulePopup> {
     );
   }
   void _showEmojiPicker(BuildContext context, TextEditingController controller) {
-
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return EmojiPicker(
+          onEmojiSelected: (category, emoji) {
+            controller.text = emoji.emoji;
+            Navigator.pop(context);
+          },
+        );
+      },
+    );
   }
 }
