@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
-
 import '../calendar/calendar.dart';
 import '../schedulePopup/schedulePopup.dart';
 import '../menu/menu.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
-
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _requestNotificationPermission();
+    });
+  }
+
+  Future<void>_requestNotificationPermission() async {
+
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
