@@ -126,9 +126,9 @@ class _SchedulePopupState extends State<SchedulePopup> {
             print("장소: ${locationController.text}");
             final String location = locationController.text;
             print("일정 시작: ${startDateController.text}");
-            final String firstdate = startDateController.text;
+            final DateTime? firstdate = startDate;
             print("일정 종료: ${endDateController.text}");
-            final String lastdate = endDateController.text;
+            final DateTime? lastdate = endDate;
             print("메모: ${titleController.text}");
 
             await save_schedule_web(
@@ -139,7 +139,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
               emoji: '',
             );
             read_data();
-            getSchedule(firstdate);
+            getSchedule(firstdate!);
 
             Navigator.of(context).pop(); // 팝업창 닫기
             showBookingOptions(context);
