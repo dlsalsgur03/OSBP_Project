@@ -9,8 +9,8 @@ DateTime yesterday = today.subtract(const Duration(days: 1));
 final WeatherService weatherService = WeatherService();
 
 void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
-  final strDate = "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
-  List<Schedule> schedules = await getSchedule(strDate);
+
+  List<Schedule> schedules = await getSchedule(selectedDate);
 
   showModalBottomSheet(
     context: context,

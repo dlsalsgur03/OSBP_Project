@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 import '../reservation/transportation_popup.dart';
 import '../reservation/reading_json.dart';
@@ -125,9 +126,9 @@ class _SchedulePopupState extends State<SchedulePopup> {
             print("장소: ${locationController.text}");
             final String location = locationController.text;
             print("일정 시작: ${startDateController.text}");
-            final String firstdate = startDateController.text;
+            final DateTime? firstdate = startDate;
             print("일정 종료: ${endDateController.text}");
-            final String lastdate = endDateController.text;
+            final DateTime? lastdate = endDate;
             print("메모: ${titleController.text}");
 
             await save_schedule_web(
@@ -138,7 +139,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
               emoji: '',
             );
             read_data();
-            getSchedule(firstdate);
+            getSchedule(firstdate!);
 
             Navigator.of(context).pop(); // 팝업창 닫기
             showBookingOptions(context);
@@ -152,22 +153,13 @@ class _SchedulePopupState extends State<SchedulePopup> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return GridView.count(
-          crossAxisCount: 5,
-          padding: const EdgeInsets.all(8.0),
-          children: List.generate(emojiList.length, (index) {
-            return IconButton(
-              onPressed: () {
-                controller.text = emojiList[index];
-                Navigator.pop(context);
-              },
-              icon: Text(emojiList[index], style: const TextStyle(fontSize: 24)),
-            );
-          }),
+        return EmojiPicker(
+          onEmojiSelected: (category, emoji) {
+            controller.text = emoji.emoji;
+            Navigator.pop(context);
+          },
         );
       },
     );
   }
-
-  final List<String> emojiList = ["🌟"]; // 이모티콘란. 향후 더 추가 예정
 }
