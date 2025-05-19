@@ -163,14 +163,24 @@ Future<List<Schedule>> getSchedule(DateTime? firstdate) async {
     print('데이터 읽기 실패: $e');
     schedules=[];
   }
-  // firstdate에 따라 일정 필터링
-  final List<Schedule> foundSchedules = schedules.where((schedule) => schedule.firstdate == firstdata.replaceFirst(RegExp(r'Z$'), '')).toList();
 
-  if (foundSchedules.isNotEmpty) {
-    print('일정 필터링 완료. 찾은 일정 개수: ${foundSchedules.length}');
-    for (Schedule schedule in foundSchedules) {
+  // firstdate에 따라 일정 필터링
+  List<Schedule> filteredSchedules = schedules.where((event) {
+    DateTime startDate = DateTime.parse(event.firstdate);
+    DateTime endDate = DateTime.parse(event.lastdate);
+    return firstdate.year >= startDate.year &&
+           firstdate.month >= startDate.month &&
+           firstdate.day >= startDate.day &&
+           firstdate.year <= endDate.year &&
+           firstdate.month <= endDate.month &&
+           firstdate.day <= endDate.day;
+  }).toList();
+
+  if (filteredSchedules.isNotEmpty) {
+    print('일정 필터링 완료. 찾은 일정 개수: ${filteredSchedules.length}');
+    for (Schedule schedule in filteredSchedules) {
       print('--- Schedule ---');
-      print('  Title: ${foundSchedules.first.title}');
+      print('  Title: ${filteredSchedules.first.title}');
       print('  Location: ${schedule.location}');
       print('  First Date: ${schedule.firstdate}');
       print('  Last Date: ${schedule.lastdate}');
@@ -180,6 +190,6 @@ Future<List<Schedule>> getSchedule(DateTime? firstdate) async {
   } else {
     print('일정 필터링 완료: 해당 날짜에 일정이 없습니다.');
   }
-  return foundSchedules;
+  return filteredSchedules;
 }
 

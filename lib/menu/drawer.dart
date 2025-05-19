@@ -11,6 +11,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Color(0xffFFFFFF),
       child: ListView(
         children: [
           ListTile(

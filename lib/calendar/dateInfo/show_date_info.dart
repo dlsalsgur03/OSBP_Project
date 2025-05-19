@@ -22,7 +22,7 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
           padding: EdgeInsets.all(16.0),
           width: MediaQuery.of(context).size.width * 0.7,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Color(0XffFFFFFF),
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -61,9 +61,9 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
                                     maxHeight: 75,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Color(0xffE0E3DA),
+                                    color: Color(0xffF2F2F2),
                                     borderRadius: BorderRadius.circular(5.0),
-                                    border: Border.all(color: Color(0xffE0E3DA), width: 1.0)
+                                    border: Border.all(color: Color(0xffF2F2F2), width: 1.0)
                                   ),
                                   child: Text(schedule.title),
                                 ),
@@ -78,9 +78,9 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
                                   maxHeight: 75,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Color(0xffE0E3DA),
+                                  color: Color(0xffF2F2F2),
                                   borderRadius: BorderRadius.circular(5.0),
-                                  border: Border.all(color: Color(0xffE0E3DA), width: 1.0)
+                                  border: Border.all(color: Color(0xffF2F2F2), width: 1.0)
                                 ),
                                 child: Text("일정이 없습니다."),
                               ),
@@ -113,7 +113,11 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
                                 fetchWeatherOrRecommendation(context, selectedDate);
                               }
                             },
-                            child: const Text("준비물"),
+                            child: const Text("준비물", style: TextStyle(color: Color(0xff2D2D2D)),),
+                            style: TextButton.styleFrom(
+                              backgroundColor: Color(0xffF2F2F2),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            )
                           ),
                         ],
                       ),

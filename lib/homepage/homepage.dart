@@ -49,26 +49,37 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-        leading: MenuButton(scaffoldKey: scaffoldKey,),
-        centerTitle: true,
-        title: const Text("Miri Calendar"),
-        titleTextStyle: const TextStyle(
-          fontSize: 30, color: Color(0xffffffff), fontWeight: FontWeight.bold,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          child: AppBar(
+            leading: MenuButton(scaffoldKey: scaffoldKey,),
+            centerTitle: true,
+            title: const Text("Miri Calendar"),
+            titleTextStyle: const TextStyle(
+              fontSize: 30, color: Color(0xff212529), fontWeight: FontWeight.bold,
+            ),
+            backgroundColor: const Color(0xffADB5BD),
+            elevation: 10,
+            shadowColor: Color(0xffB0B0B0),
+          ),
         ),
-        backgroundColor: const Color(0xffa7385c),
-        shadowColor: const Color(0xff8e2d4d),
       ),
       drawer: MenuDrawer(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Calendar(), // 달력 위치
-          ),
-        ],
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Calendar(), // 달력 위치
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xffADB5BD),
         onPressed: () {
           // 팝업창 호출
           showDialog(

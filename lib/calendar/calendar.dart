@@ -43,11 +43,11 @@ class _CalendarState extends State<Calendar> {
               return const Center(child: Text('금'));
             case 6:
               return const Center(
-                child: Text('토', style: TextStyle(color: Color(0xffa7385c))),
+                child: Text('토', style: TextStyle(color: Color(0xffB0B0B0))),
               );
             case 7:
               return const Center(
-                child: Text('일', style: TextStyle(color: Color(0xffa7385c))),
+                child: Text('일', style: TextStyle(color: Color(0xffB0B0B0))),
               );
           }
           return const Center();
@@ -58,25 +58,25 @@ class _CalendarState extends State<Calendar> {
         titleCentered: true,
       ),
       calendarStyle: CalendarStyle(
-        defaultTextStyle: const TextStyle(color: Color(0xff000000)),
-        weekendTextStyle: const TextStyle(color: Color(0xffa7385c)),
+        defaultTextStyle: const TextStyle(color: Color(0xff2D2D2D)),
+        weekendTextStyle: const TextStyle(color: Color(0xffB0B0B0)),
         outsideDaysVisible: true,
-        outsideTextStyle: const TextStyle(color: Colors.grey),
+        outsideTextStyle: const TextStyle(color: Color(0xff5C5C5C)),
         isTodayHighlighted: true,
         todayDecoration: BoxDecoration(
-          color: Color(0xfff5d5db),
+          color: Color(0xffF2F2F2),
           shape: BoxShape.circle,
-          border: Border.all(color: Color(0xfff5d5db), width: 1.5),
+          border: Border.all(color: Color(0xffF2F2F2), width: 1.5),
         ),
         todayTextStyle: const TextStyle(
-            fontWeight: FontWeight.bold, color: Color(0xffa7385c)),
+            fontWeight: FontWeight.bold, color: Color(0xff2D2D2D)),
         selectedDecoration: BoxDecoration(
           color: Colors.transparent,
           shape: BoxShape.circle,
-          border: Border.all(color: Color(0xffa7385c), width: 1.5),
+          border: Border.all(color: Color(0xffB0B0B0), width: 1.5),
         ),
         selectedTextStyle: const TextStyle(
-            fontWeight: FontWeight.bold, color: Color(0xffa7385c)),
+            fontWeight: FontWeight.bold, color: Color(0xff2D2D2D)),
       ),
       calendarFormat: CalendarFormat.month,
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
