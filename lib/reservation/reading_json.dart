@@ -47,63 +47,32 @@ class Schedule {
 Future<void> save_schedule({
   required String title,
   required String location,
-  required String firstdate,
-  required String lastdate,
+  required DateTime? firstdate,
+  required DateTime? lastdate,
   required String emoji,
 }) async {
   try {
-    // 파일 경로 설정
-    final directory = await getApplicationDocumentsDirectory();
-    final schedulerDirPath = '${directory.path}/$directoryName';
-    final schedulePath = '$schedulerDirPath/$scheduleFileName';
-    final schedulerDir = Directory(schedulerDirPath);
-    final file = File(schedulePath);
-
-
-    // 디렉토리 존재 확인 및 생성 (없으면 생성)
-    if (!await schedulerDir.exists()) {
-      await schedulerDir.create(recursive: true);
-      print("Scheduler directory created at : $schedulerDirPath");
-    }
-
-    // 기존 데이터 읽기
-    List<Map<String, dynamic>> schedules = [];
-    if (await file.exists()) {
-      try {
-        final jsonString = await file.readAsString();
-        if (jsonString.isNotEmpty) {
-          final decodedData = jsonDecode(jsonString);
-          // 디코딩된 데이터가 리스트 형태인지 확인
-          if (decodedData is List) {
-            // 리스트의 각 항목이 Map<String, dynamic>인지 확인하며 변환
-            schedules = List<Map<String, dynamic>>.from(
-                decodedData.whereType<Map<String, dynamic>>() // 타입 캐스팅 및 필터링
-            );
-            print("기존 일정 ${schedules.length}개 로드 완료.");
-          } else {
-            print("새 리스트로 시작합니다.");
-            // 파일 내용이 이상하면 기존 내용을 무시하고 새로 시작
-          }
-        }
-      } catch (e) {
-        print("파일 읽기 또는 JSON 파싱 오류: $e. 새 리스트로 시작합니다.");
-        schedules = []; // 오류 시 빈 리스트로 초기화
-      }
-    }
-    else {
-      print("저장된 파일 없음.");
-    }
 
     final prefs = await SharedPreferences.getInstance();
     // 새로운 일정 데이터 Map 생성, 일단 전부 문자열로 읽기
     final newSchedule = {
       'title' : title,
       'location' : location,
-      'firstdate' : firstdate,
-      'lastdate' : lastdate,
+      'firstdate' : firstdate!.toIso8601String(),
+      'lastdate' : lastdate!.toIso8601String(),
       'emoji' : emoji,
     };
 
+    List<Map<String, dynamic>> schedules = [];
+
+    final existingData = prefs.getString('schedules_storage');
+    if(existingData != null){
+      schedules = List<Map<String, dynamic>>.from(jsonDecode(existingData));
+    }
+
+    schedules.add(newSchedule);
+    await prefs.setString('schedules_web_storage', jsonEncode(schedules));
+    print("일정 저장 완료 (웹)");
     // 기존 리스트에 새로운 일정 추가
     schedules.add(newSchedule);
 
@@ -123,16 +92,16 @@ Future<void> save_schedule({
 Future<void> save_schedule_web({
   required String title,
   required String location,
-  required String firstdate,
-  required String lastdate,
+  required DateTime? firstdate,
+  required DateTime? lastdate,
   required String emoji,
 }) async {
   try{
     final newSchedule = {
       'title' : title,
       'location' : location,
-      'firstdate' : firstdate,
-      'lastdate' : lastdate,
+      'firstdate' : firstdate!.toIso8601String(),
+      'lastdate' : lastdate!.toIso8601String(),
       'emoji' : emoji,
     };
 
@@ -175,8 +144,9 @@ void read_data() async {
 }
 
 
-Future<List<Schedule>> getSchedule(String firstdate) async {
+Future<List<Schedule>> getSchedule(DateTime? firstdate) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String firstdata = firstdate!.toIso8601String();
   List<Schedule> schedules = [];
   try {
     final String? existingData = prefs.getString('schedules_web_storage');
@@ -194,12 +164,13 @@ Future<List<Schedule>> getSchedule(String firstdate) async {
     schedules=[];
   }
   // firstdate에 따라 일정 필터링
-  final List<Schedule> foundSchedules = schedules.where((schedule) => schedule.firstdate == firstdate).toList();
+  final List<Schedule> foundSchedules = schedules.where((schedule) => schedule.firstdate == firstdata.replaceFirst(RegExp(r'Z$'), '')).toList();
+
   if (foundSchedules.isNotEmpty) {
     print('일정 필터링 완료. 찾은 일정 개수: ${foundSchedules.length}');
     for (Schedule schedule in foundSchedules) {
       print('--- Schedule ---');
-      print('  Title: ${schedule.title}');
+      print('  Title: ${foundSchedules.first.title}');
       print('  Location: ${schedule.location}');
       print('  First Date: ${schedule.firstdate}');
       print('  Last Date: ${schedule.lastdate}');
