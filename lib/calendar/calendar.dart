@@ -8,6 +8,12 @@ class Calendar extends StatefulWidget {
   const Calendar({super.key});
 
   @override
+  void initState() {
+    super.initState();
+    loadScheduledDates(); // 앱 시작 시 일정 날짜 로딩
+  }
+
+  @override
   State<Calendar> createState() => _CalendarState();
 }
 

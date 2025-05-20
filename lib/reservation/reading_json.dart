@@ -14,7 +14,6 @@ class Schedule {
   final String lastdate;
   final String emoji;
 
-
   Schedule({
     required this.title,
     required this.location,
