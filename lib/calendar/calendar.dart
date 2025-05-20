@@ -78,6 +78,20 @@ class _CalendarState extends State<Calendar> {
           }
           return const Center();
         },
+        markerBuilder: (context, date, events) {
+          final normalizedDate = DateTime(date.year, date.month, date.day);
+          if (scheduledDates.contains(normalizedDate)) {
+            return Positioned(
+              bottom: 1,
+              child: Container(
+                width: 30,
+                height: 2,
+                color: Color(0xffa7385c), // 밑줄 색상
+              ),
+            );
+          }
+          return null;
+        },
       ),
       headerStyle: HeaderStyle(
         formatButtonVisible: false,
