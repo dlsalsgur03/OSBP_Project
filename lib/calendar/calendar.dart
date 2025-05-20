@@ -19,6 +19,26 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   final WeatherService weatherService = WeatherService(); // weather.dart 연동
+  Set<DateTime> scheduledDates = {};
+
+  @override
+  void initState() {
+    super.initState();
+    loadScheduledDates(); // 앱 시작할 때 저장된 일정 날짜 로딩
+  }
+
+  Future<void> loadScheduledDates() async {
+    List<Schedule> allSchedules = await getAllSchedules();
+    Set<DateTime> dates = {};
+    for (var schedule in allSchedules) {
+      DateTime date = DateTime.parse(schedule.date);
+      dates.add(DateTime(date.year, date.month, date.day));
+    }
+    setState(() {
+      scheduledDates = dates;
+    });
+  }
+
   DateTime selectedDay = DateTime(
     DateTime.now().year,
     DateTime.now().month,
