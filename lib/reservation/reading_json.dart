@@ -42,6 +42,25 @@ class Schedule {
     };
   }
 }
+Future<List<Schedule>> getAllSchedules() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<Schedule> schedules = [];
+  try {
+    final String? existingData = prefs.getString('schedules_web_storage');
+    if (existingData != null) {
+      final dynamic decodedData = jsonDecode(existingData);
+      if (decodedData is List) {
+        schedules = decodedData
+            .whereType<Map<String, dynamic>>()
+            .map((json) => Schedule.fromJson(json))
+            .toList();
+      }
+    }
+  } catch (e) {
+    print('전체 일정 불러오기 실패: $e');
+  }
+  return schedules;
+}
 
 Future<void> save_schedule({
   required String title,
