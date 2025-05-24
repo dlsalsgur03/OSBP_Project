@@ -20,6 +20,9 @@ class _CalendarState extends State<Calendar> {
   );
   DateTime focusDay = DateTime.now();
 
+  DateTime? _selectedDay;
+  DateTime? _lastTappedDay;
+
   @override
   Widget build(BuildContext context) {
     return TableCalendar(
@@ -82,10 +85,15 @@ class _CalendarState extends State<Calendar> {
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
         setState(() {
           this.selectedDay = selectedDay;
-          focusDay = focusedDay;
+          focusedDay = focusDay;
+          if(isSameDay(_lastTappedDay, selectedDay)){
+            _selectedDay = selectedDay;
+            showBottomSheetModal(context, selectedDay);
+            _lastTappedDay = null;
+          } else{
+            _lastTappedDay = selectedDay;
+          }
         });
-
-        showBottomSheetModal(context, selectedDay);
       },
       selectedDayPredicate: (DateTime day) {
         return isSameDay(selectedDay, day);
