@@ -20,8 +20,10 @@ class _CalendarState extends State<Calendar> {
   );
   DateTime focusDay = DateTime.now();
 
-  DateTime? _selectedDay;
+  // 더블 탭 bottomSheetModal을 위한 변수 선언
   DateTime? _lastTappedDay;
+  DateTime? _lastTappedTime;
+  final Duration doubleTapThreshold = Duration(milliseconds: 500);
 
   @override
   Widget build(BuildContext context) {
@@ -82,16 +84,22 @@ class _CalendarState extends State<Calendar> {
             fontWeight: FontWeight.bold, color: Color(0xff2D2D2D)),
       ),
       calendarFormat: CalendarFormat.month,
-      onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
+      onDaySelected: (DateTime tappedDay, DateTime newFocusedDay) {
+        final now = DateTime.now();
         setState(() {
-          this.selectedDay = selectedDay;
-          focusedDay = focusDay;
-          if(isSameDay(_lastTappedDay, selectedDay)){
-            _selectedDay = selectedDay;
-            showBottomSheetModal(context, selectedDay);
+          focusDay = newFocusedDay;
+          final isReTapOnSelected = isSameDay(tappedDay, selectedDay);
+          selectedDay = tappedDay;
+
+          if (isReTapOnSelected){
+            showBottomSheetModal(context, tappedDay);
+          } else if(_lastTappedDay != null && isSameDay(_lastTappedDay, tappedDay) && _lastTappedTime != null && now.difference(_lastTappedTime!) < doubleTapThreshold){
+            showBottomSheetModal(context, tappedDay);
             _lastTappedDay = null;
+            _lastTappedTime = null;
           } else{
-            _lastTappedDay = selectedDay;
+            _lastTappedDay = tappedDay;
+            _lastTappedTime = now;
           }
         });
       },
