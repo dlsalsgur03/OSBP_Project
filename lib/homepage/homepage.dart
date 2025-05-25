@@ -3,6 +3,7 @@ import '../calendar/calendar.dart';
 import '../schedulePopup/schedulePopup.dart';
 import '../menu/drawer.dart';
 import '../menu/menu.dart';
+import '../calendar/dateInfo/underCalendarInfo.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -17,6 +18,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // selectedDate를 hompage.dart에서 관리하기 위한 것
+  DateTime _selectedDate = DateTime.now();
+  void _handleDateChanged(DateTime newDate){
+    setState(() {
+      _selectedDate = newDate;
+    });
+  }
 
   @override
   void initState() {
@@ -72,9 +81,10 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(
-              child: Calendar(), // 달력 위치
-            ),
+            Calendar(
+              selectedDate: _selectedDate,
+              onDaySelected: _handleDateChanged,
+            ), // 달력 위치
           ],
         ),
       ),
