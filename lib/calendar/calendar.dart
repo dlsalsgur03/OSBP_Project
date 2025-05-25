@@ -1,7 +1,6 @@
 import 'package:OBSP_Project/calendar/dateInfo/show_date_info.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../reservation/reading_json.dart';
 
 import '../weather/weather.dart';
 
@@ -9,37 +8,11 @@ class Calendar extends StatefulWidget {
   const Calendar({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    loadScheduledDates(); // 앱 시작 시 일정 날짜 로딩
-  }
-
-  @override
   State<Calendar> createState() => _CalendarState();
 }
 
 class _CalendarState extends State<Calendar> {
   final WeatherService weatherService = WeatherService(); // weather.dart 연동
-  Set<DateTime> scheduledDates = {};
-
-  @override
-  void initState() {
-    super.initState();
-    loadScheduledDates(); // 앱 시작할 때 저장된 일정 날짜 로딩
-  }
-
-  Future<void> loadScheduledDates() async {
-    List<Schedule> allSchedules = await getAllSchedules();
-    Set<DateTime> dates = {};
-    for (var schedule in allSchedules) {
-      DateTime date = DateTime.parse(schedule.date);
-      dates.add(DateTime(date.year, date.month, date.day));
-    }
-    setState(() {
-      scheduledDates = dates;
-    });
-  }
-
   DateTime selectedDay = DateTime(
     DateTime.now().year,
     DateTime.now().month,
@@ -78,20 +51,6 @@ class _CalendarState extends State<Calendar> {
               );
           }
           return const Center();
-        },
-        markerBuilder: (context, date, events) {
-          final normalizedDate = DateTime(date.year, date.month, date.day);
-          if (scheduledDates.contains(normalizedDate)) {
-            return Positioned(
-              bottom: 1,
-              child: Container(
-                width: 30,
-                height: 2,
-                color: Color(0xffa7385c), // 밑줄 색상
-              ),
-            );
-          }
-          return null;
         },
       ),
       headerStyle: HeaderStyle(
