@@ -5,7 +5,14 @@ import 'package:table_calendar/table_calendar.dart';
 import '../weather/weather.dart';
 
 class Calendar extends StatefulWidget {
-  const Calendar({super.key});
+  final DateTime selectedDate;
+  final Function(DateTime) onDaySelected;
+
+  const Calendar({
+    super.key,
+    required this.selectedDate,
+    required this.onDaySelected,
+  });
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -102,6 +109,7 @@ class _CalendarState extends State<Calendar> {
             _lastTappedTime = now;
           }
         });
+        widget.onDaySelected(selectedDay);
       },
       selectedDayPredicate: (DateTime day) {
         return isSameDay(selectedDay, day);
