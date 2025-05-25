@@ -3,7 +3,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin(); // 플러그인으로 알림등록 간결화
 
 // 알림 초기화 함수
 Future<void> initializeNotifications() async {
@@ -33,8 +33,11 @@ Future<void> scheduleNotification(DateTime lastDate) async {
   final tz.TZDateTime scheduledDate =
   tz.TZDateTime.from(notificationDate, tz.local);
 
+  final int notificationId = lastDate.millisecondsSinceEpoch ~/ 1000;
+
+
   await flutterLocalNotificationsPlugin.zonedSchedule(
-    0, // 알림 ID
+    notificationId, // 알림 ID
     '마감 임박 알림', //title
     '3일 뒤 마감일입니다!', //body
     scheduledDate,
@@ -48,7 +51,7 @@ Future<void> scheduleNotification(DateTime lastDate) async {
     ),
     androidAllowWhileIdle: true, // 절전모드에서도 작동
     uiLocalNotificationDateInterpretation:
-    UILocalNotificationDateInterpretation.absoluteTime,
-    matchDateTimeComponents: DateTimeComponents.time, // 반복용이면 사용
+      UILocalNotificationDateInterpretation.absoluteTime,
+    matchDateTimeComponents: null, // 반복 안함.
   );
 }
