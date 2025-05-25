@@ -3,7 +3,7 @@ import '../calendar/calendar.dart';
 import '../schedulePopup/schedulePopup.dart';
 import '../menu/drawer.dart';
 import '../menu/menu.dart';
-import '../calendar/dateInfo/underCalendarInfo.dart';
+import '../calendar/dateInfo/under_calendar_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
