@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> {
               selectedDate: _selectedDate,
               onDaySelected: _handleDateChanged,
             ), // 달력 위치
+            Expanded(child: ScheduleListWidget(selectedDate: _selectedDate),)
           ],
         ),
       ),
