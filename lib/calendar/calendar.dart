@@ -42,8 +42,10 @@ class _CalendarState extends State<Calendar> {
     }
     setState(() {
       scheduledDates = dates;
+      scheduledDateStrings = dateStrings;
     });
   }
+  String _dateKey(DateTime date) => "${date.year}-${date.month}-${date.day}";
 
   DateTime selectedDay = DateTime(
     DateTime.now().year,
@@ -86,6 +88,10 @@ class _CalendarState extends State<Calendar> {
         },
         markerBuilder: (context, date, events) {
           final normalizedDate = DateTime(date.year, date.month, date.day);
+          final dateKey = _dateKey(normalizedDate);
+          if (!scheduledDateStrings.contains(dateKey)) {
+            return null;
+          }
           if (scheduledDates.contains(normalizedDate)) {
             return Positioned(
               bottom: 1,
