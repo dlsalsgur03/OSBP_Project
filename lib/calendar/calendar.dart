@@ -92,17 +92,17 @@ class _CalendarState extends State<Calendar> {
           if (!scheduledDateStrings.contains(dateKey)) {
             return null;
           }
-          if (scheduledDates.contains(normalizedDate)) {
-            return Positioned(
-              bottom: 1,
-              child: Container(
-                width: 30,
-                height: 2,
-                color: Color(0xffa7385c), // 밑줄 색상
-              ),
-            );
-          }
-          return null;
+          final prevDateKey = _dateKey(normalizedDate.subtract(Duration(days: 1)));
+          final nextDateKey = _dateKey(normalizedDate.add(Duration(days: 1)));
+
+          final hasPrev = scheduledDateStrings.contains(prevDateKey);
+          final hasNext = scheduledDateStrings.contains(nextDateKey);
+
+          return Positioned(
+            bottom: 6,
+            left: hasPrev ? 0 : 6,
+            right: hasNext ? 0 : 6,
+          );
         },
       ),
       headerStyle: HeaderStyle(
