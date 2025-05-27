@@ -33,7 +33,6 @@ void showBookingOptions(BuildContext context, DateTime lastdate) {
               title: Text('다음에 예매'),
               onTap: () {
                 scheduleNotification(lastdate);
-                print('알람 설정 완료');
                 Navigator.of(context).pop();
               }
             )

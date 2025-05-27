@@ -144,7 +144,6 @@ void read_data() async {
 
 Future<List<Schedule>> getSchedule(DateTime? firstdate) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  String firstdata = firstdate!.toIso8601String();
   List<Schedule> schedules = [];
   try {
     final String? existingData = prefs.getString('schedules_web_storage');
@@ -166,7 +165,7 @@ Future<List<Schedule>> getSchedule(DateTime? firstdate) async {
   List<Schedule> filteredSchedules = schedules.where((event) {
     DateTime startDate = DateTime.parse(event.firstdate);
     DateTime endDate = DateTime.parse(event.lastdate);
-    return firstdate.year >= startDate.year &&
+    return firstdate!.year >= startDate.year &&
            firstdate.month >= startDate.month &&
            firstdate.day >= startDate.day &&
            firstdate.year <= endDate.year &&

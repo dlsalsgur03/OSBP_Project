@@ -54,4 +54,6 @@ Future<void> scheduleNotification(DateTime lastDate) async {
       UILocalNotificationDateInterpretation.absoluteTime,
     matchDateTimeComponents: null, // 반복 안함.
   );
+
+  print("알람 설정 완료");
 }
