@@ -102,6 +102,16 @@ class _CalendarState extends State<Calendar> {
             bottom: 6,
             left: hasPrev ? 0 : 6,
             right: hasNext ? 0 : 6,
+            child: Container(
+              height: 3,
+              decoration: BoxDecoration(
+                color: Color(0xffa7385c),
+                borderRadius: BorderRadius.horizontal(
+                  left: hasPrev ? Radius.zero : Radius.circular(3),
+                  right: hasNext ? Radius.zero : Radius.circular(3),
+                ),
+              ),
+            ),
           );
         },
       ),
