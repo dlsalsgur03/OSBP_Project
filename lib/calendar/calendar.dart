@@ -1,7 +1,6 @@
 import 'package:OBSP_Project/calendar/dateInfo/show_date_info.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../reservation/reading_json.dart';
 
 import '../weather/weather.dart';
 
@@ -82,20 +81,6 @@ class _CalendarState extends State<Calendar> {
               );
           }
           return const Center();
-        },
-        markerBuilder: (context, date, events) {
-          final normalizedDate = DateTime(date.year, date.month, date.day);
-          if (scheduledDates.contains(normalizedDate)) {
-            return Positioned(
-              bottom: 1,
-              child: Container(
-                width: 30,
-                height: 2,
-                color: Color(0xffa7385c), // 밑줄 색상
-              ),
-            );
-          }
-          return null;
         },
       ),
       headerStyle: HeaderStyle(
