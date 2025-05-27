@@ -14,6 +14,7 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   final WeatherService weatherService = WeatherService(); // weather.dart 연동
   Set<DateTime> scheduledDates = {};
+  Set<String> scheduledDateStrings = {};
 
   @override
   void initState() {
@@ -24,17 +25,18 @@ class _CalendarState extends State<Calendar> {
   Future<void> loadScheduledDates() async {
     List<Schedule> allSchedules = await getAllSchedules();
     Set<DateTime> dates = {};
+    Set<String> dateStrings = {};
 
     for (var schedule in allSchedules) {
       //string 타입으로 되어있는 startdate,enddate 부분을 Datetime으로 변환하는 코드입니다.
       DateTime startDate = DateTime.parse(schedule.firstdate);
       DateTime endDate = DateTime.parse(schedule.lastdate);
 
-      //시작,종료일 사이의 날짜를 추가하는 부분입니다.
-      DateTime currentDate = DateTime(startDate.year, startDate.month, startDate.day);
-      DateTime finalDate = DateTime(endDate.year, endDate.month, endDate.day);
-      while (!currentDate.isAfter(finalDate)) {
-        dates.add(currentDate);
+      DateTime currentDate = startDate;
+      while (!currentDate.isAfter(endDate)) {
+        DateTime dateOnly = DateTime(currentDate.year, currentDate.month, currentDate.day);
+        dates.add(dateOnly);
+        dateStrings.add(_dateKey(dateOnly));
         currentDate = currentDate.add(const Duration(days: 1));
       }
     }
