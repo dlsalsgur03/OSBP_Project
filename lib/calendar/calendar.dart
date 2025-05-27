@@ -34,6 +34,10 @@ class _CalendarState extends State<Calendar> {
       //시작,종료일 사이의 날짜를 추가하는 부분입니다.
       DateTime currentDate = DateTime(startDate.year, startDate.month, startDate.day);
       DateTime finalDate = DateTime(endDate.year, endDate.month, endDate.day);
+      while (!currentDate.isAfter(finalDate)) {
+        dates.add(currentDate);
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
     }
     setState(() {
       scheduledDates = dates;
