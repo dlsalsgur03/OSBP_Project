@@ -8,14 +8,18 @@ class MenuDrawer extends StatefulWidget {
 }
 
 class _MenuDrawerState extends State<MenuDrawer> {
+  final List<String> _errorReports = []; //오류들 저장할 리스트
+  final TextEditingController _textController = TextEditingController();
 
   void _showReportDialog(BuildContext context) { //오류신고 팝업창
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFFFFF8E1),
         title: Text('오류 신고'),
         content: SizedBox(
-          height: 150,
+          height: 300,
+          width: 300,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
@@ -76,4 +80,3 @@ class _MenuDrawerState extends State<MenuDrawer> {
     );
   }
 }
-
