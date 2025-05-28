@@ -8,6 +8,16 @@ class MenuDrawer extends StatefulWidget {
 }
 
 class _MenuDrawerState extends State<MenuDrawer> {
+
+  void _showReportDialog(BuildContext context) { //오류신고 팝업창
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('오류 신고'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -32,7 +42,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             leading: Icon(Icons.report),
             hoverColor: Color(0xffdee2e6),
             title: Text("오류 신고"),
-            onTap: () {},
+            onTap: () => _showReportDialog(context),
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
