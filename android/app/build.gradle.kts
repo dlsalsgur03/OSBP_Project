@@ -9,11 +9,11 @@ android {
     namespace = "com.example.oss_project"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
-    compileSdk = flutter.compileSdkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -42,4 +42,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.10")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
