@@ -14,7 +14,9 @@ class _MenuDrawerState extends State<MenuDrawer> {
   void _showReportDialog(BuildContext context) { //오류신고 팝업창
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => StatefulBuilder(
+        builder: (context, setStateInsideDialog) {
+          return AlertDialog(
         backgroundColor: const Color(0xFFFFF8E1),
         title: Text('오류 신고'),
         content: SizedBox(
@@ -22,7 +24,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
           width: 300,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Expanded(
                 child: ListView.builder(
                   itemCount: _errorReports.length,
@@ -51,10 +53,25 @@ class _MenuDrawerState extends State<MenuDrawer> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('닫기'),
+            onPressed: () {
+              final newText = _textController.text.trim();
+              if (newText.isNotEmpty) {
+                setState(() {
+                  _errorReports.add(newText);
+                  _textController.clear();
+                });
+                setStateInsideDialog(() {});
+              }
+            },
+            child: const Text('추가'),
           ),
-        ],
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('닫기'),
+            ),
+          ],
+          );
+        },
       ),
     );
   }
@@ -83,7 +100,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             leading: Icon(Icons.report),
             hoverColor: Color(0xffdee2e6),
             title: Text("오류 신고"),
-            onTap: () => _showReportDialog(context),
+            onTap: () => _showReportDialog(context),//팝업창 띄우기
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
