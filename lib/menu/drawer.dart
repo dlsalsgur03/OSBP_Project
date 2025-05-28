@@ -37,6 +37,15 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   },
                 ),
               ),
+              const SizedBox(height: 12),
+              // 오류 내용을 입력하는 입력창
+              TextField(
+                controller: _textController, // 입력값을 읽기 위해 사용
+                decoration: const InputDecoration(
+                  hintText: '오류 내용을 입력하세요',
+                  border: OutlineInputBorder(),
+                ),
+              ),
             ],
           ),
         ),
