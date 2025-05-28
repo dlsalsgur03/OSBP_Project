@@ -14,6 +14,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('오류 신고'),
+        content: SizedBox(
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('닫기'),
+          ),
+        ],
       ),
     );
   }
