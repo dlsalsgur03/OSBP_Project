@@ -23,11 +23,20 @@ class _MenuDrawerState extends State<MenuDrawer> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
-              Text("• 앱이 강제로 종료됩니다."),
-              SizedBox(height: 8),
-              Text("• 캘린더가 안 보입니다."),
-              SizedBox(height: 8),
-              Text("• 기타 오류 내용..."),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _errorReports.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("• ${_errorReports[index]}"), // 한 줄씩 오류 내용 출력
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
