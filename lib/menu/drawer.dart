@@ -15,6 +15,17 @@ class _MenuDrawerState extends State<MenuDrawer> {
       builder: (context) => AlertDialog(
         title: Text('오류 신고'),
         content: SizedBox(
+          height: 150,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text("• 앱이 강제로 종료됩니다."),
+              SizedBox(height: 8),
+              Text("• 캘린더가 안 보입니다."),
+              SizedBox(height: 8),
+              Text("• 기타 오류 내용..."),
+            ],
+          ),
         ),
         actions: [
           TextButton(
