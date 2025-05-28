@@ -57,18 +57,6 @@ class _SchedulePopupState extends State<SchedulePopup> {
                   initialDate: DateTime.now(),
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
-                  builder: (BuildContext context, Widget? child) {
-                    return Theme(
-                      data: ThemeData.light().copyWith(
-                        colorScheme: const ColorScheme.light(
-                          surface: Colors.white,
-                          primary: Colors.purple,
-                          onPrimary: Colors.white,
-                        ).copyWith(background: Colors.white),
-                      ),
-                      child: child!,
-                    );
-                  },
                 );
                 if(pickedDate != null){
                   startDate = pickedDate; //선택한 날짜를 Datetime 변수로 저장
@@ -89,18 +77,6 @@ class _SchedulePopupState extends State<SchedulePopup> {
                   initialDate: DateTime.now(),
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
-                  builder: (BuildContext context, Widget? child) {
-                    return Theme(
-                      data: ThemeData.light().copyWith(
-                        colorScheme: const ColorScheme.light(
-                          surface: Colors.white,
-                          primary: Colors.purple,
-                          onPrimary: Colors.white,
-                        ).copyWith(background: Colors.white),
-                      ),
-                      child: child!,
-                    );
-                  },
                 );
                 if(pickedDate != null){
                   endDate = pickedDate; //선택한 날짜를 Datetime 변수로 저장

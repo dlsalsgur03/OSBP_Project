@@ -13,6 +13,7 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   final WeatherService weatherService = WeatherService(); // weather.dart 연동
+
   Set<DateTime> scheduledDates = {};
   Set<String> scheduledDateStrings = {};
 
