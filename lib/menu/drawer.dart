@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+final List<String> _errorReports = []; //오류들 저장할 리스트 리스트가 초기화 되지 않게 밖으로 빼놨습니다.
+
 class MenuDrawer extends StatefulWidget {
   const MenuDrawer({super.key});
 
@@ -8,7 +10,6 @@ class MenuDrawer extends StatefulWidget {
 }
 
 class _MenuDrawerState extends State<MenuDrawer> {
-  final List<String> _errorReports = []; //오류들 저장할 리스트
   final TextEditingController _textController = TextEditingController();
 
   void _showReportDialog(BuildContext context) { //오류신고 팝업창
