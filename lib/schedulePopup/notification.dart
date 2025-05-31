@@ -35,6 +35,19 @@ Future<void> scheduleNotification(DateTime lastDate) async {
 
   final int notificationId = lastDate.millisecondsSinceEpoch ~/ 1000;
 
+  await flutterLocalNotificationsPlugin.show(
+    notificationId,
+    '알람 예약 완료',
+    '3일전 알람이 예약되었습니다.',
+    const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'info_channel',
+        '정보 알림',
+        importance: Importance.low,
+        priority: Priority.low,
+      ),
+    ),
+  );
 
   await flutterLocalNotificationsPlugin.zonedSchedule(
     notificationId, // 알림 ID
