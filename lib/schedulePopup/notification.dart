@@ -6,6 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin(); // 플러그인으로 알림등록 간결화
 
+int notification_Id(DateTime lastDate, String title) {
+  return lastDate.millisecondsSinceEpoch ~/ 1000 + title.hashCode;
+}
+
+
 // 알림 초기화 함수
 Future<void> initializeNotifications() async {
   const AndroidInitializationSettings androidInitSettings =
@@ -33,14 +38,17 @@ Future<void> scheduleNotification(String title, DateTime lastDate) async {
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 지정
-  final int notificationId = lastDate.millisecondsSinceEpoch ~/ 1000;
+  final int notificationId = notification_Id(lastDate, title);
   // 알림 ID 저장
-  storeId(notificationId);
+  final existedId = await isIdStored(notificationId);
+  if(!existedId) {
+    await storeId(notificationId);
+  }
 
   await flutterLocalNotificationsPlugin.show(
     notificationId,
     '알람 예약 완료',
-    '3일전 알람이 예약되었습니다.',
+    title,
     const NotificationDetails(
       android: AndroidNotificationDetails(
         'info_channel',
