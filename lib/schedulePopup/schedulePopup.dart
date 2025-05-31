@@ -137,7 +137,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
               location : location,
               firstdate : firstdate,
               lastdate : lastdate,
-              emoji: '',
+              emoji: emojiController.text,
             );
             read_data();
             getSchedule(firstdate!);
