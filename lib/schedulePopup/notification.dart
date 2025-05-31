@@ -41,14 +41,39 @@ Future<void> scheduleNotification(int notificationId ,String title, DateTime las
       .subtract(Duration(days: 3))
       .copyWith(hour: 9, minute: 0, second: 0);
 
-  // 알림 예약 시간이 과거면 알람 안받기
-  if (notificationDate.isBefore(DateTime.now())) return;
-
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 저장
   final existedId = await isIdStored(notificationId);
   if(!existedId) {
     await storeId(notificationId);
+  }
+
+  if (notificationDate.isBefore(DateTime.now())) {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      notificationId, // 알림 ID
+      title, //title
+      '3일 뒤 출발입니다!', //body
+      scheduledDate,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+            'deadline_channel',
+            '예약 알림',
+            importance: Importance.high,
+            priority: Priority.high,
+            actions: <AndroidNotificationAction>[
+              AndroidNotificationAction(
+                'booking',
+                '예약하러 가기',
+                showsUserInterface: true,
+              ),
+            ]
+        ),
+      ),
+      androidAllowWhileIdle: true, // 절전모드에서도 작동
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time, // 1일마다 반복
+    );
   }
 
   await flutterLocalNotificationsPlugin.show(
@@ -90,8 +115,6 @@ Future<void> scheduleNotification(int notificationId ,String title, DateTime las
       UILocalNotificationDateInterpretation.absoluteTime,
     matchDateTimeComponents: DateTimeComponents.time, // 1일마다 반복
   );
-
-  print("알람 설정 완료");
 }
 
 Future<void> storeId(int id) async {
