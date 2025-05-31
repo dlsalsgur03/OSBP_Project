@@ -81,3 +81,9 @@ Future<void> storeId(int id) async {
     await prefs.setStringList('notification_ids', ids);
   }
 }
+
+Future<bool> isIdStored(int id) async {
+  final prefs = await SharedPreferences.getInstance();
+  List<String> ids = prefs.getStringList('notification_ids') ?? [];
+  return ids.contains(id.toString());
+}
