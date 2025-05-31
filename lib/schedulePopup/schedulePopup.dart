@@ -143,7 +143,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
             getSchedule(firstdate!);
 
             Navigator.of(context).pop(); // 팝업창 닫기
-            showBookingOptions(context, lastdate!);
+            showBookingOptions(context, title ,lastdate!);
           },
           child: const Text("다음"),
         ),

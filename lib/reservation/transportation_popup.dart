@@ -4,7 +4,7 @@ import '../schedulePopup/notification.dart';
 
 
 // 교통수단 예매 팝업 함수
-void showBookingOptions(BuildContext context, DateTime lastdate) {
+void showBookingOptions(BuildContext context, String title, DateTime lastdate) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -32,7 +32,7 @@ void showBookingOptions(BuildContext context, DateTime lastdate) {
             ListTile(
               title: Text('다음에 예매'),
               onTap: () {
-                scheduleNotification(lastdate);
+                scheduleNotification(title ,lastdate);
                 Navigator.of(context).pop();
               }
             )

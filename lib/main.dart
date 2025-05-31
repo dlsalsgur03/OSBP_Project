@@ -8,8 +8,8 @@ import 'homepage/homepage.dart';
 
 
 void main() async {
-  await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName:"assets/.env");
   await initializeNotifications();
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
