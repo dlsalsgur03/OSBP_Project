@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../weather/weather.dart';
-
+import '../reservation/reading_json.dart';
 class Calendar extends StatefulWidget {
   const Calendar({super.key});
 
@@ -13,6 +13,41 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   final WeatherService weatherService = WeatherService(); // weather.dart 연동
+
+  Set<DateTime> scheduledDates = {};
+  Set<String> scheduledDateStrings = {};
+
+  @override
+  void initState() {
+    super.initState();
+    loadScheduledDates(); // 앱 시작할 때 저장된 일정 날짜 로딩
+  }
+
+  Future<void> loadScheduledDates() async {
+    List<Schedule> allSchedules = await getAllSchedules();
+    Set<DateTime> dates = {};
+    Set<String> dateStrings = {};
+
+    for (var schedule in allSchedules) {
+      //string 타입으로 되어있는 startdate,enddate 부분을 Datetime으로 변환하는 코드입니다.
+      DateTime startDate = DateTime.parse(schedule.firstdate);
+      DateTime endDate = DateTime.parse(schedule.lastdate);
+
+      DateTime currentDate = startDate;
+      while (!currentDate.isAfter(endDate)) {
+        DateTime dateOnly = DateTime(currentDate.year, currentDate.month, currentDate.day);
+        dates.add(dateOnly);
+        dateStrings.add(_dateKey(dateOnly));
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
+    }
+    setState(() {
+      scheduledDates = dates;
+      scheduledDateStrings = dateStrings;
+    });
+  }
+  String _dateKey(DateTime date) => "${date.year}-${date.month}-${date.day}";
+
   DateTime selectedDay = DateTime(
     DateTime.now().year,
     DateTime.now().month,
@@ -51,6 +86,34 @@ class _CalendarState extends State<Calendar> {
               );
           }
           return const Center();
+        },
+        markerBuilder: (context, date, events) {
+          final normalizedDate = DateTime(date.year, date.month, date.day);
+          final dateKey = _dateKey(normalizedDate);
+          if (!scheduledDateStrings.contains(dateKey)) {
+            return null;
+          }
+          final prevDateKey = _dateKey(normalizedDate.subtract(Duration(days: 1)));
+          final nextDateKey = _dateKey(normalizedDate.add(Duration(days: 1)));
+
+          final hasPrev = scheduledDateStrings.contains(prevDateKey);
+          final hasNext = scheduledDateStrings.contains(nextDateKey);
+
+          return Positioned(
+            bottom: 6,
+            left: hasPrev ? 0 : 6,
+            right: hasNext ? 0 : 6,
+            child: Container(
+              height: 3,
+              decoration: BoxDecoration(
+                color: Color(0xffa7385c),
+                borderRadius: BorderRadius.horizontal(
+                  left: hasPrev ? Radius.zero : Radius.circular(3),
+                  right: hasNext ? Radius.zero : Radius.circular(3),
+                ),
+              ),
+            ),
+          );
         },
       ),
       headerStyle: HeaderStyle(
