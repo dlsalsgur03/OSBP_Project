@@ -2,6 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../reservation/transportation_popup.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin(); // 플러그인으로 알림등록 간결화
@@ -20,14 +21,21 @@ Future<void> initializeNotifications() async {
     android: androidInitSettings,
   );
 
-  await flutterLocalNotificationsPlugin.initialize(initSettings);
+  await flutterLocalNotificationsPlugin.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+      if(response.actionId == 'booking') {
+        launchURL('https://www.kobus.co.kr/main.do');
+      }
+    },
+  );
 
   // 타임존 초기화
   tz.initializeTimeZones();
 }
 
 // 알림 예약 함수
-Future<void> scheduleNotification(String title, DateTime lastDate) async {
+Future<void> scheduleNotification(int notificationId ,String title, DateTime lastDate) async {
   // 마감일 3일 전 오전 9시
   final notificationDate = lastDate
       .subtract(Duration(days: 3))
@@ -37,8 +45,6 @@ Future<void> scheduleNotification(String title, DateTime lastDate) async {
   if (notificationDate.isBefore(DateTime.now())) return;
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
-  // 알림 ID 지정
-  final int notificationId = notification_Id(lastDate, title);
   // 알림 ID 저장
   final existedId = await isIdStored(notificationId);
   if(!existedId) {
@@ -70,6 +76,13 @@ Future<void> scheduleNotification(String title, DateTime lastDate) async {
         '예약 알림',
         importance: Importance.high,
         priority: Priority.high,
+        actions: <AndroidNotificationAction>[
+          AndroidNotificationAction(
+            'booking',
+            '예약하러 가기',
+            showsUserInterface: true,
+          ),
+        ]
       ),
     ),
     androidAllowWhileIdle: true, // 절전모드에서도 작동

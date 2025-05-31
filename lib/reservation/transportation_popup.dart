@@ -16,7 +16,7 @@ void showBookingOptions(BuildContext context, String title, DateTime lastdate) {
             ListTile(
               leading: Icon(Icons.directions_bus),
               title: Text('버스 예매'),
-              onTap: () {
+              onTap: () async {
                 Navigator.of(context).pop(); // 팝업 닫기
                 launchURL('https://www.kobus.co.kr/main.do'); // 고속버스 예매 사이트로 이동
               },
@@ -32,7 +32,8 @@ void showBookingOptions(BuildContext context, String title, DateTime lastdate) {
             ListTile(
               title: Text('다음에 예매'),
               onTap: () {
-                scheduleNotification(title ,lastdate);
+                int notificationId = notification_Id(lastdate, title);
+                scheduleNotification(notificationId ,title ,lastdate);
                 Navigator.of(context).pop();
               }
             )
