@@ -5,10 +5,12 @@ import '../schedulePopup/notification.dart';
 
 // 교통수단 예매 팝업 함수
 void showBookingOptions(BuildContext context, String title, DateTime firstdate) {
+  int notificationId = notification_Id(firstdate, title);
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        backgroundColor: const Color(0xffffffff),
         title: const Text('교통수단 예매'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -17,6 +19,10 @@ void showBookingOptions(BuildContext context, String title, DateTime firstdate) 
               leading: Icon(Icons.directions_bus),
               title: Text('버스 예매'),
               onTap: () async {
+                bool is_exist = await isIdStored(notificationId);
+                if(is_exist) {
+                  await removeId(notificationId);
+                }
                 Navigator.of(context).pop(); // 팝업 닫기
                 launchURL('https://www.kobus.co.kr/main.do'); // 고속버스 예매 사이트로 이동
               },
@@ -24,7 +30,11 @@ void showBookingOptions(BuildContext context, String title, DateTime firstdate) 
             ListTile(
               leading: Icon(Icons.train),
               title: Text('기차 예매'),
-              onTap: () {
+              onTap: () async {
+                bool is_exist2 = await isIdStored(notificationId);
+                if(is_exist2) {
+                  await removeId(notificationId);
+                }
                 Navigator.of(context).pop(); // 팝업 닫기
                 launchURL('https://www.letskorail.com/'); // 기차 예매 사이트로 이동
               },
@@ -32,7 +42,7 @@ void showBookingOptions(BuildContext context, String title, DateTime firstdate) 
             ListTile(
               title: Text('다음에 예매'),
               onTap: () {
-                int notificationId = notification_Id(firstdate, title);
+                storeId(notificationId);
                 scheduleNotification(notificationId ,title ,firstdate);
                 Navigator.of(context).pop();
               }

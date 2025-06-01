@@ -11,6 +11,7 @@ class Schedule {
   final String firstdate;
   final String lastdate;
   final String emoji;
+  final String memo;
 
 
   Schedule({
@@ -19,6 +20,7 @@ class Schedule {
     required this.firstdate,
     required this.lastdate,
     required this.emoji,
+    required this.memo,
   });
 
   factory Schedule.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class Schedule {
       firstdate: json['firstdate'] ?? '',
       lastdate: json['lastdate'] ?? '',
       emoji: json['emoji'] ?? '',
+      memo: json['memo'] ?? '',
     );
   }
 
@@ -38,6 +41,7 @@ class Schedule {
       'firstdate': firstdate,
       'lastdate': lastdate,
       'emoji': "",
+      'memo' : memo,
     };
   }
 }
@@ -67,6 +71,7 @@ Future<void> save_schedule({
   required DateTime? firstdate,
   required DateTime? lastdate,
   required String emoji,
+  required String memo,
 }) async {
   try {
 
@@ -78,6 +83,7 @@ Future<void> save_schedule({
       'firstdate' : firstdate!.toIso8601String() ?? '',
       'lastdate' : lastdate!.toIso8601String() ?? '',
       'emoji' : emoji,
+      'memo' : memo,
     };
 
     List<Map<String, dynamic>> schedules = [];
@@ -105,6 +111,7 @@ Future<void> save_schedule_web({
   required DateTime? firstdate,
   required DateTime? lastdate,
   required String emoji,
+  required String memo,
 }) async {
   try{
     final newSchedule = {
@@ -113,6 +120,7 @@ Future<void> save_schedule_web({
       'firstdate' : firstdate!.toIso8601String(),
       'lastdate' : lastdate!.toIso8601String(),
       'emoji' : emoji,
+      'memo' : memo
     };
 
     if(kIsWeb){
@@ -130,12 +138,14 @@ Future<void> save_schedule_web({
       print("일정 저장 완료 (웹)");
       }
     else {
-        save_schedule(
-            title: title,
-            location: location,
-            firstdate: firstdate,
-            lastdate: lastdate,
-            emoji: emoji);
+      save_schedule(
+        title: title,
+        location: location,
+        firstdate: firstdate,
+        lastdate: lastdate,
+        emoji: emoji,
+        memo: memo
+      );
       }
 
   } catch (e) {
@@ -149,7 +159,7 @@ void read_data() async {
   try{
     final String? key = pref.getString("schedules_storage");
     print(key);
-  }catch(e){}
+  }catch(e){ }
 }
 
 
@@ -193,6 +203,7 @@ Future<List<Schedule>> getSchedule(DateTime? firstdate) async {
       print('  First Date: ${schedule.firstdate}');
       print('  Last Date: ${schedule.lastdate}');
       print('  Emoji: ${schedule.emoji}');
+      print('  Memo: ${schedule.memo}');
       print('----------------');
     }
   } else {

@@ -139,19 +139,18 @@ class _SchedulePopupState extends State<SchedulePopup> {
               );
               return;
             }
-
+            // 입력 데이터 처리 로직
             final String title = titleController.text;
             final String location = locationController.text;
-            // 입력 데이터 처리 로직
-            //print("제목: ${titleController.text}");
             final String? firstDateStr = startDate != null ? formatDateTime(startDate!) : null;
             final String? lastDateStr = endDate != null ? formatDateTime(endDate!) : null;
+            final String memo = memoController.text;
 
             print("제목: $title");
             print("장소: $location");
             print("일정 시작: $firstDateStr");
             print("일정 종료: $lastDateStr");
-            print("메모: ${titleController.text}");
+            print("메모: $memo");
 
             await save_schedule_web(
               title : title,
@@ -159,6 +158,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
               firstdate : startDate,
               lastdate : endDate,
               emoji: emojiController.text,
+              memo: memo,
             );
             read_data();
             getSchedule(startDate!);
@@ -192,6 +192,17 @@ Future<DateTime?> pickDateTime(BuildContext context) async {
     initialDate: DateTime.now(),
     firstDate: DateTime(2000),
     lastDate: DateTime(2100),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: Theme.of(context).copyWith(
+          datePickerTheme: const DatePickerThemeData(
+            backgroundColor: Color(0xFFF5F7FA),         // 밝은 회백색 배경
+            surfaceTintColor: Colors.transparent,       // 불필요한 잔상 제거
+          ),
+        ),
+        child: child!,
+      );
+    }
   );
 
   if (date == null) return null;
@@ -199,6 +210,16 @@ Future<DateTime?> pickDateTime(BuildContext context) async {
   final TimeOfDay? time = await showTimePicker(
     context: context,
     initialTime: TimeOfDay.now(),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: Theme.of(context).copyWith(
+          timePickerTheme: TimePickerThemeData(
+            backgroundColor: Colors.grey[200], // ✅ 팝업 배경색
+          ),
+        ),
+        child: child!,
+      );
+    },
   );
 
   if (time == null) return null;
