@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../reservation/reading_json.dart';
 
 class ScheduleDetailBottomSheet extends StatelessWidget {
@@ -27,15 +28,73 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          Text(
+          Text( // 선택한 일정 제목
             schedule.title,
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 38, fontWeight: FontWeight.w900),
           ),
-          const SizedBox(height: 10),
-          Text("📍 장소: ${schedule.location}"),
-          const SizedBox(height: 8),
-          Text("🕒 시간: ${schedule.firstdate } ~ ${schedule.lastdate}"), // schedule.time 필드가 있다고 가정
+
+          Divider(),
+          const SizedBox(height: 40,),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Icon(Icons.access_time, size: 18),
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly ,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(schedule.firstdate)),
+                          style: const TextStyle(fontSize: 15),
+                        ),
+                        Text(
+                            DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(schedule.firstdate)),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                    Padding(padding: const EdgeInsets.all(10)),
+                    Icon(Icons.keyboard_arrow_right, size: 30,),
+                    Padding(padding: const EdgeInsets.all(10)),
+                    Column(
+                      children: [
+                        Text(
+                          DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(schedule.lastdate)),
+                          style: const TextStyle(fontSize: 15),
+                        ),
+                        Text(
+                          DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(schedule.lastdate)),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ]
+                ),
+              )
+            ]
+          ),
           const SizedBox(height: 20),
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2), // 위치 보정
+                child: Icon(Icons.location_on_outlined, size: 20),
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(" 장소: ${schedule.location}"),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
