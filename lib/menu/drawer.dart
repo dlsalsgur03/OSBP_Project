@@ -144,3 +144,19 @@ class _MenuDrawerState extends State<MenuDrawer> {
     );
   }
 }
+
+class SettingsPanel extends StatelessWidget {
+  const SettingsPanel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("설정"),
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+      ),
+    );
+  }
+}
