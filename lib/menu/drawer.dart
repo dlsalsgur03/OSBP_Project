@@ -99,7 +99,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     return Align(
                       alignment: Alignment.centerRight,
                       child: Container(
-
+                        width: MediaQuery.of(context).size.width * 0.75, // 화면의 75% 너비
+                        height: double.infinity,
+                        color: Colors.white,
+                        child: const SettingsPanel(), // 설정 내용 위젯
                       ),
                     );
                   },
