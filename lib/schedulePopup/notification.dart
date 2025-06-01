@@ -8,19 +8,17 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin(); // 플러그인으로 알림등록 간결화
 
 int notification_Id(DateTime lastDate, String title) {
-  return lastDate.millisecondsSinceEpoch ~/ 1000 + title.hashCode;
+  int notificaionId = (lastDate.hashCode + title.hashCode) % 2147483647;
+  return notificaionId;
 }
 
 
 // 알림 초기화 함수
 Future<void> initializeNotifications() async {
-  const AndroidInitializationSettings androidInitSettings =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
-
+  const AndroidInitializationSettings androidInitSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
   const InitializationSettings initSettings = InitializationSettings(
     android: androidInitSettings,
   );
-
   await flutterLocalNotificationsPlugin.initialize(
       initSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
@@ -35,9 +33,9 @@ Future<void> initializeNotifications() async {
 }
 
 // 알림 예약 함수
-Future<void> scheduleNotification(int notificationId ,String title, DateTime lastDate) async {
+Future<void> scheduleNotification(int notificationId ,String title, DateTime firstDate) async {
   // 마감일 3일 전 오전 9시
-  final notificationDate = lastDate
+  final notificationDate = firstDate
       .subtract(Duration(days: 3))
       .copyWith(hour: 9, minute: 0, second: 0);
 
@@ -48,12 +46,15 @@ Future<void> scheduleNotification(int notificationId ,String title, DateTime las
     await storeId(notificationId);
   }
 
-  if (notificationDate.isBefore(DateTime.now())) {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      notificationId, // 알림 ID
+  final now = DateTime.now();
+  print("NOW: $now");
+  print("NOTIFICATION DATE: $notificationDate");
+
+  if (DateTime.now().isAfter(notificationDate)) {
+    await flutterLocalNotificationsPlugin.show(
+      notificationId+1, // 알림 ID
       title, //title
-      '3일 뒤 출발입니다!', //body
-      scheduledDate,
+      '3일도 안남았습니다!', //body
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -69,11 +70,9 @@ Future<void> scheduleNotification(int notificationId ,String title, DateTime las
             ]
         ),
       ),
-      androidAllowWhileIdle: true, // 절전모드에서도 작동
-      uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time, // 1일마다 반복
     );
+  } else {
+    print("Not showing notification");
   }
 
   await flutterLocalNotificationsPlugin.show(
