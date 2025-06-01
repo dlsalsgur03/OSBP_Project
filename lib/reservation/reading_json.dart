@@ -80,8 +80,8 @@ Future<void> save_schedule({
     final newSchedule = {
       'title' : title,
       'location' : location,
-      'firstdate' : firstdate!.toIso8601String(),
-      'lastdate' : lastdate!.toIso8601String(),
+      'firstdate' : firstdate!.toIso8601String() ?? '',
+      'lastdate' : lastdate!.toIso8601String() ?? '',
       'emoji' : emoji,
       'memo' : memo,
     };
