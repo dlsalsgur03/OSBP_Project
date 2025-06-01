@@ -154,6 +154,35 @@ Future<void> save_schedule_web({
 
 }
 
+Future<void> deleteSchedule(Schedule targetSchedule) async {
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? existingData = prefs.getString('schedules_storage');
+
+    if (existingData != null) {
+      final List<dynamic> decoded = jsonDecode(existingData);
+      final List<Map<String, dynamic>> updated = decoded
+          .whereType<Map<String, dynamic>>()
+          .where((json) {
+        final Schedule s = Schedule.fromJson(json);
+        return !(
+          s.title == targetSchedule.title &&
+          s.location == targetSchedule.location &&
+          s.firstdate == targetSchedule.firstdate &&
+          s.lastdate == targetSchedule.lastdate &&
+          s.memo == targetSchedule.memo
+        );
+      }).toList();
+
+      await prefs.setString('schedules_storage', jsonEncode(updated));
+      print('일정 삭제 완료');
+    }
+  } catch (e) {
+    print('일정 삭제 실패: $e');
+  }
+}
+
+
 void read_data() async {
   final SharedPreferences pref = await SharedPreferences.getInstance();
   try{

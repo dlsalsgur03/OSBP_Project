@@ -139,8 +139,8 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
               }
 
               return GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
+                onTap: () async {
+                  final result = await showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
                     backgroundColor: Colors.white,
@@ -148,13 +148,19 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
                       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                     ),
                     builder: (context) {
-                      return FractionallySizedBox(
-                        heightFactor: 0.7,
-                        child: ScheduleDetailBottomSheet(schedule: schedule),
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.8,  // 화면 높이의 70%
+                        child: ScheduleDetailBottomSheet(schedule: schedule)
                       );
                     },
                   );
+                  if (result == true) {
+                    setState(() {
+                      refresh();
+                    });
+                  }
                 },
+
                 child: _buildBox(
                   Row(
                     children: [

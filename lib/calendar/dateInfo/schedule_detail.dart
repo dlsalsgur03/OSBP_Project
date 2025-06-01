@@ -28,9 +28,21 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          Text( // 선택한 일정 제목
-            schedule.title,
-            style: TextStyle(fontSize: 38, fontWeight: FontWeight.w900),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text( // 선택한 일정 제목
+                schedule.title,
+                style: TextStyle(fontSize: 38, fontWeight: FontWeight.w900),
+              ),
+              IconButton(
+                icon: Icon(Icons.delete_outline_rounded),
+                onPressed: () async {
+                  await deleteSchedule(schedule);
+                  Navigator.pop(context, true);
+                },
+              )
+            ],
           ),
 
           Divider(),
