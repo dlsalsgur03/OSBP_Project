@@ -96,6 +96,15 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   barrierLabel: "설정",
                   transitionDuration: const Duration(milliseconds: 300),
                   pageBuilder: (context, animation, secondaryAnimation) {
+                    return Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+
+                      ),
+                    );
+                  },
+                  transitionBuilder: (context, animation, secondaryAnimation, child) {
+
                   },
                 );
               });
