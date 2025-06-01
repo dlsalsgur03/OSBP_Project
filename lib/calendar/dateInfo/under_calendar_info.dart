@@ -61,11 +61,17 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
                 onTap: () {
                   showModalBottomSheet(
                     context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.white,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                     ),
-                    isScrollControlled: true,
-                    builder: (context) => ScheduleDetailBottomSheet(schedule: schedule),
+                    builder: (context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.7,
+                        child: ScheduleDetailBottomSheet(schedule: schedule),
+                      );
+                    },
                   );
                 },
                 child: _buildBox(
