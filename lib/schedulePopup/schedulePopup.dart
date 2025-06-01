@@ -195,14 +195,12 @@ Future<DateTime?> pickDateTime(BuildContext context) async {
     builder: (BuildContext context, Widget? child) {
       return Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.light(
-            primary: Colors.teal,       // 선택된 날짜 색
-            onPrimary: Colors.white,    // 텍스트 색
-            onSurface: Colors.black,    // 기본 텍스트 색
-            surface: Colors.grey[200]!, // ✅ 팝업 배경색
+          datePickerTheme: const DatePickerThemeData(
+            backgroundColor: Color(0xFFF5F7FA),         // 밝은 회백색 배경
+            surfaceTintColor: Colors.transparent,       // 불필요한 잔상 제거
           ),
         ),
-        child: child!
+        child: child!,
       );
     }
   );
@@ -212,6 +210,16 @@ Future<DateTime?> pickDateTime(BuildContext context) async {
   final TimeOfDay? time = await showTimePicker(
     context: context,
     initialTime: TimeOfDay.now(),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: Theme.of(context).copyWith(
+          timePickerTheme: TimePickerThemeData(
+            backgroundColor: Colors.grey[200], // ✅ 팝업 배경색
+          ),
+        ),
+        child: child!,
+      );
+    },
   );
 
   if (time == null) return null;
