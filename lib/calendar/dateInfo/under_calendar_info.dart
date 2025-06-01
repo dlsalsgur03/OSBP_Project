@@ -11,7 +11,26 @@ class ScheduleListWidget extends StatelessWidget{
 
     if (schedules.isEmpty){
       return [
-        Container()
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              )
+            ],
+          ),
+          child: ListTile(
+            title: Text("일정이 없습니다."),
+            contentPadding: EdgeInsets.zero, // 패딩 제거 (원하는 경우)
+          ),
+        )
       ];
     }
 
