@@ -34,6 +34,7 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
           ),
 
           Divider(),
+
           const SizedBox(height: 40,),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,6 +96,33 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
+
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.all(12.0),
+            width: double.infinity,
+            constraints: BoxConstraints(minHeight: 100),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              border: Border.all(color: Colors.grey.shade50),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                )
+              ],
+            ),
+            child: Text(
+              schedule.memo.isNotEmpty ? schedule.memo : "내용이 없습니다.",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
