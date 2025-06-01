@@ -73,7 +73,6 @@ Future<void> scheduleNotification(int notificationId ,String title, DateTime fir
         ),
       ),
     );
-    removeId(notificationId);
   } else {
     print("Not showing notification");
   }

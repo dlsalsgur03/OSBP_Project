@@ -122,7 +122,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
         TextButton(
           onPressed: () async {
             // 입력 데이터 처리 로직
-            //print("제목: ${titleController.text}");
+            print("제목: ${titleController.text}");
             final String title = titleController.text;
             print("장소: ${locationController.text}");
             final String location = locationController.text;
@@ -131,6 +131,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
             print("일정 종료: ${endDateController.text}");
             final DateTime? lastdate = endDate;
             print("메모: ${titleController.text}");
+            final String memo = memoController.text;
 
             await save_schedule_web(
               title : title,
@@ -138,6 +139,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
               firstdate : firstdate,
               lastdate : lastdate,
               emoji: emojiController.text,
+              memo: memo,
             );
             read_data();
             getSchedule(firstdate!);
