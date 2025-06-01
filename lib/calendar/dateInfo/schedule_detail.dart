@@ -37,8 +37,9 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(Icons.delete_outline_rounded),
-                onPressed: () {
-
+                onPressed: () async {
+                  await deleteSchedule(schedule);
+                  Navigator.pop(context, true);
                 },
               )
             ],
