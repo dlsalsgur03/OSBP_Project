@@ -139,13 +139,12 @@ class _SchedulePopupState extends State<SchedulePopup> {
               );
               return;
             }
-
+            // 입력 데이터 처리 로직
             final String title = titleController.text;
             final String location = locationController.text;
-            // 입력 데이터 처리 로직
-            //print("제목: ${titleController.text}");
             final String? firstDateStr = startDate != null ? formatDateTime(startDate!) : null;
             final String? lastDateStr = endDate != null ? formatDateTime(endDate!) : null;
+            final String memo = memoController.text;
 
             print("제목: $title");
             print("장소: $location");
@@ -159,6 +158,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
               firstdate : startDate,
               lastdate : endDate,
               emoji: emojiController.text,
+              memo: memo,
             );
             read_data();
             getSchedule(startDate!);
