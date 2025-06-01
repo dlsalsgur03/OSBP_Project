@@ -65,12 +65,16 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
 
               final sd = widget.selectedDate;
 
+              DateTime sDate = DateTime(sdt.year, sdt.month, sdt.day);
+              DateTime eDate = DateTime(edt.year, edt.month, edt.day);
+              DateTime selectedDate = DateTime(sd.year, sd.month, sd.day);
+
               bool isSameDay(DateTime a, DateTime b){
                 return a.year == b.year && a.month == b.month && a.day == b.day;
               }
 
               Widget buildDateInfo() {
-                if (isSameDay(sd, sdt)) {
+                if (isSameDay(selectedDate, sDate)) {
                   // 선택된 날 == 시작일
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +84,7 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 4),
-                      (isSameDay(sdt, edt))
+                      (isSameDay(sDate, eDate))
                           ? Text(
                         endTime,
                         style: TextStyle(color: Colors.grey[700]),
@@ -91,13 +95,13 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
                       ),
                     ],
                   );
-                } else if (sd.isAfter(sdt) && sd.isBefore(edt)) {
+                } else if (selectedDate.isAfter(sDate) && selectedDate.isBefore(eDate)) {
                   // 선택된 날이 시작일과 끝나는일 사이일 때
                   return Text(
                     '하루종일',
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   );
-                } else if (isSameDay(sd, edt)) {
+                } else if (isSameDay(selectedDate, eDate)) {
                   // 선택된 날 == 끝나는일
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
