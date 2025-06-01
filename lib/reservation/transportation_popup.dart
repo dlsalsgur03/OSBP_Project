@@ -10,6 +10,7 @@ void showBookingOptions(BuildContext context, String title, DateTime firstdate) 
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        backgroundColor: const Color(0xffffffff),
         title: const Text('교통수단 예매'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
