@@ -24,6 +24,8 @@ Future<void> initializeNotifications() async {
       onDidReceiveNotificationResponse: (NotificationResponse response) {
       if(response.actionId == 'booking') {
         launchURL('https://www.kobus.co.kr/main.do');
+        int? id = response.id;
+        removeId(id!); // ID 삭제
       }
     },
   );
@@ -71,6 +73,7 @@ Future<void> scheduleNotification(int notificationId ,String title, DateTime fir
         ),
       ),
     );
+    removeId(notificationId);
   } else {
     print("Not showing notification");
   }
