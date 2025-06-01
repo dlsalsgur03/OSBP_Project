@@ -24,6 +24,16 @@ class _SchedulePopupState extends State<SchedulePopup> {
   @override
   Widget build(BuildContext context) {
 
+    void dispose() {
+      titleController.dispose();
+      locationController.dispose();
+      startDateController.dispose();
+      endDateController.dispose();
+      memoController.dispose();
+      emojiController.dispose();
+      super.dispose();
+    }
+
     String formatDateTime(DateTime dateTime) {
       return "${dateTime.year.toString().padLeft(4, '0')}-"
           "${dateTime.month.toString().padLeft(2, '0')}-"
