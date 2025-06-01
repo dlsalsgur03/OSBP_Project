@@ -87,7 +87,36 @@ class _MenuDrawerState extends State<MenuDrawer> {
             leading: Icon(Icons.settings),
             hoverColor: Color(0xffdee2e6),
             title: Text("설정"),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pop(); // Drawer 닫기
+              Future.delayed(Duration(milliseconds: 300), () {
+                showGeneralDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  barrierLabel: "설정",
+                  transitionDuration: const Duration(milliseconds: 300),
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.25
+                        , // 화면의 75% 너비
+                        height: double.infinity,
+                        color: Colors.white,
+                        child: const SettingsPanel(), // 설정 내용 위젯
+                      ),
+                    );
+                  },
+                  transitionBuilder: (context, animation, secondaryAnimation, child) {
+                    final offsetAnimation = Tween<Offset>(
+                      begin: const Offset(1, 0),
+                      end: Offset.zero,
+                    ).animate(animation);
+                    return SlideTransition(position: offsetAnimation, child: child);
+                  },
+                );
+              });
+            },
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
@@ -112,6 +141,31 @@ class _MenuDrawerState extends State<MenuDrawer> {
             trailing: Icon(Icons.navigate_next),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SettingsPanel extends StatelessWidget {
+  const SettingsPanel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("설정"),
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
+          )
+        ],
+      ),
+      body: const Center(
+        child: Text("  "), //앞으로 여기에 설정 기능들을 추가할 예정
       ),
     );
   }
