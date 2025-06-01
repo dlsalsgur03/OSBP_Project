@@ -192,6 +192,17 @@ Future<DateTime?> pickDateTime(BuildContext context) async {
     initialDate: DateTime.now(),
     firstDate: DateTime(2000),
     lastDate: DateTime(2100),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: Theme.of(context).copyWith(
+          datePickerTheme: const DatePickerThemeData(
+            backgroundColor: Color(0xFFF5F7FA),         // 밝은 회백색 배경
+            surfaceTintColor: Colors.transparent,       // 불필요한 잔상 제거
+          ),
+        ),
+        child: child!,
+      );
+    }
   );
 
   if (date == null) return null;
@@ -199,6 +210,16 @@ Future<DateTime?> pickDateTime(BuildContext context) async {
   final TimeOfDay? time = await showTimePicker(
     context: context,
     initialTime: TimeOfDay.now(),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: Theme.of(context).copyWith(
+          timePickerTheme: TimePickerThemeData(
+            backgroundColor: Colors.grey[200], // ✅ 팝업 배경색
+          ),
+        ),
+        child: child!,
+      );
+    },
   );
 
   if (time == null) return null;
