@@ -87,7 +87,19 @@ class _MenuDrawerState extends State<MenuDrawer> {
             leading: Icon(Icons.settings),
             hoverColor: Color(0xffdee2e6),
             title: Text("설정"),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pop(); // Drawer 닫기
+              Future.delayed(Duration(milliseconds: 300), () {
+                showGeneralDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  barrierLabel: "설정",
+                  transitionDuration: const Duration(milliseconds: 300),
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                  },
+                );
+              });
+            },
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
