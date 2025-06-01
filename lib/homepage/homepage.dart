@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../calendar/calendar.dart';
 import '../schedulePopup/schedulePopup.dart';
 import '../menu/drawer.dart';
@@ -71,6 +72,16 @@ class _HomePageState extends State<HomePage> {
               selectedDate: _selectedDate,
               onDaySelected: _handleDateChanged,
             ), // 달력 위치
+            Padding(  // 달력과 일정 사이에 날짜 출력
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(_selectedDate),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
             Expanded(
               child: ScheduleListWidget(
                 key: _scheduleKey,

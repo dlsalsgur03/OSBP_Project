@@ -1,3 +1,4 @@
+import 'package:OBSP_Project/calendar/dateInfo/schedule_detail.dart';
 import 'package:flutter/material.dart';
 import '../../reservation/reading_json.dart';
 
@@ -56,11 +57,31 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
 
           return ListView(
             children: schedules.map((schedule) {
-              return _buildBox(ListTile(
-                title: Text(schedule.title),
-                subtitle: Text(schedule.location),
-                contentPadding: EdgeInsets.zero,
-              ));
+              return GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.white,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    builder: (context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.7,
+                        child: ScheduleDetailBottomSheet(schedule: schedule),
+                      );
+                    },
+                  );
+                },
+                child: _buildBox(
+                  ListTile(
+                    title: Text(schedule.title),
+                    subtitle: Text(schedule.location),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              );
             }).toList(),
           );
         }
