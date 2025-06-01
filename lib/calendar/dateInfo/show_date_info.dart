@@ -65,14 +65,12 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
                                     borderRadius: BorderRadius.circular(5.0),
                                     border: Border.all(color: Color(0xffF2F2F2), width: 1.0)
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(schedule.title),
-                                      Text("날짜 : ${schedule.firstdate} ~ ${schedule.lastdate}"),
-                                      Text("장소 : ${schedule.location}")
-                                    ],
-                                  )
+                                  padding: EdgeInsets.all(10),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    '${schedule.emoji.isNotEmpty ? '${schedule.emoji} ' : ''}${schedule.title}',
+                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                  ),
                                 ),
                               )
                           else

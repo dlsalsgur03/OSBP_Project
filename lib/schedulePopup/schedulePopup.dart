@@ -24,6 +24,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
     final TextEditingController emojiController = TextEditingController();
 
     return AlertDialog(
+      backgroundColor: Colors.white,
       title: const Text("일정 추가"),
       content: SizedBox(
         width: 300,
@@ -136,7 +137,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
               location : location,
               firstdate : firstdate,
               lastdate : lastdate,
-              emoji: '',
+              emoji: emojiController.text,
             );
             read_data();
             getSchedule(firstdate!);
