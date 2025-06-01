@@ -120,6 +120,7 @@ Future<void> save_schedule_web({
       'firstdate' : firstdate!.toIso8601String(),
       'lastdate' : lastdate!.toIso8601String(),
       'emoji' : emoji,
+      'memo' : memo
     };
 
     if(kIsWeb){
@@ -137,13 +138,14 @@ Future<void> save_schedule_web({
       print("일정 저장 완료 (웹)");
       }
     else {
-        save_schedule(
-            title: title,
-            location: location,
-            firstdate: firstdate,
-            lastdate: lastdate,
-            emoji: emoji,
-            memo: memo);
+      save_schedule(
+        title: title,
+        location: location,
+        firstdate: firstdate,
+        lastdate: lastdate,
+        emoji: emoji,
+        memo: memo
+      );
       }
 
   } catch (e) {
@@ -157,7 +159,7 @@ void read_data() async {
   try{
     final String? key = pref.getString("schedules_storage");
     print(key);
-  }catch(e){}
+  }catch(e){ }
 }
 
 
