@@ -141,6 +141,15 @@ class _SchedulePopupState extends State<SchedulePopup> {
         ),
         TextButton(
           onPressed: () async {
+
+            // 날짜가 선택되지 않은 경우 안내 메시지 띄우기
+            if (startDate == null || endDate == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('시작일과 종료일을 모두 선택해주세요.')),
+              );
+              return;
+            }
+
             final String title = titleController.text;
             final String location = locationController.text;
             // 입력 데이터 처리 로직
