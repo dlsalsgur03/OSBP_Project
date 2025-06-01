@@ -3,9 +3,9 @@ import '../calendar/calendar.dart';
 import '../schedulePopup/schedulePopup.dart';
 import '../menu/drawer.dart';
 import '../menu/menu.dart';
+import '../calendar/dateInfo/under_calendar_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -17,6 +17,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScheduleListWidgetState> _scheduleKey = GlobalKey<ScheduleListWidgetState>();
+
+  // selectedDate를 hompage.dart에서 관리하기 위한 것
+  DateTime _selectedDate = DateTime.now();
+  void _handleDateChanged(DateTime newDate){
+    setState(() {
+      _selectedDate = newDate;
+    });
+  }
 
   @override
   void initState() {
@@ -72,25 +81,35 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Calendar(
+              selectedDate: _selectedDate,
+              onDaySelected: _handleDateChanged,
+            ), // 달력 위치
             Expanded(
-              child: Calendar(), // 달력 위치
-            ),
+              child: ScheduleListWidget(
+                key: _scheduleKey,
+                selectedDate: _selectedDate
+            ),)
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xffADB5BD),
-        onPressed: () {
-          // 팝업창 호출
-          showDialog(
+        backgroundColor: const Color(0xffADB5BD),
+        onPressed: () async {
+          final didAdd = await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
               return SchedulePopup();
             },
           );
+
+          if (didAdd == true) {
+            _scheduleKey.currentState?.refresh();
+          }
         },
         child: const Icon(Icons.add),
       ),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

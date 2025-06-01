@@ -5,7 +5,14 @@ import 'package:table_calendar/table_calendar.dart';
 import '../weather/weather.dart';
 import '../reservation/reading_json.dart';
 class Calendar extends StatefulWidget {
-  const Calendar({super.key});
+  final DateTime selectedDate;
+  final Function(DateTime) onDaySelected;
+
+  const Calendar({
+    super.key,
+    required this.selectedDate,
+    required this.onDaySelected,
+  });
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -54,6 +61,11 @@ class _CalendarState extends State<Calendar> {
     DateTime.now().day,
   );
   DateTime focusDay = DateTime.now();
+
+  // 더블 탭 bottomSheetModal을 위한 변수 선언
+  DateTime? _lastTappedDay;
+  DateTime? _lastTappedTime;
+  final Duration doubleTapThreshold = Duration(milliseconds: 500);
 
   @override
   Widget build(BuildContext context) {
@@ -142,13 +154,25 @@ class _CalendarState extends State<Calendar> {
             fontWeight: FontWeight.bold, color: Color(0xff2D2D2D)),
       ),
       calendarFormat: CalendarFormat.month,
-      onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
+      onDaySelected: (DateTime tappedDay, DateTime newFocusedDay) {
+        final now = DateTime.now();
         setState(() {
-          this.selectedDay = selectedDay;
-          focusDay = focusedDay;
-        });
+          focusDay = newFocusedDay;
+          final isReTapOnSelected = isSameDay(tappedDay, selectedDay);
+          selectedDay = tappedDay;
 
-        showBottomSheetModal(context, selectedDay);
+          if (isReTapOnSelected){
+            showBottomSheetModal(context, tappedDay);
+          } else if(_lastTappedDay != null && isSameDay(_lastTappedDay, tappedDay) && _lastTappedTime != null && now.difference(_lastTappedTime!) < doubleTapThreshold){
+            showBottomSheetModal(context, tappedDay);
+            _lastTappedDay = null;
+            _lastTappedTime = null;
+          } else{
+            _lastTappedDay = tappedDay;
+            _lastTappedTime = now;
+          }
+        });
+        widget.onDaySelected(selectedDay);
       },
       selectedDayPredicate: (DateTime day) {
         return isSameDay(selectedDay, day);

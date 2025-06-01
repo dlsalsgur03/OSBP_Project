@@ -183,7 +183,7 @@ Future<List<Schedule>> getSchedule(DateTime? firstdate) async {
     schedules=[];
   }
 
-  // firstdate에 따라 일정 필터링
+  // startDate부터 endDate 까지 일정 필터링
   List<Schedule> filteredSchedules = schedules.where((event) {
     DateTime startDate = DateTime.parse(event.firstdate);
     DateTime endDate = DateTime.parse(event.lastdate);
