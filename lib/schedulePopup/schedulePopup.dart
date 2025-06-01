@@ -192,6 +192,19 @@ Future<DateTime?> pickDateTime(BuildContext context) async {
     initialDate: DateTime.now(),
     firstDate: DateTime(2000),
     lastDate: DateTime(2100),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.light(
+            primary: Colors.teal,       // 선택된 날짜 색
+            onPrimary: Colors.white,    // 텍스트 색
+            onSurface: Colors.black,    // 기본 텍스트 색
+            surface: Colors.grey[200]!, // ✅ 팝업 배경색
+          ),
+        ),
+        child: child!
+      );
+    }
   );
 
   if (date == null) return null;
