@@ -10,13 +10,32 @@ class ScheduleListWidget extends StatelessWidget{
     List<Schedule> schedules = await getSchedule(selectedDate);
 
     if (schedules.isEmpty){
-      return [const Text("일정이 없습니다.")];
+      return [
+        Container()
+      ];
     }
 
     return schedules.map((schedule) {
-      return ListTile(
-        title: Text(schedule.title),
-        subtitle: Text(schedule.location),
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.all(12.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            )
+          ],
+        ),
+        child: ListTile(
+          title: Text(schedule.title),
+          subtitle: Text(schedule.location),
+          contentPadding: EdgeInsets.zero, // 패딩 제거 (원하는 경우)
+        ),
       );
     }).toList();
   }
