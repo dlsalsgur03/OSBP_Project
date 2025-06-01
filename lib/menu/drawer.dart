@@ -104,7 +104,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     );
                   },
                   transitionBuilder: (context, animation, secondaryAnimation, child) {
-
+                    final offsetAnimation = Tween<Offset>(
+                      begin: const Offset(1, 0),
+                      end: Offset.zero,
+                    ).animate(animation);
+                    return SlideTransition(position: offsetAnimation, child: child);
                   },
                 );
               });
