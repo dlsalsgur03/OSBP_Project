@@ -1,5 +1,6 @@
 import 'package:OBSP_Project/calendar/dateInfo/schedule_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../reservation/reading_json.dart';
 
 class ScheduleListWidget extends StatefulWidget {
@@ -57,6 +58,86 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
 
           return ListView(
             children: schedules.map((schedule) {
+              DateTime sdt = DateTime.parse(schedule.firstdate);
+              DateTime edt = DateTime.parse(schedule.lastdate);
+              String startTime = DateFormat('HH:mm').format(sdt);
+              String endTime = DateFormat('HH:mm').format(edt);
+
+              final sd = widget.selectedDate;
+
+              DateTime sDate = DateTime(sdt.year, sdt.month, sdt.day);
+              DateTime eDate = DateTime(edt.year, edt.month, edt.day);
+              DateTime selectedDate = DateTime(sd.year, sd.month, sd.day);
+
+              bool isSameDay(DateTime a, DateTime b){
+                return a.year == b.year && a.month == b.month && a.day == b.day;
+              }
+
+              Widget buildDateInfo() {
+                if (isSameDay(selectedDate, sDate)) {
+                  // 선택된 날 == 시작일
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        startTime,
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      (isSameDay(sDate, eDate))
+                          ? Text(
+                        endTime,
+                        style: TextStyle(color: Colors.grey[700]),
+                      )
+                          : Text(
+                        DateFormat('dd일 (E)', 'ko_KR').format(edt),
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                    ],
+                  );
+                } else if (selectedDate.isAfter(sDate) && selectedDate.isBefore(eDate)) {
+                  // 선택된 날이 시작일과 끝나는일 사이일 때
+                  return Text(
+                    '하루종일',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  );
+                } else if (isSameDay(selectedDate, eDate)) {
+                  // 선택된 날 == 끝나는일
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        DateFormat('dd일 (E)', 'ko_KR').format(sdt),
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        endTime,
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  );
+                } else {
+                  // 그 외 (선택된 날이 일정 밖인 경우)
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        DateFormat('dd일 (E)', 'ko_KR').format(sdt),
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        isSameDay(sdt, edt)
+                            ? endTime
+                            : DateFormat('dd일 (E)', 'ko_KR').format(edt),
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                    ],
+                  );
+                }
+              }
+
               return GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
@@ -75,11 +156,28 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
                   );
                 },
                 child: _buildBox(
-                  ListTile(
-                    title: Text(schedule.title),
-                    subtitle: Text(schedule.location),
-                    contentPadding: EdgeInsets.zero,
-                  ),
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                        alignment: Alignment.centerLeft,
+                        child: buildDateInfo(),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                        height: 40,
+                        width: 2,
+                        color: Colors.grey[400],
+                      ),
+                      Expanded(
+                        child: ListTile(
+                          title: Text(schedule.title),
+                          subtitle: Text(schedule.location),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ],
+                  )
                 ),
               );
             }).toList(),
