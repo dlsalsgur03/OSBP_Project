@@ -150,7 +150,7 @@ class _SchedulePopupState extends State<SchedulePopup> {
             print("장소: $location");
             print("일정 시작: $firstDateStr");
             print("일정 종료: $lastDateStr");
-            print("메모: ${titleController.text}");
+            print("메모: $memo");
 
             await save_schedule_web(
               title : title,
