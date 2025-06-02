@@ -3,6 +3,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../reservation/transportation_popup.dart';
+import 'getHolyday.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin(); // 플러그인으로 알림등록 간결화
@@ -35,11 +36,12 @@ Future<void> initializeNotifications() async {
 }
 
 // 알림 예약 함수
-Future<void> scheduleNotification(int notificationId ,String title, DateTime firstDate) async {
+Future<void> scheduleNotification(int notificationId ,String title, DateTime firstDate, DateTime lastDate) async {
   // 마감일 3일 전 오전 9시
-  final notificationDate = firstDate
-      .subtract(Duration(days: 3))
-      .copyWith(hour: 9, minute: 0, second: 0);
+  final notificationDate = calculateNotificationDate(
+      firstDate : firstDate,
+      lastDate : lastDate,
+      holidays: await loadSavedHolidays());
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 저장
@@ -138,4 +140,33 @@ Future<void> removeId(int id) async {
   List<String> ids = prefs.getStringList('notification_ids') ?? [];
   ids.remove(id.toString());
   await prefs.setStringList('notification_ids', ids);
+}
+
+DateTime calculateNotificationDate({
+  required DateTime firstDate,
+  required DateTime lastDate,
+  required List<DateTime> holidays,
+}) {
+  // firstDate와 lastDate의 시간 부분을 0시 0분 0초로 통일 (날짜만 비교하기 위해)
+  final cleanFirstDate = DateTime(firstDate.year, firstDate.month, firstDate.day);
+  final cleanLastDate = DateTime(lastDate.year, lastDate.month, lastDate.day);
+
+  bool holidayInRange = false;
+  for (DateTime holiday in holidays) {
+    // holiday도 시간 부분을 0시 0분 0초로 통일
+    final cleanHoliday = DateTime(holiday.year, holiday.month, holiday.day);
+
+    // 공휴일이 firstDate (포함) 와 lastDate (포함) 사이에 있는지 확인
+    if (!cleanHoliday.isBefore(cleanFirstDate) && !cleanHoliday.isAfter(cleanLastDate)) {
+      holidayInRange = true;
+      break;
+    }
+  }
+
+  if (holidayInRange) {
+    // firstDate를 기준으로 5일 전 날짜 계산
+    return firstDate.subtract(Duration(days: 5));
+  } else {
+    return firstDate.subtract(Duration(days: 3)); // 조건에 맞는 공휴일이 없음
+  }
 }

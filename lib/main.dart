@@ -3,13 +3,16 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'schedulePopup/notification.dart';
+import 'schedulePopup/getHolyday.dart';
 import 'dart:async';
 import 'homepage/homepage.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/.env");
   await initializeNotifications();
+  await updateHolidays();
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
