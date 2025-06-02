@@ -89,7 +89,7 @@ class WeatherService {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(d
+      builder: (context) => AlertDialog(
         backgroundColor: shouldShowUmbrellaIcon ? const Color(0xffd0eaff) : Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
