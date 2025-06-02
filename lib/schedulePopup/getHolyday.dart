@@ -81,11 +81,32 @@ Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
   }
 }
 
-  Future<void> updateHolidays() async {
+Future<void> updateHolidays() async {
+  final today = DateTime.now();
+  bool shouldUpdate = true;
+  if(kIsWeb) {
+    final prefs = await SharedPreferences.getInstance();
+    final lastUpdatedStr = prefs.getString('holidays_last_updated');
+    if (lastUpdatedStr != null) {
+      final lastUpdated = DateTime.tryParse(lastUpdatedStr);
+      if (lastUpdated != null &&
+        lastUpdated.year == today.year &&
+          lastUpdated.month == today.month &&
+          lastUpdated.day == today.day) {
+        shouldUpdate = false;
+      }
+    }
+    if (shouldUpdate) {
+      final holidays = await fetchHolidays(today.year);
+      await saveHolidaysToJson(holidays);
+      await prefs.setString('holidays_last_updated', today.toIso8601String());
+      print("공휴일 업데이트 완료 (웹)");
+    } else {
+      print("오늘은 이미 공휴일 데이터를 갱신함 (웹)");
+    }
+  }else {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/holidays_last_updated.txt');
-    final today = DateTime.now();
-    bool shouldUpdate = true;
 
     if (await file.exists()) {
       final lastUpdatedStr = await file.readAsString();
@@ -105,6 +126,7 @@ Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
       print("공휴일 업데이트 완료");
     } else {
       print("오늘은 이미 공휴일 데이터를 갱신함");
+    }
   }
 }
 
