@@ -49,10 +49,23 @@ dependencies:
   shared_preferences: ^2.2.3
   permission_handler: ^11.1.0
   flutter_local_notifications: ^16.3.0
+  flutter_native_splash: ^2.4.6
+  animated_splash_screen: ^1.3.0
 
   flutter_map: ^6.1.0
   latlong2: ^0.9.0
   geolocator: ^11.0.0
+
+flutter:
+  generate: true
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  assets:
+    - assets/.env
+    - assets/splash_icon.png
 
 dev_dependencies:
   flutter_test:
@@ -65,19 +78,27 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+  flutter_launcher_icons: "^0.13.1"
 
-# The following section is specific to Flutter packages.
-flutter:
-  generate: true
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
-  uses-material-design: true
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/splash_icon.png"
 
-  assets:
-    - assets/.env
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^5.0.0
+
+  # For information on the generic Dart part of this file, see the
+  # following page: https://dart.dev/tools/pub/pubspec
+
+  # The following section is specific to Flutter packages.
 
   # To add assets to your application, add an assets section, like this:
   # assets:
