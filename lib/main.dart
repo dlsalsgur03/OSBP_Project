@@ -62,4 +62,24 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 1000), // 1초 동안 페이드아웃
+          opacity: _opacity,
+          child: const Text(
+            "Miri Calendar",
+            style: TextStyle(
+              fontSize: 50,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
