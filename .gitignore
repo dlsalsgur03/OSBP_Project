@@ -43,7 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-.env
+assets/.env
+assets/splash_icon.png
 
 # Python/Flask virtual environment for server
 server/venv/
