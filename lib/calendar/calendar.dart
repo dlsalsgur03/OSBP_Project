@@ -29,11 +29,13 @@ class CalendarState extends State<Calendar> {
     super.initState();
     loadScheduledDates(); // 앱 시작할 때 저장된 일정 날짜 로딩
   }
+  Map<String, int> scheduledDateCounts = {};
 
   Future<void> loadScheduledDates() async {
     List<Schedule> allSchedules = await getAllSchedules();
     Set<DateTime> dates = {};
     Set<String> dateStrings = {};
+    Map<String, int> dateCounts = {};
 
     for (var schedule in allSchedules) {
       //string 타입으로 되어있는 startdate,enddate 부분을 Datetime으로 변환하는 코드입니다.
@@ -42,15 +44,15 @@ class CalendarState extends State<Calendar> {
 
       DateTime currentDate = startDate;
       while (!currentDate.isAfter(endDate)) {
-        DateTime dateOnly = DateTime(currentDate.year, currentDate.month, currentDate.day);
-        dates.add(dateOnly);
-        dateStrings.add(_dateKey(dateOnly));
+        final dateKey = _dateKey(currentDate);
+        dateCounts[dateKey] = (dateCounts[dateKey] ?? 0) + 1;
         currentDate = currentDate.add(const Duration(days: 1));
       }
     }
     setState(() {
       scheduledDates = dates;
       scheduledDateStrings = dateStrings;
+      scheduledDateCounts = dateCounts;
     });
   }
   String _dateKey(DateTime date) => "${date.year}-${date.month}-${date.day}";
@@ -105,11 +107,12 @@ class CalendarState extends State<Calendar> {
           if (!scheduledDateStrings.contains(dateKey)) {
             return null;
           }
+          final count = scheduledDateCounts[dateKey]!;
           final prevDateKey = _dateKey(normalizedDate.subtract(Duration(days: 1)));
           final nextDateKey = _dateKey(normalizedDate.add(Duration(days: 1)));
 
-          final hasPrev = scheduledDateStrings.contains(prevDateKey);
-          final hasNext = scheduledDateStrings.contains(nextDateKey);
+          final hasPrev = scheduledDateCounts.containsKey(prevDateKey);
+          final hasNext = scheduledDateCounts.containsKey(nextDateKey);
 
           return Positioned(
             bottom: 6,
