@@ -46,6 +46,7 @@ class CalendarState extends State<Calendar> {
       while (!currentDate.isAfter(endDate)) {
         final dateKey = _dateKey(currentDate);
         dateCounts[dateKey] = (dateCounts[dateKey] ?? 0) + 1;
+        dateStrings.add(dateKey);
         currentDate = currentDate.add(const Duration(days: 1));
       }
     }
@@ -53,6 +54,7 @@ class CalendarState extends State<Calendar> {
       scheduledDates = dates;
       scheduledDateStrings = dateStrings;
       scheduledDateCounts = dateCounts;
+      scheduledDateStrings = dateStrings;
     });
   }
   String _dateKey(DateTime date) => "${date.year}-${date.month}-${date.day}";
@@ -120,6 +122,11 @@ class CalendarState extends State<Calendar> {
               mainAxisSize: MainAxisSize.min,
               children: List.generate(count, (index) {
                 return Container(
+                  margin: EdgeInsets.only(
+                    top: 1.0,
+                    left: hasPrev ? 0 : 8,
+                    right: hasNext ? 0 : 8,
+                  ),
                   height: 2,
                   width: double.infinity,
                   decoration: BoxDecoration(
