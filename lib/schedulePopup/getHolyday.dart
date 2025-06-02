@@ -47,4 +47,26 @@ Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
   print(file);
 }
 
+Future<void> updateHolidays() async {
+  final directory = await getApplicationDocumentsDirectory();
+  final file = File('${directory.path}/holidays.json');
+  final today = DateTime.now();
+  bool shouldUpdate = true;
 
+  if (await file.exists()) {
+    final lastUpdatedStr = await file.readAsString();
+    final lastUpdated = DateTime.tryParse(lastUpdatedStr);
+    if (lastUpdated != null && lastUpdated.day == today.day && lastUpdated.month == today.month && lastUpdated.year == today.year) {
+      shouldUpdate = false;
+    }
+  }
+
+  if (shouldUpdate) {
+    final holidays = await fetchHolidays(today.year);
+    await saveHolidaysToJson(holidays);
+    await file.writeAsString(today.toIso8601String());
+    print("공휴일 업데이트 완료");
+  } else {
+    print("오늘은 이미 공휴일 데이터를 갱신함");
+  }
+}
