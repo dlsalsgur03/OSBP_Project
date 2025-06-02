@@ -4,19 +4,16 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'schedulePopup/notification.dart';
 import 'schedulePopup/getHolyday.dart';
+import 'dart:async';
 import 'homepage/homepage.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName:"assets/.env");
+  await dotenv.load(fileName: "assets/.env");
   await initializeNotifications();
   await updateHolidays();
   initializeDateFormatting().then((_) => runApp(const MyApp()));
-}
-
-String getApiKey() {
-  return dotenv.env['MY_API_KEY'] ?? "";
 }
 
 class MyApp extends StatelessWidget {
@@ -31,10 +28,61 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('ko', 'KR'), // 한국어 지원
-        Locale('en', ''),   // 영어 기본
+        Locale('ko', 'KR'),
+        Locale('en', ''),
       ],
-      home: HomePage(),
+      debugShowCheckedModeBanner: false,
+      home: const SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  double _opacity = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // 1.5초 후 서서히 글자가 사라지도록 설정
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      setState(() {
+        _opacity = 0.0;
+      });
+
+      // 글자가 완전히 사라진 후 메인 화면으로 이동
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 1000), // 1초 동안 페이드아웃
+          opacity: _opacity,
+          child: const Text(
+            "Miri Calendar",
+            style: TextStyle(
+              fontSize: 50,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
