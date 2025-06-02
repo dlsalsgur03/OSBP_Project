@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<List<DateTime>> fetchHolidays(int year) async {
   final apiKey = dotenv.env['HOLIDAY_API_KEY'];
@@ -52,7 +54,22 @@ Future<List<DateTime>> fetchHolidays(int year) async {
   return allHolidays;
 }
 
-  Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
+Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
+  if(kIsWeb) {
+    final prefs = await SharedPreferences.getInstance();
+    List<DateTime> holidayNew = [];
+
+    final existingData = prefs.getString('holidays');
+    if (existingData != null) {
+      final List<dynamic> jsonList = jsonDecode(existingData);
+      holidayNew = jsonList.map((e) => DateTime.parse(e)).toList();
+    }
+
+    final merged = {...holidayNew, ...holidays}.toList();
+
+    final List<String> encoded = merged.map((e) => e.toIso8601String()).toList();
+    await prefs.setString('holidays', jsonEncode(encoded));
+  } else {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/holidays.json');
 
@@ -62,12 +79,34 @@ Future<List<DateTime>> fetchHolidays(int year) async {
     await file.writeAsString(jsonEncode(holidayStrings));
     print(file);
   }
+}
 
-  Future<void> updateHolidays() async {
+Future<void> updateHolidays() async {
+  final today = DateTime.now();
+  bool shouldUpdate = true;
+  if(kIsWeb) {
+    final prefs = await SharedPreferences.getInstance();
+    final lastUpdatedStr = prefs.getString('holidays_last_updated');
+    if (lastUpdatedStr != null) {
+      final lastUpdated = DateTime.tryParse(lastUpdatedStr);
+      if (lastUpdated != null &&
+        lastUpdated.year == today.year &&
+          lastUpdated.month == today.month &&
+          lastUpdated.day == today.day) {
+        shouldUpdate = false;
+      }
+    }
+    if (shouldUpdate) {
+      final holidays = await fetchHolidays(today.year);
+      await saveHolidaysToJson(holidays);
+      await prefs.setString('holidays_last_updated', today.toIso8601String());
+      print("공휴일 업데이트 완료 (웹)");
+    } else {
+      print("오늘은 이미 공휴일 데이터를 갱신함 (웹)");
+    }
+  }else {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/holidays_last_updated.txt');
-    final today = DateTime.now();
-    bool shouldUpdate = true;
 
     if (await file.exists()) {
       final lastUpdatedStr = await file.readAsString();
@@ -87,18 +126,28 @@ Future<List<DateTime>> fetchHolidays(int year) async {
       print("공휴일 업데이트 완료");
     } else {
       print("오늘은 이미 공휴일 데이터를 갱신함");
+    }
   }
 }
 
 Future<List<DateTime>> loadSavedHolidays() async {
-  final directory = await getApplicationDocumentsDirectory();
-  final holidaysFile = File('${directory.path}/holidays.json');
-
-  if (await holidaysFile.exists()) {
-    final jsonStr = await holidaysFile.readAsString();
-    final List<dynamic> holidayList = json.decode(jsonStr);
+  if(kIsWeb) {
+    final prefs = await SharedPreferences.getInstance();
+    final String? key = prefs.getString('holidays');
+    if (key == null) return [];
+    final List<dynamic> holidayList = json.decode(key);
     return holidayList.map((s) => DateTime.parse(s)).toList();
-  } else {
-    return [];
+  }
+  else {
+    final directory = await getApplicationDocumentsDirectory();
+    final holidaysFile = File('${directory.path}/holidays.json');
+
+    if (await holidaysFile.exists()) {
+      final jsonStr = await holidaysFile.readAsString();
+      final List<dynamic> holidayList = json.decode(jsonStr);
+      return holidayList.map((s) => DateTime.parse(s)).toList();
+    } else {
+      return [];
+    }
   }
 }
