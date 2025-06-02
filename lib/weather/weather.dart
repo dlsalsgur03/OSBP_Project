@@ -20,26 +20,29 @@ class WeatherService {
         final weatherData = json.decode(weatherResponse.body);
         final airQualityData = json.decode(airQualityResponse.body);
 
+        String selectedDateKey = day.toIso8601String().split("T")[0];
+
+        List<dynamic> filteredWeatherList = weatherData['list'].where((entry) {
+          DateTime dateTime = DateTime.parse(entry['dt_txt']);
+          String dateKey = dateTime.toIso8601String().split("T")[0];
+          return dateKey == selectedDateKey;
+        }).toList();
+
         double tempMin = double.infinity, tempMax = double.negativeInfinity;
         String weatherDescription = "";
         int cloudCoverage = 0;
-        String selectedDateKey = day.toIso8601String().split("T")[0];
-        bool isRainyDay = false;
+        bool isRainyDay = filteredWeatherList.any((entry) =>
+            entry['weather'][0]['main'].toLowerCase().contains("rain"));
 
-          for (var entry in weatherData['list']) {
-            DateTime dateTime = DateTime.parse(entry['dt_txt']);
-            String dateKey = dateTime.toIso8601String().split("T")[0];
 
-            if (dateKey == selectedDateKey) {
-              double temp = entry['main']['temp'];
-              tempMin = temp < tempMin ? temp : tempMin;
-              tempMax = temp > tempMax ? temp : tempMax;
-              weatherDescription = entry['weather'][0]['description'];
-              cloudCoverage = entry['clouds']['all'];
-              if (entry['weather'][0]['main'].toLowerCase().contains("rain"))
-                isRainyDay = true;
-            }
-          }
+        for (var entry in filteredWeatherList) {
+          double temp = entry['main']['temp'];
+          tempMin = temp < tempMin ? temp : tempMin;
+          tempMax = temp > tempMax ? temp : tempMax;
+          weatherDescription = entry['weather'][0]['description'];
+          cloudCoverage = entry['clouds']['all'];
+        }
+
 
         int airQualityIndex = airQualityData['list'][0]['main']['aqi'];
         String airQuality = getAirQualityDescription(airQualityIndex);
@@ -79,17 +82,21 @@ class WeatherService {
     return recommendations.join(", ");
   }
 
-  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation, bool isRainyDay, String day){
+  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation, bool isRainyDay, String day) {
+    bool shouldShowUmbrellaIcon = recommendation.contains("우산");
+
+    print("isRainyDay: $isRainyDay, shouldShowUmbrellaIcon: $shouldShowUmbrellaIcon");
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isRainyDay ? const Color(0xffd0eaff) : Colors.white,
+        backgroundColor: shouldShowUmbrellaIcon ? const Color(0xffd0eaff) : Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text("날씨 정보 및 일정 정보"),
-            if (isRainyDay) const SizedBox(width: 8),
-            if (isRainyDay) const Text("☔", style: TextStyle(fontSize: 24)),
+            if (shouldShowUmbrellaIcon) const SizedBox(width: 8),
+            if (shouldShowUmbrellaIcon) const Text("☔", style: TextStyle(fontSize: 24)),
           ],
         ),
         content: Column(
@@ -103,7 +110,6 @@ class WeatherService {
             const Text("추천 준비물"),
             Text(recommendation),
             const SizedBox(height: 20),
-
           ],
         ),
         actions: [
