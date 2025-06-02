@@ -46,93 +46,130 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
           ),
 
           Divider(),
-
-          const SizedBox(height: 40,),
-          Row(
+          const SizedBox(height: 30,),
+          
+          // FirstDate -> LastDate
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Icon(Icons.access_time, size: 18),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start ,
+                children: [
+                  Icon(Icons.access_time),
+                  SizedBox(width: 10,),
+                  Text(
+                    "기간",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
+                    ),
+                  )
+                ],
               ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly ,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(schedule.firstdate)),
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                        Text(
-                            DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(schedule.firstdate)),
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    Padding(padding: const EdgeInsets.all(10)),
-                    Icon(Icons.keyboard_arrow_right, size: 30,),
-                    Padding(padding: const EdgeInsets.all(10)),
-                    Column(
-                      children: [
-                        Text(
-                          DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(schedule.lastdate)),
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                        Text(
-                          DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(schedule.lastdate)),
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ]
-                ),
-              )
+              Divider(),
+              SizedBox(height: 15,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly ,
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(schedule.firstdate)),
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                      Text(
+                          DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(schedule.firstdate)),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                  Padding(padding: const EdgeInsets.all(10)),
+                  Icon(Icons.keyboard_arrow_right, size: 30,),
+                  Padding(padding: const EdgeInsets.all(10)),
+                  Column(
+                    children: [
+                      Text(
+                        DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(schedule.lastdate)),
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                      Text(
+                        DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(schedule.lastdate)),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                ]
+              ),
             ]
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
 
-          Row(
+          // Location
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 2), // 위치 보정
-                child: Icon(Icons.location_on_outlined, size: 20),
+              Row(
+                children: [
+                  Icon(Icons.location_on_outlined, size: 28,),
+                  SizedBox(width: 10,),
+                  Text(
+                    "위치",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(" 장소: ${schedule.location}"),
-              ),
+              Divider(),
+              SizedBox(height: 15,),
+              Text(schedule.location),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 30),
 
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            padding: const EdgeInsets.all(12.0),
-            width: double.infinity,
-            constraints: BoxConstraints(minHeight: 100),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              border: Border.all(color: Colors.grey.shade50),
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                )
-              ],
-            ),
-            child: Text(
-              schedule.memo.isNotEmpty ? schedule.memo : "내용이 없습니다.",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
+          // Memo
+          Column(
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.notes),
+                  SizedBox(width: 10),
+                  Text(
+                    "메모",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
+                    ),
+                  )
+                ],
               ),
-            ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.all(12.0),
+                width: double.infinity,
+                constraints: BoxConstraints(minHeight: 100),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  border: Border.all(color: Colors.grey.shade50),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    )
+                  ],
+                ),
+                child: Text(
+                  schedule.memo.isNotEmpty ? schedule.memo : "내용이 없습니다.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ],
           ),
 
           Align(
