@@ -10,63 +10,82 @@ Future<List<DateTime>> fetchHolidays(int year) async {
 
   for (int month = 1; month <= 12; month++) {
     final url = Uri.parse(
-        'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo?solYear=$year&solMonth=${month.toString().padLeft(2, '0')}&ServiceKey=$apiKey&_type=json');
+        'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo'
+            '?solYear=$year&solMonth=${month.toString().padLeft(2, '0')}&ServiceKey=$apiKey&_type=json');
 
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final items = data['response']['body']['items']['item'];
+      final decodedBody = utf8.decode(response.bodyBytes);
+      print(decodedBody);
+      final data = json.decode(decodedBody);
+      final itemsContainer = data['response']?['body']?['items'];
 
-      if (items != null) {
-        // items가 List일 수도, Map일 수도 있음
-        if (items is List) {
-          allHolidays.addAll(items.map((item) {
-            final dateStr = item['locdate'].toString(); // e.g. "20250505"
-            return DateTime.parse(dateStr);
-          }));
-        } else if (items is Map) {
-          final dateStr = items['locdate'].toString();
-          allHolidays.add(DateTime.parse(dateStr));
+      if (itemsContainer == null || itemsContainer is String) {
+        // 아무 공휴일도 없는 경우 (items가 "" 빈 문자열인 경우)
+        continue;
+      }
+      final items = itemsContainer['item'];
+      if (items is List) {
+        for (var item in items) {
+          final dateStr = item['locdate'].toString();
+          allHolidays.add(DateTime(
+            int.parse(dateStr.substring(0, 4)),
+            int.parse(dateStr.substring(4, 6)),
+            int.parse(dateStr.substring(6, 8)),
+          ));
         }
+      } else if (items is Map) {
+        final dateStr = items['locdate'].toString();
+        allHolidays.add(DateTime(
+          int.parse(dateStr.substring(0, 4)),
+          int.parse(dateStr.substring(4, 6)),
+          int.parse(dateStr.substring(6, 8)),
+        ));
+      } else {
+        print('예상치 못한 item 타입: ${items.runtimeType}');
       }
     } else {
-      throw Exception('[$month월] 공휴일 데이터를 불러오는 데 실패했습니다');
+      print('[$month월] API 요청 실패: ${response.statusCode}');
     }
   }
 
   return allHolidays;
 }
 
-Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
-  final directory = await getApplicationDocumentsDirectory();
-  final file = File('${directory.path}/holidays.json');
+  Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/holidays.json');
 
-  // DateTime을 문자열로 변환해서 저장
-  final List<String> holidayStrings = holidays.map((date) => date.toIso8601String()).toList();
-  await file.writeAsString(jsonEncode(holidayStrings));
-  print(file);
-}
-
-Future<void> updateHolidays() async {
-  final directory = await getApplicationDocumentsDirectory();
-  final file = File('${directory.path}/holidays.json');
-  final today = DateTime.now();
-  bool shouldUpdate = true;
-
-  if (await file.exists()) {
-    final lastUpdatedStr = await file.readAsString();
-    final lastUpdated = DateTime.tryParse(lastUpdatedStr);
-    if (lastUpdated != null && lastUpdated.day == today.day && lastUpdated.month == today.month && lastUpdated.year == today.year) {
-      shouldUpdate = false;
-    }
+    // DateTime을 문자열로 변환해서 저장
+    final List<String> holidayStrings = holidays.map((date) =>
+        date.toIso8601String()).toList();
+    await file.writeAsString(jsonEncode(holidayStrings));
+    print(file);
   }
 
-  if (shouldUpdate) {
-    final holidays = await fetchHolidays(today.year);
-    await saveHolidaysToJson(holidays);
-    await file.writeAsString(today.toIso8601String());
-    print("공휴일 업데이트 완료");
-  } else {
-    print("오늘은 이미 공휴일 데이터를 갱신함");
+  Future<void> updateHolidays() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/holidays_last_updated.txt');
+    final today = DateTime.now();
+    bool shouldUpdate = true;
+
+    if (await file.exists()) {
+      final lastUpdatedStr = await file.readAsString();
+      final lastUpdated = DateTime.tryParse(lastUpdatedStr);
+      if (lastUpdated != null &&
+          lastUpdated.day == today.day &&
+          lastUpdated.month == today.month &&
+          lastUpdated.year == today.year) {
+        shouldUpdate = false;
+      }
+    }
+
+    if (shouldUpdate) {
+      final holidays = await fetchHolidays(today.year);
+      await saveHolidaysToJson(holidays);
+      await file.writeAsString(today.toIso8601String());
+      print("공휴일 업데이트 완료");
+    } else {
+      print("오늘은 이미 공휴일 데이터를 갱신함");
   }
 }
