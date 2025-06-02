@@ -114,19 +114,23 @@ class CalendarState extends State<Calendar> {
           final hasPrev = scheduledDateCounts.containsKey(prevDateKey);
           final hasNext = scheduledDateCounts.containsKey(nextDateKey);
 
-          return Positioned(
-            bottom: 6,
-            left: hasPrev ? 0 : 16,
-            right: hasNext ? 0 : 16,
-            child: Container(
-              height: 2,
-              decoration: BoxDecoration(
-                color: Color(0xffa7385c),
-                borderRadius: BorderRadius.horizontal(
-                  left: hasPrev ? Radius.zero : Radius.circular(3),
-                  right: hasNext ? Radius.zero : Radius.circular(3),
-                ),
-              ),
+          return Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(count, (index) {
+                return Container(
+                  height: 2,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffa7385c),
+                    borderRadius: BorderRadius.horizontal(
+                      left: hasPrev ? Radius.zero : Radius.circular(3),
+                      right: hasNext ? Radius.zero : Radius.circular(3),
+                    ),
+                  ),
+                );
+              }),
             ),
           );
         },
