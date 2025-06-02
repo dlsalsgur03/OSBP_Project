@@ -109,14 +109,23 @@ Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
 }
 
 Future<List<DateTime>> loadSavedHolidays() async {
-  final directory = await getApplicationDocumentsDirectory();
-  final holidaysFile = File('${directory.path}/holidays.json');
-
-  if (await holidaysFile.exists()) {
-    final jsonStr = await holidaysFile.readAsString();
-    final List<dynamic> holidayList = json.decode(jsonStr);
+  if(kIsWeb) {
+    final prefs = await SharedPreferences.getInstance();
+    final String? key = prefs.getString('holidays');
+    if (key == null) return [];
+    final List<dynamic> holidayList = json.decode(key);
     return holidayList.map((s) => DateTime.parse(s)).toList();
-  } else {
-    return [];
+  }
+  else {
+    final directory = await getApplicationDocumentsDirectory();
+    final holidaysFile = File('${directory.path}/holidays.json');
+
+    if (await holidaysFile.exists()) {
+      final jsonStr = await holidaysFile.readAsString();
+      final List<dynamic> holidayList = json.decode(jsonStr);
+      return holidayList.map((s) => DateTime.parse(s)).toList();
+    } else {
+      return [];
+    }
   }
 }
