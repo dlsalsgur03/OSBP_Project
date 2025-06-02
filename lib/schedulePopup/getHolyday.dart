@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<List<DateTime>> fetchHolidays(int year) async {
   final apiKey = dotenv.env['HOLIDAY_API_KEY'];
@@ -52,7 +54,22 @@ Future<List<DateTime>> fetchHolidays(int year) async {
   return allHolidays;
 }
 
-  Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
+Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
+  if(kIsWeb) {
+    final prefs = await SharedPreferences.getInstance();
+    List<DateTime> holidayNew = [];
+
+    final existingData = prefs.getString('holidays');
+    if (existingData != null) {
+      final List<dynamic> jsonList = jsonDecode(existingData);
+      holidayNew = jsonList.map((e) => DateTime.parse(e)).toList();
+    }
+
+    final merged = {...holidayNew, ...holidays}.toList();
+
+    final List<String> encoded = merged.map((e) => e.toIso8601String()).toList();
+    await prefs.setString('holidays', jsonEncode(encoded));
+  } else {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/holidays.json');
 
@@ -62,6 +79,7 @@ Future<List<DateTime>> fetchHolidays(int year) async {
     await file.writeAsString(jsonEncode(holidayStrings));
     print(file);
   }
+}
 
   Future<void> updateHolidays() async {
     final directory = await getApplicationDocumentsDirectory();
