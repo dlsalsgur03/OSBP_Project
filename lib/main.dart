@@ -68,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: Colors.white,
       body: Center(
         child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 1000), // 1초 동안 페이드아웃
+          duration: const Duration(milliseconds: 1100), // 1.1초 동안 페이드아웃
           opacity: _opacity,
           child: const Text(
             "Miri Calendar",
