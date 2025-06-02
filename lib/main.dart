@@ -48,11 +48,18 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // 1.5초 후 서서히 글자가 사라지도록 설정
-    Future.delayed(const Duration(milliseconds: 1500), ()
-    {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       setState(() {
         _opacity = 0.0;
       });
-    },
-  },
-};
+
+      // 글자가 완전히 사라진 후 메인 화면으로 이동
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      });
+    });
+  }
+
+}
