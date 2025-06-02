@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 Future<List<DateTime>> fetchHolidays(int year) async {
   final apiKey = dotenv.env['HOLIDAY_API_KEY'];
@@ -34,4 +36,15 @@ Future<List<DateTime>> fetchHolidays(int year) async {
 
   return allHolidays;
 }
+
+Future<void> saveHolidaysToJson(List<DateTime> holidays) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final file = File('${directory.path}/holidays.json');
+
+  // DateTime을 문자열로 변환해서 저장
+  final List<String> holidayStrings = holidays.map((date) => date.toIso8601String()).toList();
+  await file.writeAsString(jsonEncode(holidayStrings));
+  print(file);
+}
+
 
