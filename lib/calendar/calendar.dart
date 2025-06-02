@@ -15,10 +15,10 @@ class Calendar extends StatefulWidget {
   });
 
   @override
-  State<Calendar> createState() => _CalendarState();
+  State<Calendar> createState() => CalendarState();
 }
 
-class _CalendarState extends State<Calendar> {
+class CalendarState extends State<Calendar> {
   final WeatherService weatherService = WeatherService(); // weather.dart 연동
 
   Set<DateTime> scheduledDates = {};
@@ -113,10 +113,10 @@ class _CalendarState extends State<Calendar> {
 
           return Positioned(
             bottom: 6,
-            left: hasPrev ? 0 : 6,
-            right: hasNext ? 0 : 6,
+            left: hasPrev ? 0 : 16,
+            right: hasNext ? 0 : 16,
             child: Container(
-              height: 3,
+              height: 2,
               decoration: BoxDecoration(
                 color: Color(0xffa7385c),
                 borderRadius: BorderRadius.horizontal(
