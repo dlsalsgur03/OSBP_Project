@@ -89,3 +89,16 @@ Future<List<DateTime>> fetchHolidays(int year) async {
       print("오늘은 이미 공휴일 데이터를 갱신함");
   }
 }
+
+Future<List<DateTime>> loadSavedHolidays() async {
+  final directory = await getApplicationDocumentsDirectory();
+  final holidaysFile = File('${directory.path}/holidays.json');
+
+  if (await holidaysFile.exists()) {
+    final jsonStr = await holidaysFile.readAsString();
+    final List<dynamic> holidayList = json.decode(jsonStr);
+    return holidayList.map((s) => DateTime.parse(s)).toList();
+  } else {
+    return [];
+  }
+}
