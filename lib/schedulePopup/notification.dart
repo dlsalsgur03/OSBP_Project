@@ -37,9 +37,7 @@ Future<void> initializeNotifications() async {
 // 알림 예약 함수
 Future<void> scheduleNotification(int notificationId ,String title, DateTime firstDate) async {
   // 마감일 3일 전 오전 9시
-  final notificationDate = firstDate
-      .subtract(Duration(days: 3))
-      .copyWith(hour: 9, minute: 0, second: 0);
+  final notificationDate = firstDate.subtract(Duration(days: 3));
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 저장
