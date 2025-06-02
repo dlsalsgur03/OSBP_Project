@@ -143,14 +143,22 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
                   final result = await showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.transparent,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                     ),
                     builder: (context) {
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.8,  // 화면 높이의 70%
-                        child: ScheduleDetailBottomSheet(schedule: schedule)
+                      return DraggableScrollableSheet(
+                        expand: false,
+                        initialChildSize: 0.8,
+                        minChildSize: 0.4,
+                        maxChildSize: 0.95,
+                        builder: (context, scrollController) {
+                          return ScheduleDetailBottomSheet(
+                              schedule: schedule,
+                              scrollController: scrollController
+                          );
+                        },
                       );
                     },
                   );
