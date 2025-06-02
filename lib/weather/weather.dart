@@ -82,17 +82,21 @@ class WeatherService {
     return recommendations.join(", ");
   }
 
-  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation, bool isRainyDay, String day){
+  void showWeatherDialog(BuildContext context, double tempMin, double tempMax, String airQuality, String recommendation, bool isRainyDay, String day) {
+    bool shouldShowUmbrellaIcon = recommendation.contains("우산");
+
+    print("isRainyDay: $isRainyDay, shouldShowUmbrellaIcon: $shouldShowUmbrellaIcon");
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: isRainyDay ? const Color(0xffd0eaff) : Colors.white,
+      builder: (context) => AlertDialog(d
+        backgroundColor: shouldShowUmbrellaIcon ? const Color(0xffd0eaff) : Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text("날씨 정보 및 일정 정보"),
-            if (isRainyDay) const SizedBox(width: 8),
-            if (isRainyDay) const Text("☔", style: TextStyle(fontSize: 24)),
+            if (shouldShowUmbrellaIcon) const SizedBox(width: 8),
+            if (shouldShowUmbrellaIcon) const Text("☔", style: TextStyle(fontSize: 24)),
           ],
         ),
         content: Column(
@@ -106,7 +110,6 @@ class WeatherService {
             const Text("추천 준비물"),
             Text(recommendation),
             const SizedBox(height: 20),
-
           ],
         ),
         actions: [
