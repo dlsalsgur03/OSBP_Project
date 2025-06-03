@@ -15,6 +15,21 @@ class _MenuDrawerState extends State<MenuDrawer> {
   final TextEditingController _textController = TextEditingController();
   Color tempColor = _selectedColor;
 
+  void _showColorPickerDialog(BuildContext context) {
+    final List<Color> colors = [
+      Colors.red,
+      Colors.orange,
+      Colors.yellow,
+      Colors.green,
+      Colors.blue,
+      Colors.indigo,
+      Colors.purple,
+      Colors.black,
+    ];
+
+  }
+
+
   void _showReportDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -156,6 +171,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ),
             hoverColor: Color(0xffdee2e6),
             title: Text("색상 변경"),
+            onTap: () => _showColorPickerDialog(context),
             trailing: Icon(Icons.navigate_next),
           ),
         ],
