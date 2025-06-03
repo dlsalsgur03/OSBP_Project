@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 
 import '../../reservation/reading_json.dart';
 import '../../weather/weather.dart';
-import 'todo_modal.dart';
-import 'todo_func.dart';
+import './todolist/todo_modal.dart';
+import './todolist/todo_func.dart';
 
 DateTime today = DateTime.now();
 DateTime yesterday = today.subtract(const Duration(days: 1));
