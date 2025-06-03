@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 final List<String> _errorReports = []; //오류들 저장할 리스트 리스트가 초기화 되지 않게 밖으로 빼놨습니다.
+Color _selectedColor = Colors.blue; // 색을 저장할 변수
 
 class MenuDrawer extends StatefulWidget {
   const MenuDrawer({super.key});
@@ -11,16 +13,143 @@ class MenuDrawer extends StatefulWidget {
 
 class _MenuDrawerState extends State<MenuDrawer> {
   final TextEditingController _textController = TextEditingController();
+  Color tempColor = _selectedColor;
 
-  void _showReportDialog(BuildContext context) { //오류신고 팝업창
+  void _showColorPickerDialog(BuildContext context) {
+    final List<Color> colors = [
+      Colors.red,
+      Colors.redAccent,
+      Colors.red.shade200,
+      Colors.red.shade100,
+      Colors.red.shade50,
+
+      Colors.orange,
+      Colors.orangeAccent,
+      Colors.orange.shade200,
+      Colors.orange.shade100,
+      Colors.orange.shade50,
+
+      Colors.yellow,
+      Colors.yellowAccent,
+      Colors.yellow.shade200,
+      Colors.yellow.shade100,
+      Colors.yellow.shade50,
+
+      Colors.green,
+      Colors.greenAccent,
+      Colors.green.shade200,
+      Colors.green.shade100,
+      Colors.green.shade50,
+
+      Colors.blue,
+      Colors.blueAccent,
+      Colors.blue.shade200,
+      Colors.blue.shade100,
+      Colors.blue.shade50,
+
+      Colors.indigo,
+      Colors.indigoAccent,
+      Colors.indigo.shade200,
+      Colors.indigo.shade100,
+      Colors.indigo.shade50,
+
+      Colors.purple,
+      Colors.purpleAccent,
+      Colors.purple.shade200,
+      Colors.purple.shade100,
+      Colors.purple.shade50,
+
+      Colors.black,
+      Colors.grey.shade800,
+      Colors.grey.shade600,
+      Colors.grey.shade400,
+      Colors.grey.shade200,
+    ];
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('색상 선택'),
+          content: SizedBox(
+            width: 300,
+            height: 400, // 좀 더 높게
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: colors.length,
+              itemBuilder: (context, index) {
+                final color = colors[index];
+                return GestureDetector(
+                  onTap: () {
+                    print('선택된 색상: $color');
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black26),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+  void _showReportDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('색상 선택'),
+        content: SingleChildScrollView(
+          child: ColorPicker(
+            pickerColor: tempColor,
+            onColorChanged: (color) {
+              tempColor = color;
+            },
+            showLabel: true,
+            pickerAreaHeightPercent: 0.8,
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: const Text('취소'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: const Text('확인'),
+            onPressed: () {
+              setState(() {
+                _selectedColor = tempColor;
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setStateInsideDialog) {
           return AlertDialog(
         backgroundColor: const Color(0xFFFFF8E1),
-        title: Text('오류 신고'),
-        content: SizedBox(
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('오류 신고'),
+                Icon(Icons.report),
+              ],
+            ),
+            content: SizedBox(
           height: 300,
           width: 300,
           child: Column(
@@ -84,42 +213,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
       child: ListView(
         children: [
           ListTile(
-            leading: Icon(Icons.settings),
-            hoverColor: Color(0xffdee2e6),
-            title: Text("설정"),
-            onTap: () {
-              Navigator.of(context).pop(); // Drawer 닫기
-              Future.delayed(Duration(milliseconds: 300), () {
-                showGeneralDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  barrierLabel: "설정",
-                  transitionDuration: const Duration(milliseconds: 300),
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.25
-                        , // 화면의 75% 너비
-                        height: double.infinity,
-                        color: Colors.white,
-                        child: const SettingsPanel(), // 설정 내용 위젯
-                      ),
-                    );
-                  },
-                  transitionBuilder: (context, animation, secondaryAnimation, child) {
-                    final offsetAnimation = Tween<Offset>(
-                      begin: const Offset(1, 0),
-                      end: Offset.zero,
-                    ).animate(animation);
-                    return SlideTransition(position: offsetAnimation, child: child);
-                  },
-                );
-              });
-            },
-            trailing: Icon(Icons.navigate_next),
-          ),
-          ListTile(
             leading: Icon(Icons.people),
             hoverColor: Color(0xffdee2e6),
             title: Text("만든 사람들"),
@@ -127,7 +220,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
-            leading: Icon(Icons.report),
+            leading: Icon(Icons.report, color: Colors.red, size: 24),
             hoverColor: Color(0xffdee2e6),
             title: Text("오류 신고"),
             onTap: () => _showReportDialog(context),//팝업창 띄우기
@@ -138,6 +231,21 @@ class _MenuDrawerState extends State<MenuDrawer> {
             hoverColor: Color(0xffdee2e6),
             title: Text("공지사항"),
             onTap: () {},
+            trailing: Icon(Icons.navigate_next),
+          ),
+          ListTile(
+            leading: ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return LinearGradient(
+                  colors: [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple],
+                  tileMode: TileMode.mirror,
+                ).createShader(bounds);
+              },
+              child: Icon(Icons.palette, size: 24, color: Colors.white),
+            ),
+            hoverColor: Color(0xffdee2e6),
+            title: Text("색상 변경"),
+            onTap: () => _showColorPickerDialog(context),
             trailing: Icon(Icons.navigate_next),
           ),
         ],
