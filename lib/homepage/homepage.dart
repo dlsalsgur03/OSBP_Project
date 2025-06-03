@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<ScheduleListWidgetState> _scheduleKey = GlobalKey<ScheduleListWidgetState>();
   final GlobalKey<CalendarState> _calendarKey = GlobalKey<CalendarState>();
+  Color _selectedColor = const Color(0xffADB5BD);
 
   // selectedDate를 hompage.dart에서 관리하기 위한 것
   DateTime _selectedDate = DateTime.now();
@@ -26,7 +27,11 @@ class _HomePageState extends State<HomePage> {
       _selectedDate = newDate;
     });
   }
-
+  void _changeColor(Color newColor) {
+    setState(() {
+      _selectedColor = newColor;
+    });
+  }
   @override
   void initState() {
     super.initState();
@@ -63,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      drawer: MenuDrawer(),
+      drawer: MenuDrawer(onColorChanged: _changeColor,),
       body: Container(
         color: Colors.white,
         child: Column(
