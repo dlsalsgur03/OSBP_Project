@@ -1,7 +1,8 @@
+import 'package:OBSP_Project/calendar/dateInfo/pinmark.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+
+import 'pinmark.dart';
 import '../../reservation/reading_json.dart';
 
 class ScheduleDetailBottomSheet extends StatelessWidget {
@@ -139,25 +140,7 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
                 SizedBox(height: 15,),
                 SizedBox(
                   height: 200,
-                  child: FlutterMap(
-                      options: MapOptions(
-
-                      ),
-                      children: [
-                        TileLayer(
-                          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          subdomains: ['a','b','c'],
-                        ),
-                        MarkerLayer(
-                            markers: [
-                              Marker(
-                                point: LatLng(30, 40),
-                                child: Icon(Icons.location_pin, color: Colors.red, size: 40),
-                              )
-                            ]
-                        )
-                      ]
-                  ),
+                  child: LocationMap(locationName: schedule.location)
                 )
               ],
             ),
