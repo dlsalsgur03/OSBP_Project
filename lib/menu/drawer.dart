@@ -19,8 +19,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
         builder: (context, setStateInsideDialog) {
           return AlertDialog(
         backgroundColor: const Color(0xFFFFF8E1),
-        title: Text('오류 신고'),
-        content: SizedBox(
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('오류 신고'),
+                Icon(Icons.report),
+              ],
+            ),
+            content: SizedBox(
           height: 300,
           width: 300,
           child: Column(
@@ -84,42 +90,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
       child: ListView(
         children: [
           ListTile(
-            leading: Icon(Icons.settings),
-            hoverColor: Color(0xffdee2e6),
-            title: Text("설정"),
-            onTap: () {
-              Navigator.of(context).pop(); // Drawer 닫기
-              Future.delayed(Duration(milliseconds: 300), () {
-                showGeneralDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  barrierLabel: "설정",
-                  transitionDuration: const Duration(milliseconds: 300),
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.25
-                        , // 화면의 75% 너비
-                        height: double.infinity,
-                        color: Colors.white,
-                        child: const SettingsPanel(), // 설정 내용 위젯
-                      ),
-                    );
-                  },
-                  transitionBuilder: (context, animation, secondaryAnimation, child) {
-                    final offsetAnimation = Tween<Offset>(
-                      begin: const Offset(1, 0),
-                      end: Offset.zero,
-                    ).animate(animation);
-                    return SlideTransition(position: offsetAnimation, child: child);
-                  },
-                );
-              });
-            },
-            trailing: Icon(Icons.navigate_next),
-          ),
-          ListTile(
             leading: Icon(Icons.people),
             hoverColor: Color(0xffdee2e6),
             title: Text("만든 사람들"),
@@ -127,7 +97,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
-            leading: Icon(Icons.report),
+            leading: Icon(Icons.report, color: Colors.red, size: 24),
             hoverColor: Color(0xffdee2e6),
             title: Text("오류 신고"),
             onTap: () => _showReportDialog(context),//팝업창 띄우기
@@ -138,6 +108,19 @@ class _MenuDrawerState extends State<MenuDrawer> {
             hoverColor: Color(0xffdee2e6),
             title: Text("공지사항"),
             onTap: () {},
+            trailing: Icon(Icons.navigate_next),
+          ),
+          ListTile(
+            leading: ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return LinearGradient(
+                  colors: [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple],
+                  tileMode: TileMode.mirror,
+                ).createShader(bounds);
+              },
+              child: Icon(Icons.palette, size: 24, color: Colors.white),
+            ),
+            onTap: () => _showReportDialog(context),//팝업창 띄우기
             trailing: Icon(Icons.navigate_next),
           ),
         ],
