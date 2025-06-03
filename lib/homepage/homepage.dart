@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<ScheduleListWidgetState> _scheduleKey = GlobalKey<ScheduleListWidgetState>();
+  final GlobalKey<CalendarState> _calendarKey = GlobalKey<CalendarState>();
 
   // selectedDate를 hompage.dart에서 관리하기 위한 것
   DateTime _selectedDate = DateTime.now();
@@ -69,6 +70,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Calendar(
+              key: _calendarKey,
               selectedDate: _selectedDate,
               onDaySelected: _handleDateChanged,
             ), // 달력 위치
@@ -102,6 +104,7 @@ class _HomePageState extends State<HomePage> {
 
           if (didAdd == true) {
             _scheduleKey.currentState?.refresh();
+            _calendarKey.currentState?.loadScheduledDates();
           }
         },
         child: const Icon(Icons.add),

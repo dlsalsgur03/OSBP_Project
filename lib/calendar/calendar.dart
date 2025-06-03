@@ -15,10 +15,10 @@ class Calendar extends StatefulWidget {
   });
 
   @override
-  State<Calendar> createState() => _CalendarState();
+  State<Calendar> createState() => CalendarState();
 }
 
-class _CalendarState extends State<Calendar> {
+class CalendarState extends State<Calendar> {
   final WeatherService weatherService = WeatherService(); // weather.dart 연동
 
   Set<DateTime> scheduledDates = {};
@@ -29,11 +29,13 @@ class _CalendarState extends State<Calendar> {
     super.initState();
     loadScheduledDates(); // 앱 시작할 때 저장된 일정 날짜 로딩
   }
+  Map<String, int> scheduledDateCounts = {};
 
   Future<void> loadScheduledDates() async {
     List<Schedule> allSchedules = await getAllSchedules();
     Set<DateTime> dates = {};
     Set<String> dateStrings = {};
+    Map<String, int> dateCounts = {};
 
     for (var schedule in allSchedules) {
       //string 타입으로 되어있는 startdate,enddate 부분을 Datetime으로 변환하는 코드입니다.
@@ -42,14 +44,16 @@ class _CalendarState extends State<Calendar> {
 
       DateTime currentDate = startDate;
       while (!currentDate.isAfter(endDate)) {
-        DateTime dateOnly = DateTime(currentDate.year, currentDate.month, currentDate.day);
-        dates.add(dateOnly);
-        dateStrings.add(_dateKey(dateOnly));
+        final dateKey = _dateKey(currentDate);
+        dateCounts[dateKey] = (dateCounts[dateKey] ?? 0) + 1;
+        dateStrings.add(dateKey);
         currentDate = currentDate.add(const Duration(days: 1));
       }
     }
     setState(() {
       scheduledDates = dates;
+      scheduledDateStrings = dateStrings;
+      scheduledDateCounts = dateCounts;
       scheduledDateStrings = dateStrings;
     });
   }
@@ -105,25 +109,35 @@ class _CalendarState extends State<Calendar> {
           if (!scheduledDateStrings.contains(dateKey)) {
             return null;
           }
+          final count = scheduledDateCounts[dateKey]!;
           final prevDateKey = _dateKey(normalizedDate.subtract(Duration(days: 1)));
           final nextDateKey = _dateKey(normalizedDate.add(Duration(days: 1)));
 
-          final hasPrev = scheduledDateStrings.contains(prevDateKey);
-          final hasNext = scheduledDateStrings.contains(nextDateKey);
+          final hasPrev = scheduledDateCounts.containsKey(prevDateKey);
+          final hasNext = scheduledDateCounts.containsKey(nextDateKey);
 
-          return Positioned(
-            bottom: 6,
-            left: hasPrev ? 0 : 6,
-            right: hasNext ? 0 : 6,
-            child: Container(
-              height: 3,
-              decoration: BoxDecoration(
-                color: Color(0xffa7385c),
-                borderRadius: BorderRadius.horizontal(
-                  left: hasPrev ? Radius.zero : Radius.circular(3),
-                  right: hasNext ? Radius.zero : Radius.circular(3),
-                ),
-              ),
+          return Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(count, (index) {
+                return Container(
+                  margin: EdgeInsets.only(
+                    top: 1.0,
+                    left: hasPrev ? 0 : 8,
+                    right: hasNext ? 0 : 8,
+                  ),
+                  height: 2,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffa7385c),
+                    borderRadius: BorderRadius.horizontal(
+                      left: hasPrev ? Radius.zero : Radius.circular(3),
+                      right: hasNext ? Radius.zero : Radius.circular(3),
+                    ),
+                  ),
+                );
+              }),
             ),
           );
         },
