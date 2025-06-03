@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 
+
 Future<List<dynamic>> searchAddress(String query) async {
   final apiKey = dotenv.env['KAKAO_API_KEY'] ?? '';
 
