@@ -65,7 +65,26 @@ class _MenuDrawerState extends State<MenuDrawer> {
       Colors.grey.shade400,
       Colors.grey.shade200,
     ];
-
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('색상 선택'),
+          content: SizedBox(
+            width: 300,
+            height: 400, // 좀 더 높게
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: colors.length,
+            ),
+          ),
+        );
+      },
+    );
   }
 
 
