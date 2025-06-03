@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
             titleTextStyle: const TextStyle(
               fontSize: 30, color: Color(0xff212529), fontWeight: FontWeight.bold,
             ),
-            backgroundColor: const Color(0xffADB5BD),
+            backgroundColor:_selectedColor,
             elevation: 10,
             shadowColor: Color(0xffB0B0B0),
           ),
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xffADB5BD),
+        backgroundColor: _selectedColor,
         onPressed: () async {
           final didAdd = await showDialog<bool>(
             context: context,

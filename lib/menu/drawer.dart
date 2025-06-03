@@ -5,8 +5,8 @@ final List<String> _errorReports = []; //오류들 저장할 리스트 리스트
 Color _selectedColor = Colors.blue; // 색을 저장할 변수
 
 class MenuDrawer extends StatefulWidget {
-  const MenuDrawer({super.key});
-
+  const MenuDrawer({super.key,required this.onColorChanged});
+  final Function(Color) onColorChanged;
   @override
   State<MenuDrawer> createState() => _MenuDrawerState();
 }
@@ -85,6 +85,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 return GestureDetector(
                   onTap: () {
                     print('선택된 색상: $color');
+                    setState(() {
+                      _selectedColor = color; // 내부 상태도 업데이트
+                    });
+                    widget.onColorChanged(color);
                     Navigator.of(context).pop();
                   },
                   child: Container(
@@ -130,6 +134,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               setState(() {
                 _selectedColor = tempColor;
               });
+              widget.onColorChanged(tempColor);
               Navigator.of(context).pop();
             },
           ),
