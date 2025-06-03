@@ -86,8 +86,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   onTap: () {
                     print('선택된 색상: $color');
                     Navigator.of(context).pop();
-                    // 선택된 색상 처리 코드 추가 가능
                   },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black26),
+                    ),
+                  ),
                 );
               },
             ),
