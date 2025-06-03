@@ -29,7 +29,7 @@ Future<Map<String, dynamic>> getRegion(Position pos) async {
   }
 }
 
-Future<void> compareMyRegionWith(Map<String, dynamic> documents) async {
+Future<int> compareMyRegionWith(Map<String, dynamic> documents) async {
   // 시/군/구 가져오기
   final myRegion = await getRegion(await getCurrentLocation());
   final myRegion1 = myRegion['region_1depth_name'];
@@ -39,17 +39,28 @@ Future<void> compareMyRegionWith(Map<String, dynamic> documents) async {
   final otherRegion2 = documents[0]['region_2depth_name'];
   final otherRegion3 = documents[0]['region_3depth_name'];
 
-  if(myRegion1 == otherRegion1 && myRegion2 == otherRegion2 && myRegion3 == otherRegion3) {
-    print('✅ 같은 지역입니다.');
-  }
-  else if (myRegion1 == otherRegion1 && myRegion2 == otherRegion2) {
-    print('🚌 같은 시/군 → 버스 알림!');
-  }
-  else if (myRegion1 == otherRegion1) {
-    print('🚌 같은 시/군 → 버스 알림!');
-  }
-  else {
-    print('🚆 같은 시/도만 같음 → 기차 알림!');
-  }
+  int matchCount=0;
+  if (myRegion1 == otherRegion1) matchCount++;
+  if (myRegion2 == otherRegion2) matchCount++;
+  if (myRegion3 == otherRegion3) matchCount++;
 
+  return matchCount;
+}
+
+Future<void> notificationChanger(Map<String, dynamic> documents) async {
+  int matchLevel = await compareMyRegionWith(documents);
+  switch(matchLevel) {
+    case 3 :
+      print("같은지역입니다. 도보를 이용하거나, 시내버스를 이용하세요.");
+      break;
+    case 2 :
+      print("같은 군 내입니다. 시내버스를 이용하세요.");
+      break;
+    case 1 :
+      print("같은 시 내입니다. 시내버스를 이용하세요.");
+      break;
+    case 0 :
+      print("버스, 기차");
+      break;
+  }
 }

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'notification_local.dart';
 
 Future<List<dynamic>> searchAddress(String query) async {
   final apiKey = dotenv.env['KAKAO_API_KEY'] ?? '';
@@ -32,6 +32,7 @@ Future<List<dynamic>> searchAddress(String query) async {
         print('장소명: ${place['place_name']}, 주소: ${place['road_address_name']}');
       }
     }
+    await notificationChanger(documents);
     return jsonResult['documents']; // 주소 리스트
   } else {
     throw Exception('주소 검색 실패: ${response.statusCode}');
