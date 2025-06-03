@@ -14,7 +14,7 @@ final WeatherService weatherService = WeatherService();
 void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
 
   List<Schedule> schedules = await getSchedule(selectedDate);
-  List<Todo> todos = await getTodoList(selectedDate);
+  List<Todo> todos = await loadTodos(selectedDate);
 
   showModalBottomSheet(
     context: context,
@@ -24,29 +24,29 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
         builder: (context, setState) {
           final TextEditingController todoController = TextEditingController();
 
-          void addTodo(){
+          void addTodoHandler(){
             final text = todoController.text.trim();
             if (text.isNotEmpty){
               final newTodo = Todo(task: text);
               setState(() {
                 todos.add(newTodo);
-                addTodoToStorage(selectedDate, newTodo);
+                addTodo(selectedDate, newTodo);
               });
               todoController.clear();
             }
           }
 
-          void removeTodo(int index) {
+          void removeTodoHandler(int index) {
             setState((){
               todos.removeAt(index);
-              removeTodoFromStorage(selectedDate, index);
+              removeTodo(selectedDate, index);
             });
           }
 
           void toggleDone(int index, bool? val) {
             setState((){
               todos[index].done = val ?? false;
-              updateTodoInStorage(selectedDate, index, val ?? false);
+              updateTodo(selectedDate, index, val ?? false);
             });
           }
 
@@ -92,11 +92,11 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
                                           border: OutlineInputBorder(),
                                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                         ),
-                                        onSubmitted: (_) => addTodo(),
+                                        onSubmitted: (_) => addTodoHandler(),
                                       )
                                     ),
                                     SizedBox(width: 8,),
-                                    ElevatedButton(onPressed: addTodo, child: Text("추가")),
+                                    ElevatedButton(onPressed: addTodoHandler, child: Text("추가")),
                                   ],
                                 ),
                                 SizedBox(height: 10,),
@@ -120,7 +120,7 @@ void showBottomSheetModal(BuildContext context, DateTime selectedDate) async {
                                             ),
                                           ),
                                           IconButton(
-                                              onPressed: () => removeTodo(i),
+                                              onPressed: () => removeTodoHandler(i),
                                               icon: Icon(Icons.delete_outline_rounded, color: Colors.red,)
                                           )
                                         ],
