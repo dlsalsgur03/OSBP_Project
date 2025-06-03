@@ -30,6 +30,21 @@ class _MenuDrawerState extends State<MenuDrawer> {
             pickerAreaHeightPercent: 0.8,
           ),
         ),
+        actions: [
+          TextButton(
+            child: const Text('취소'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: const Text('확인'),
+            onPressed: () {
+              setState(() {
+                _selectedColor = tempColor;
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
     );
     showDialog(
