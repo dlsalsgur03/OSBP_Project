@@ -32,7 +32,7 @@ Future<List<dynamic>> searchAddress(String query) async {
         print('장소명: ${place['place_name']}, 주소: ${place['road_address_name']}');
       }
     }
-    await notificationChanger(documents);
+    await saveSelectedDoc(documents[0]);
     return jsonResult['documents']; // 주소 리스트
   } else {
     throw Exception('주소 검색 실패: ${response.statusCode}');

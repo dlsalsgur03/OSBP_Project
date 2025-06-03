@@ -36,8 +36,8 @@ Future<void> initializeNotifications() async {
 }
 
 // 알림 예약 함수
-Future<void> scheduleNotification(int notificationId ,String title, DateTime firstDate, DateTime lastDate) async {
-  // 마감일 3일 전 오전 9시
+Future<void> scheduleNotification(int changer, int notificationId ,String title, DateTime firstDate, DateTime lastDate) async {
+  // 날짜 비교, 사이에 공휴일이 있는지 확인
   final notificationDate = calculateNotificationDate(
       firstDate : firstDate,
       lastDate : lastDate,

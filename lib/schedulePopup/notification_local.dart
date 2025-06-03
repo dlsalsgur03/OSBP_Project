@@ -4,6 +4,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'search_func.dart';
+import 'notification.dart';
+
+class RegionStorage {
+  static Map<String, dynamic>? selectedDoc;
+}
 
 Future<Map<String, dynamic>> getRegion(Position pos) async {
   var apiKey = dotenv.env['KAKAO_API_KEY'];
@@ -29,15 +34,17 @@ Future<Map<String, dynamic>> getRegion(Position pos) async {
   }
 }
 
-Future<int> compareMyRegionWith(Map<String, dynamic> documents) async {
+Future<int> compareMyRegionWith() async {
   // 시/군/구 가져오기
   final myRegion = await getRegion(await getCurrentLocation());
   final myRegion1 = myRegion['region_1depth_name'];
   final myRegion2 = myRegion['region_2depth_name'];
   final myRegion3 = myRegion['region_3depth_name'];
-  final otherRegion1 = documents[0]['region_1depth_name'];
-  final otherRegion2 = documents[0]['region_2depth_name'];
-  final otherRegion3 = documents[0]['region_3depth_name'];
+
+  final otherRegion = RegionStorage.selectedDoc!;
+  final otherRegion1 = otherRegion['region_1depth_name'];
+  final otherRegion2 = otherRegion['region_2depth_name'];
+  final otherRegion3 = otherRegion['region_3depth_name'];
 
   int matchCount=0;
   if (myRegion1 == otherRegion1) matchCount++;
@@ -47,20 +54,16 @@ Future<int> compareMyRegionWith(Map<String, dynamic> documents) async {
   return matchCount;
 }
 
-Future<void> notificationChanger(Map<String, dynamic> documents) async {
-  int matchLevel = await compareMyRegionWith(documents);
-  switch(matchLevel) {
-    case 3 :
-      print("같은지역입니다. 도보를 이용하거나, 시내버스를 이용하세요.");
-      break;
-    case 2 :
-      print("같은 군 내입니다. 시내버스를 이용하세요.");
-      break;
-    case 1 :
-      print("같은 시 내입니다. 시내버스를 이용하세요.");
-      break;
-    case 0 :
-      print("버스, 기차");
-      break;
-  }
+Future<void> notificationChanger(int notificationId ,String title, DateTime firstDate, DateTime lastDate) async {
+  int matchLevel = await compareMyRegionWith();
+  scheduleNotification(matchLevel, notificationId, title, firstDate, lastDate);
+}
+
+Future<void> saveSelectedDoc(Map<String, dynamic> doc) async {
+  RegionStorage.selectedDoc = {
+    'region_1depth_name': doc['region_1depth_name'],
+    'region_2depth_name': doc['region_2depth_name'],
+    'region_3depth_name': doc['region_3depth_name'],
+  };
+  print('✅ 선택된 지역 저장 완료: ${RegionStorage.selectedDoc}');
 }

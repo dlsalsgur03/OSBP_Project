@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../schedulePopup/notification.dart';
+import '../schedulePopup/notification_local.dart';
 
 
 // 교통수단 예매 팝업 함수
@@ -43,7 +44,7 @@ void showBookingOptions(BuildContext context, String title, DateTime firstdate, 
               title: Text('다음에 예매'),
               onTap: () {
                 storeId(notificationId);
-                scheduleNotification(notificationId ,title ,firstdate, lastdate);
+                notificationChanger(notificationId ,title ,firstdate, lastdate);
                 Navigator.of(context).pop();
               }
             )
