@@ -173,6 +173,13 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
                       refresh();
                     });
                     widget.onScheduleChanged?.call();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('일정이 삭제되었습니다.'),
+                        duration: Duration(seconds: 1),
+                      )
+                    );
                   }
                 },
 
