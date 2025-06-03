@@ -14,8 +14,14 @@ Future<String> getRegion(Position pos) async {
 
   if(res.statusCode == 200) {
     final data = jsonDecode(res.body);
-    return data['documents'][0]['region_3depth_name']; // 지역명(동이름) 받아오기
+    final doc = data['documents'][0];
+    final region1 = doc['region_1depth_name'];
+    final region2 = doc['region_2depth_name'];
+    final region3 = doc['region_3depth_name'];
+
+    return '$region1 $region2 $region3'; // 지역명 받아오기
   } else {
     throw Exception('Failed to get region');
   }
 }
+
