@@ -38,10 +38,18 @@ Future<void> initializeNotifications() async {
 // 알림 예약 함수
 Future<void> scheduleNotification(int changer, int notificationId ,String title, DateTime firstDate, DateTime lastDate) async {
   // 날짜 비교, 사이에 공휴일이 있는지 확인
-  final notificationDate = calculateNotificationDate(
+  bool isHaveholiday = calculateNotificationDate(
       firstDate : firstDate,
       lastDate : lastDate,
       holidays: await loadSavedHolidays());
+
+  late DateTime notificationDate;
+  if(isHaveholiday) {
+    notificationDate = firstDate.subtract(Duration(days: 5));
+  }
+  else {
+    notificationDate = firstDate.subtract(Duration(days: 3));
+  }
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 저장
@@ -142,7 +150,7 @@ Future<void> removeId(int id) async {
   await prefs.setStringList('notification_ids', ids);
 }
 
-DateTime calculateNotificationDate({
+bool calculateNotificationDate({
   required DateTime firstDate,
   required DateTime lastDate,
   required List<DateTime> holidays,
@@ -165,8 +173,8 @@ DateTime calculateNotificationDate({
 
   if (holidayInRange) {
     // firstDate를 기준으로 5일 전 날짜 계산
-    return firstDate.subtract(Duration(days: 5));
+    return true;
   } else {
-    return firstDate.subtract(Duration(days: 3)); // 조건에 맞는 공휴일이 없음
+    return false; // 조건에 맞는 공휴일이 없음
   }
 }
