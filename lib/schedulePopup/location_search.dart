@@ -8,6 +8,7 @@ Future<Map<String, dynamic>?> showAddressSearchModal(BuildContext context) async
   return showModalBottomSheet<Map<String, dynamic>>(
     context: context,
     isScrollControlled: true,
+    backgroundColor: Colors.white,
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) {
@@ -41,14 +42,26 @@ Future<Map<String, dynamic>?> showAddressSearchModal(BuildContext context) async
                       child: TextField(
                         controller: searchController,
                         decoration: InputDecoration(
-                          hintText: '주소 검색',
-                          border: OutlineInputBorder(),
+                          hintText: '장소·주소 검색',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
                         onSubmitted: (_) => onSearch(),
                       ),
                     ),
                     SizedBox(width: 8),
-                    ElevatedButton(onPressed: onSearch, child: Text('검색')),
+                    ElevatedButton(
+                      onPressed: onSearch,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 25)
+                      ),
+                      child: Icon(Icons.search)
+                    ),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -68,6 +81,10 @@ Future<Map<String, dynamic>?> showAddressSearchModal(BuildContext context) async
                       return ListTile(
                         title: Text(roadAddress.isNotEmpty ? roadAddress : placeName),
                         subtitle: Text(placeName),
+                        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey,),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        ),
                         onTap: () {
                           Navigator.of(context).pop({
                             'address': roadAddress.isNotEmpty ? roadAddress : placeName,
