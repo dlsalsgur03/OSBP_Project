@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   emoji_picker_flutter: ^1.6.1
-
+  flutter_colorpicker: ^1.0.3
   flutter_localizations:
       sdk: flutter
   url_launcher: ^6.0.0

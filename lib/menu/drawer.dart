@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 final List<String> _errorReports = []; //오류들 저장할 리스트 리스트가 초기화 되지 않게 밖으로 빼놨습니다.
+Color _selectedColor = Colors.blue; // 색을 저장할 변수
 
 class MenuDrawer extends StatefulWidget {
   const MenuDrawer({super.key});
@@ -11,8 +13,25 @@ class MenuDrawer extends StatefulWidget {
 
 class _MenuDrawerState extends State<MenuDrawer> {
   final TextEditingController _textController = TextEditingController();
+  Color tempColor = _selectedColor;
 
-  void _showReportDialog(BuildContext context) { //오류신고 팝업창
+  void _showReportDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('색상 선택'),
+        content: SingleChildScrollView(
+          child: ColorPicker(
+            pickerColor: tempColor,
+            onColorChanged: (color) {
+              tempColor = color;
+            },
+            showLabel: true,
+            pickerAreaHeightPercent: 0.8,
+          ),
+        ),
+      ),
+    );
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -120,7 +139,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
               },
               child: Icon(Icons.palette, size: 24, color: Colors.white),
             ),
-            onTap: () => _showReportDialog(context),//팝업창 띄우기
+            hoverColor: Color(0xffdee2e6),
+            title: Text("색상 변경"),
             trailing: Icon(Icons.navigate_next),
           ),
         ],
