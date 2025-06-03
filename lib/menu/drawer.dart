@@ -80,6 +80,16 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 mainAxisSpacing: 8,
               ),
               itemCount: colors.length,
+              itemBuilder: (context, index) {
+                final color = colors[index];
+                return GestureDetector(
+                  onTap: () {
+                    print('선택된 색상: $color');
+                    Navigator.of(context).pop();
+                    // 선택된 색상 처리 코드 추가 가능
+                  },
+                );
+              },
             ),
           ),
         );
