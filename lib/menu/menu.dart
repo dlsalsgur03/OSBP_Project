@@ -8,7 +8,7 @@ class MenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.menu), // 햄버거 메뉴 아이콘
+      icon: const Icon(Icons.settings), // 햄버거 메뉴 아이콘
       onPressed: () {
         scaffoldKey.currentState?.openDrawer();
       },
