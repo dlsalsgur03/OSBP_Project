@@ -46,10 +46,10 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   late DateTime notificationDate;
   if(isHaveholiday) {
     notificationDate = firstDate.subtract(Duration(days: 5));
-  }
-  else {
+  } else {
     notificationDate = firstDate.subtract(Duration(days: 3));
   }
+
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 저장
@@ -62,15 +62,15 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   print("NOW: $now");
   print("NOTIFICATION DATE: $notificationDate");
 
-  if (DateTime.now().isAfter(notificationDate)) {
+  if (DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==true) {
     await flutterLocalNotificationsPlugin.show(
       notificationId+1, // 알림 ID
       title, //title
-      '3일도 안남았습니다!', //body
+      '연휴포함! 얘매 서두르세요!', //body
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
-            '예약 알림',
+            '긴급 알림',
             importance: Importance.high,
             priority: Priority.high,
             actions: <AndroidNotificationAction>[
@@ -83,7 +83,30 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
         ),
       ),
     );
-  } else {
+  }
+  else if(DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==false) {
+    await flutterLocalNotificationsPlugin.show(
+      notificationId+1, // 알림 ID
+      title, //title
+      '얼마 안남았습니다! 얘매 서두르세요!', //body
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+            'deadline_channel',
+            '긴급 알림',
+            importance: Importance.high,
+            priority: Priority.high,
+            actions: <AndroidNotificationAction>[
+              AndroidNotificationAction(
+                'booking',
+                '예약하러 가기',
+                showsUserInterface: true,
+              ),
+            ]
+        ),
+      ),
+    );
+  }
+  else {
     print("Not showing notification");
   }
 
