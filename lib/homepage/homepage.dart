@@ -87,7 +87,11 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: ScheduleListWidget(
                 key: _scheduleKey,
-                selectedDate: _selectedDate
+                selectedDate: _selectedDate,
+                onScheduleChanged: () {
+                  _scheduleKey.currentState?.refresh();
+                  _calendarKey.currentState?.loadScheduledDates();
+                },
             ),)
           ],
         ),
