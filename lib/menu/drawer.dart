@@ -69,6 +69,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text('색상 선택'),
           content: SizedBox(
             width: 300,
@@ -88,6 +89,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     Navigator.of(context).pop();
                     // 선택된 색상 처리 코드 추가 가능
                   },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.black26),
+                    ),
+                  ),
                 );
               },
             ),
