@@ -18,13 +18,52 @@ class _MenuDrawerState extends State<MenuDrawer> {
   void _showColorPickerDialog(BuildContext context) {
     final List<Color> colors = [
       Colors.red,
+      Colors.redAccent,
+      Colors.red.shade200,
+      Colors.red.shade100,
+      Colors.red.shade50,
+
       Colors.orange,
+      Colors.orangeAccent,
+      Colors.orange.shade200,
+      Colors.orange.shade100,
+      Colors.orange.shade50,
+
       Colors.yellow,
+      Colors.yellowAccent,
+      Colors.yellow.shade200,
+      Colors.yellow.shade100,
+      Colors.yellow.shade50,
+
       Colors.green,
+      Colors.greenAccent,
+      Colors.green.shade200,
+      Colors.green.shade100,
+      Colors.green.shade50,
+
       Colors.blue,
+      Colors.blueAccent,
+      Colors.blue.shade200,
+      Colors.blue.shade100,
+      Colors.blue.shade50,
+
       Colors.indigo,
+      Colors.indigoAccent,
+      Colors.indigo.shade200,
+      Colors.indigo.shade100,
+      Colors.indigo.shade50,
+
       Colors.purple,
+      Colors.purpleAccent,
+      Colors.purple.shade200,
+      Colors.purple.shade100,
+      Colors.purple.shade50,
+
       Colors.black,
+      Colors.grey.shade800,
+      Colors.grey.shade600,
+      Colors.grey.shade400,
+      Colors.grey.shade200,
     ];
 
   }
