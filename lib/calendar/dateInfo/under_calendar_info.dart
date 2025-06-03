@@ -5,7 +5,13 @@ import '../../reservation/reading_json.dart';
 
 class ScheduleListWidget extends StatefulWidget {
   final DateTime selectedDate;
-  const ScheduleListWidget({super.key, required this.selectedDate});
+  final Function()? onScheduleChanged;
+
+  const ScheduleListWidget({
+    super.key,
+    required this.selectedDate,
+    this.onScheduleChanged,
+  });
 
   @override
   State<ScheduleListWidget> createState() => ScheduleListWidgetState();
@@ -166,6 +172,7 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
                     setState(() {
                       refresh();
                     });
+                    widget.onScheduleChanged?.call();
                   }
                 },
 
