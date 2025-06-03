@@ -12,11 +12,15 @@ class RegionStorage {
 
 Future<Map<String, dynamic>> getRegion(Position pos) async {
   var apiKey = dotenv.env['KAKAO_API_KEY'];
+  if (apiKey == null || apiKey.isEmpty) throw Exception('Kakao API Key 없음');
   final url = Uri.parse('https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${pos.longitude}&y=${pos.latitude}');
 
   final res = await http.get(url, headers: {
     'Authorization': 'KakaoAK $apiKey',
   });
+  print('위치 좌표: (${pos.latitude}, ${pos.longitude})');
+  print('응답 상태 코드: ${res.statusCode}');
+  print('응답 본문: ${res.body}');
 
   if(res.statusCode == 200) {
     final data = jsonDecode(res.body);
@@ -37,10 +41,10 @@ Future<Map<String, dynamic>> getRegion(Position pos) async {
 Future<int> compareMyRegionWith() async {
   // 시/군/구 가져오기
   final myRegion = await getRegion(await getCurrentLocation());
+  print(myRegion);
   final myRegion1 = myRegion['region_1depth_name'];
   final myRegion2 = myRegion['region_2depth_name'];
   final myRegion3 = myRegion['region_3depth_name'];
-
   final otherRegion = RegionStorage.selectedDoc!;
   final otherRegion1 = otherRegion['region_1depth_name'];
   final otherRegion2 = otherRegion['region_2depth_name'];

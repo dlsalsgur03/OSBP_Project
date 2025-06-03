@@ -30,7 +30,6 @@ Future<void> initializeNotifications() async {
       }
     },
   );
-
   // 타임존 초기화
   tz.initializeTimeZones();
 }
@@ -57,11 +56,11 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   if(!existedId) {
     await storeId(notificationId);
   }
-
+  // 확인용
   final now = DateTime.now();
   print("NOW: $now");
   print("NOTIFICATION DATE: $notificationDate");
-
+  // 긴급 알람 함수
   if (DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==true) {
     await flutterLocalNotificationsPlugin.show(
       notificationId+1, // 알림 ID
@@ -86,7 +85,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   }
   else if(DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==false) {
     await flutterLocalNotificationsPlugin.show(
-      notificationId+1, // 알림 ID
+      notificationId + 1, // 알림 ID
       title, //title
       '얼마 안남았습니다! 얘매 서두르세요!', //body
       const NotificationDetails(
@@ -106,6 +105,22 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
       ),
     );
   }
+  else if(DateTime.now().isAfter(notificationDate) && changer==1) {
+    await flutterLocalNotificationsPlugin.show(
+      notificationId + 1, // 알림 ID
+      title, //title
+      '일정 시작까지 얼마 안남았어요!', //body
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+            'deadline_channel',
+            '알림',
+            importance: Importance.high,
+            priority: Priority.high,
+        ),
+      ),
+    );
+  }
+
   else {
     print("Not showing notification");
   }
