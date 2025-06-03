@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../reservation/transportation_popup.dart';
 import '../reservation/reading_json.dart';
+import 'location_search.dart';
 
 class SchedulePopup extends StatefulWidget {
   const SchedulePopup({super.key});
@@ -58,6 +60,14 @@ class _SchedulePopupState extends State<SchedulePopup> {
                 decoration: const InputDecoration(
                   labelText: "장소",
                 ),
+                onTap: () async {
+                  final result = await showAddressSearchModal(context);
+                  if (result != null) {
+                    setState(() {
+                      locationController.text = result['address'] ?? '';
+                    });
+                  }
+                },
               ),
               TextField(
                 controller: startDateController,

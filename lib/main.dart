@@ -10,7 +10,7 @@ import 'homepage/homepage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: "assets/.env");
+  await dotenv.load(fileName: "../assets/.env");
   await initializeNotifications();
   await updateHolidays();
   initializeDateFormatting().then((_) => runApp(const MyApp()));
