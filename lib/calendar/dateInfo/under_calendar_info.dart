@@ -6,11 +6,13 @@ import '../../reservation/reading_json.dart';
 class ScheduleListWidget extends StatefulWidget {
   final DateTime selectedDate;
   final Function()? onScheduleChanged;
+  final Function(Color)? onColorChanged;
 
   const ScheduleListWidget({
     super.key,
     required this.selectedDate,
     this.onScheduleChanged,
+    this.onColorChanged,
   });
 
   @override
@@ -162,7 +164,8 @@ class ScheduleListWidgetState extends State<ScheduleListWidget> {
                         builder: (context, scrollController) {
                           return ScheduleDetailBottomSheet(
                               schedule: schedule,
-                              scrollController: scrollController
+                              scrollController: scrollController,
+                            onColorChanged: widget.onColorChanged ?? (_) {},
                           );
                         },
                       );

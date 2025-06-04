@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> {
               key: _calendarKey,
               selectedDate: _selectedDate,
               onDaySelected: _handleDateChanged,
+              markerColor: _markerColor,
             ), // 달력 위치
             Padding(  // 달력과 일정 사이에 날짜 출력
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -104,6 +105,7 @@ class _HomePageState extends State<HomePage> {
                   _scheduleKey.currentState?.refresh();
                   _calendarKey.currentState?.loadScheduledDates();
                 },
+                onColorChanged: _changeMarkerColor,
             ),)
           ],
         ),
