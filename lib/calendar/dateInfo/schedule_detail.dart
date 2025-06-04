@@ -234,6 +234,19 @@ void _showColorPickerDialog(BuildContext context) {
             showLabel: false,
           ),
         ),
+        actions: [
+          TextButton(
+            child: Text('취소'),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: Text('확인'),
+            onPressed: () {
+              selectedColor = tempColor;
+              Navigator.pop(context);
+            },
+          ),
+        ],
       );
     },
   );
