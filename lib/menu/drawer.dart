@@ -189,7 +189,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             leading: Icon(Icons.people),
             hoverColor: Color(0xffdee2e6),
             title: Text("만든 사람들"),
-            onTap: () {},
+            onTap: () => _showCreatorsDialog(context),
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
@@ -287,6 +287,42 @@ void _showNoticeDialog(BuildContext context) {
             ),
           ],
         ),
+      );
+    },
+  );
+}
+
+void _showCreatorsDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.group, color: Colors.blue),
+            SizedBox(width: 8),
+            Text("민혁의 카피바라들"),
+          ],
+        ),
+        content: SizedBox(
+          height: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("인민혁", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              Text("박민석", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              Text("김윤태", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              Text("김주완", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text("닫기"),
+          ),
+        ],
       );
     },
   );

@@ -17,7 +17,7 @@ int notification_Id(DateTime lastDate, String title) {
 
 // 알림 초기화 함수
 Future<void> initializeNotifications() async {
-  const AndroidInitializationSettings androidInitSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+  const AndroidInitializationSettings androidInitSettings = AndroidInitializationSettings('@mipmap/splash_icon');
   const InitializationSettings initSettings = InitializationSettings(
     android: androidInitSettings,
   );
