@@ -5,8 +5,8 @@ final List<String> _errorReports = []; //오류들 저장할 리스트 리스트
 Color _selectedColor = Colors.blue; // 색을 저장할 변수
 
 class MenuDrawer extends StatefulWidget {
-  const MenuDrawer({super.key});
-
+  const MenuDrawer({super.key,required this.onColorChanged});
+  final Function(Color) onColorChanged;
   @override
   State<MenuDrawer> createState() => _MenuDrawerState();
 }
@@ -85,6 +85,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 return GestureDetector(
                   onTap: () {
                     print('선택된 색상: $color');
+                    setState(() {
+                      _selectedColor = color; // 내부 상태도 업데이트
+                    });
+                    widget.onColorChanged(color);
                     Navigator.of(context).pop();
                   },
                   child: Container(
@@ -105,37 +109,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
 
 
   void _showReportDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('색상 선택'),
-        content: SingleChildScrollView(
-          child: ColorPicker(
-            pickerColor: tempColor,
-            onColorChanged: (color) {
-              tempColor = color;
-            },
-            showLabel: true,
-            pickerAreaHeightPercent: 0.8,
-          ),
-        ),
-        actions: [
-          TextButton(
-            child: const Text('취소'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            child: const Text('확인'),
-            onPressed: () {
-              setState(() {
-                _selectedColor = tempColor;
-              });
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -216,7 +189,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             leading: Icon(Icons.people),
             hoverColor: Color(0xffdee2e6),
             title: Text("만든 사람들"),
-            onTap: () {},
+            onTap: () => _showCreatorsDialog(context),
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
@@ -230,7 +203,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             leading: Icon(Icons.newspaper),
             hoverColor: Color(0xffdee2e6),
             title: Text("공지사항"),
-            onTap: () {},
+            onTap: () => _showNoticeDialog(context),
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
@@ -277,4 +250,80 @@ class SettingsPanel extends StatelessWidget {
       ),
     );
   }
+}
+void _showNoticeDialog(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (context) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.5,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.announcement, color: Colors.orange, size: 30),
+                SizedBox(width: 8),
+                Text('공지사항', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            Divider(),
+            SizedBox(height: 12),
+            Text("미리캘린더를 이용해 주셔서 감사합니다!!", style: TextStyle(fontSize: 16)),
+            SizedBox(height: 12),
+            Spacer(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("닫기"),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void _showCreatorsDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.group, color: Colors.blue),
+            SizedBox(width: 8),
+            Text("민혁의 카피바라들"),
+          ],
+        ),
+        content: SizedBox(
+          height: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("인민혁", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              Text("박민석", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              Text("김윤태", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              Text("김주완", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text("닫기"),
+          ),
+        ],
+      );
+    },
+  );
 }

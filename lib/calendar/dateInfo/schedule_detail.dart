@@ -1,18 +1,86 @@
 import 'package:OBSP_Project/calendar/dateInfo/pinmark.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../../reservation/reading_json.dart';
 
-class ScheduleDetailBottomSheet extends StatelessWidget {
+Color selectedColor = const Color(0xFF800020);
+class ScheduleDetailBottomSheet extends StatefulWidget {
   final Schedule schedule;
   final ScrollController scrollController;
+  final Function(Color) onColorChanged;
 
   const ScheduleDetailBottomSheet({
     super.key,
     required this.schedule,
-    required this.scrollController
+    required this.scrollController,
+    required this.onColorChanged,
   });
+
+  @override
+  State<ScheduleDetailBottomSheet> createState() => _ScheduleDetailBottomSheetState();
+}
+
+class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
+  Color selectedColor = const Color(0xFF800020);
+  void _showColorPickerDialog(BuildContext context) {
+    final List<Color> presetColors = [
+      Colors.red, Colors.redAccent, Colors.red.shade200, Colors.red.shade100, Colors.red.shade50,
+      Colors.orange, Colors.orangeAccent, Colors.orange.shade200, Colors.orange.shade100, Colors.orange.shade50,
+      Colors.yellow, Colors.yellowAccent, Colors.yellow.shade200, Colors.yellow.shade100, Colors.yellow.shade50,
+      Colors.green, Colors.greenAccent, Colors.green.shade200, Colors.green.shade100, Colors.green.shade50,
+      Colors.blue, Colors.blueAccent, Colors.blue.shade200, Colors.blue.shade100, Colors.blue.shade50,
+      Colors.purple, Colors.purpleAccent, Colors.purple.shade200, Colors.purple.shade100, Colors.purple.shade50,
+      Colors.black,
+    ];
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('색상 선택'),
+          content: SizedBox(
+            width: 300,
+            height: 400,
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: presetColors.length,
+              itemBuilder: (context, index) {
+                final color = presetColors[index];
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedColor = color;
+                    });
+                    widget.onColorChanged(color);
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text('취소'),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +91,7 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
       ),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
       child: SingleChildScrollView(
-        controller: scrollController,
+        controller: widget.scrollController,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -44,17 +112,31 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text( // 선택한 일정 제목
-                  schedule.title,
+                  widget.schedule.title,
                   style: TextStyle(fontSize: 38, fontWeight: FontWeight.w900),
                 ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => _showColorPickerDialog(context),
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: selectedColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.grey.shade400),
+                        ),
+                      ),
+                    ),
                 IconButton(
                   icon: Icon(Icons.delete_outline_rounded),
                   onPressed: () async {
-                    await deleteSchedule(schedule);
+                    await deleteSchedule(widget.schedule);
                     if (context.mounted) {
                       Navigator.pop(context, true);
                     }
-                  },
+                  },)],
                 )
               ],
             ),
@@ -88,11 +170,11 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
                         Column(
                           children: [
                             Text(
-                              DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(schedule.firstdate)),
+                              DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(widget.schedule.firstdate)),
                               style: const TextStyle(fontSize: 15),
                             ),
                             Text(
-                              DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(schedule.firstdate)),
+                              DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(widget.schedule.firstdate)),
                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             )
                           ],
@@ -103,11 +185,11 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
                         Column(
                           children: [
                             Text(
-                              DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(schedule.lastdate)),
+                              DateFormat('MM월 dd일 (E)', 'ko_KR').format(DateTime.parse(widget.schedule.lastdate)),
                               style: const TextStyle(fontSize: 15),
                             ),
                             Text(
-                              DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(schedule.lastdate)),
+                              DateFormat('HH:mm', 'ko_KR').format(DateTime.parse(widget.schedule.lastdate)),
                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             )
                           ],
@@ -139,7 +221,7 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
                 SizedBox(height: 15,),
                 SizedBox(
                   height: 200,
-                  child: LocationMap(locationName: schedule.location)
+                  child: LocationMap(locationName: widget.schedule.location)
                 )
               ],
             ),
@@ -179,7 +261,7 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
                     ],
                   ),
                   child: Text(
-                    schedule.memo.isNotEmpty ? schedule.memo : "내용이 없습니다.",
+                    widget.schedule.memo.isNotEmpty ? widget.schedule.memo : "내용이 없습니다.",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -202,3 +284,4 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
     );
   }
 }
+

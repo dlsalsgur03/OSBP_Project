@@ -64,7 +64,6 @@ flutter:
 
   assets:
     - assets/.env
-    - assets/splash_icon.png
 
 dev_dependencies:
   flutter_test:
@@ -82,7 +81,6 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/splash_icon.png"
 
   flutter_test:
     sdk: flutter
