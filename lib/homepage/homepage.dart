@@ -20,10 +20,16 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<CalendarState> _calendarKey = GlobalKey<CalendarState>();
   Color _selectedColor = const Color(0xffADB5BD);
   Color _markerColor = const Color(0xFF800020);
+  bool _highlightWeekend = true;
 
   void _changeMarkerColor(Color newColor) {
     setState(() {
       _markerColor = newColor;
+    });
+  }
+  void _toggleHighlightWeekend(bool value) {
+    setState(() {
+      _highlightWeekend = value;
     });
   }
 
@@ -75,7 +81,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      drawer: MenuDrawer(onColorChanged: _changeColor,),
+      drawer: MenuDrawer(
+        onColorChanged: _changeColor,
+        highlightWeekend: _highlightWeekend,
+        onWeekendToggle: _toggleHighlightWeekend,
+      ),
       body: Container(
         color: Colors.white,
         child: Column(
@@ -86,6 +96,7 @@ class _HomePageState extends State<HomePage> {
               selectedDate: _selectedDate,
               onDaySelected: _handleDateChanged,
               markerColor: _markerColor,
+              highlightWeekend: _highlightWeekend,
             ), // 달력 위치
             Padding(  // 달력과 일정 사이에 날짜 출력
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),

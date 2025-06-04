@@ -8,12 +8,14 @@ class Calendar extends StatefulWidget {
   final DateTime selectedDate;
   final Function(DateTime) onDaySelected;
   final Color markerColor;
+  final bool highlightWeekend;
 
   const Calendar({
     super.key,
     required this.selectedDate,
     required this.onDaySelected,
     this.markerColor = const Color(0xffa7385c),
+    required this.highlightWeekend,
   });
 
   @override

@@ -223,7 +223,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
-            title: Text("주말 색상 강조"),
+            title: Text("주말 색상 표시"),
             trailing: Transform.scale(
               scale: 0.68,
               child: Switch(
