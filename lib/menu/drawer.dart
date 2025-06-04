@@ -304,6 +304,18 @@ void _showCreatorsDialog(BuildContext context) {
             Text("민혁의 카피바라들"),
           ],
         ),
+        content: SizedBox(
+          height: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("인민혁"),
+              Text("박민석"),
+              Text("김윤태"),
+              Text("김주완"),
+            ],
+          ),
+        ),
       );
     },
   );
