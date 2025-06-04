@@ -1,6 +1,7 @@
 import 'package:OBSP_Project/calendar/dateInfo/pinmark.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../../reservation/reading_json.dart';
 
@@ -8,11 +9,13 @@ Color selectedColor = const Color(0xFF800020);
 class ScheduleDetailBottomSheet extends StatelessWidget {
   final Schedule schedule;
   final ScrollController scrollController;
+  final Function(Color) onColorChanged;
 
   const ScheduleDetailBottomSheet({
     super.key,
     required this.schedule,
-    required this.scrollController
+    required this.scrollController,
+    required this.onColorChanged,
   });
 
 
@@ -243,6 +246,7 @@ void _showColorPickerDialog(BuildContext context) {
             child: Text('확인'),
             onPressed: () {
               selectedColor = tempColor;
+              onColorChanged(tempColor);
               Navigator.pop(context);
             },
           ),

@@ -19,6 +19,13 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScheduleListWidgetState> _scheduleKey = GlobalKey<ScheduleListWidgetState>();
   final GlobalKey<CalendarState> _calendarKey = GlobalKey<CalendarState>();
   Color _selectedColor = const Color(0xffADB5BD);
+  Color _markerColor = const Color(0xFF800020);
+
+  void _changeMarkerColor(Color newColor) {
+    setState(() {
+      _markerColor = newColor;
+    });
+  }
 
   // selectedDate를 hompage.dart에서 관리하기 위한 것
   DateTime _selectedDate = DateTime.now();
