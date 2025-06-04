@@ -111,38 +111,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
   void _showReportDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('색상 선택'),
-        content: SingleChildScrollView(
-          child: ColorPicker(
-            pickerColor: tempColor,
-            onColorChanged: (color) {
-              tempColor = color;
-            },
-            showLabel: true,
-            pickerAreaHeightPercent: 0.8,
-          ),
-        ),
-        actions: [
-          TextButton(
-            child: const Text('취소'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            child: const Text('확인'),
-            onPressed: () {
-              setState(() {
-                _selectedColor = tempColor;
-              });
-              widget.onColorChanged(tempColor);
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
-    showDialog(
-      context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setStateInsideDialog) {
           return AlertDialog(
