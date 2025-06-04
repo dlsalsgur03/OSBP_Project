@@ -33,6 +33,8 @@ class CalendarState extends State<Calendar> {
     super.initState();
     loadScheduledDates(); // 앱 시작할 때 저장된 일정 날짜 로딩
   }
+  @override
+
   Map<String, int> scheduledDateCounts = {};
 
   Future<void> loadScheduledDates() async {
@@ -105,28 +107,26 @@ class CalendarState extends State<Calendar> {
                 child: Text('일', style: TextStyle(color: Color(0xffB0B0B0))),
               );
           }
-          defaultBuilder: (context, date, _) {
-            Color textColor;
+          return const Center();
+        },
+        defaultBuilder: (context, date, _) {
+          Color textColor;
 
-            if (widget.highlightWeekend) {
-              if (date.weekday == DateTime.sunday) {
-                textColor = Colors.red;
-              } else if (date.weekday == DateTime.saturday) {
-                textColor = Colors.blue;
-              } else {
-                textColor = const Color(0xff2D2D2D);
-              }
+          if (widget.highlightWeekend) {
+            if (date.weekday == DateTime.sunday) {
+              textColor = Colors.red;
+            } else if (date.weekday == DateTime.saturday) {
+              textColor = Colors.blue;
             } else {
-              textColor = const Color(0xff2D2D2D); // 모두 검정색
+              textColor = const Color(0xff2D2D2D);
             }
+          } else {
+            textColor = const Color(0xff2D2D2D);
+          }
 
-            return Center(
-              child: Text(
-                '${date.day}',
-                style: TextStyle(color: textColor),
-              ),
-            );
-          };
+          return Center(
+            child: Text('${date.day}', style: TextStyle(color: textColor)),
+          );
         },
         markerBuilder: (context, date, events) {
           final normalizedDate = DateTime(date.year, date.month, date.day);

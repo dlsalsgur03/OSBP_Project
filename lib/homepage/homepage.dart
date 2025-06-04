@@ -32,7 +32,6 @@ class _HomePageState extends State<HomePage> {
       _highlightWeekend = value;
     });
   }
-
   // selectedDate를 hompage.dart에서 관리하기 위한 것
   DateTime _selectedDate = DateTime.now();
   void _handleDateChanged(DateTime newDate){
