@@ -189,7 +189,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             leading: Icon(Icons.people),
             hoverColor: Color(0xffdee2e6),
             title: Text("만든 사람들"),
-            onTap: () {},
+            onTap: () => _showCreatorsDialog(context),
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
@@ -285,6 +285,23 @@ void _showNoticeDialog(BuildContext context) {
                 child: Text("닫기"),
               ),
             ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void _showCreatorsDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.group, color: Colors.blue),
+            SizedBox(width: 8),
+            Text("민혁의 카피바라들"),
           ],
         ),
       );
