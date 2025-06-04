@@ -316,6 +316,12 @@ void _showCreatorsDialog(BuildContext context) {
             ],
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text("닫기"),
+          ),
+        ],
       );
     },
   );
