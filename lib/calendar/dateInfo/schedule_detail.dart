@@ -235,30 +235,40 @@ void _showColorPickerDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) {
-      Color tempColor = selectedColor;
       return AlertDialog(
         title: Text('색상 선택'),
-        content: SingleChildScrollView(
-          child: ColorPicker(
-            pickerColor: tempColor,
-            onColorChanged: (color) {
-              tempColor = color;
+        content: SizedBox(
+          width: 300,
+          height: 400,
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: presetColors.length,
+            itemBuilder: (context, index) {
+              final color = presetColors[index];
+              return GestureDetector(
+                onTap: () {
+                  onColorChanged(color);
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                ),
+              );
             },
-            showLabel: false,
           ),
         ),
         actions: [
           TextButton(
             child: Text('취소'),
             onPressed: () => Navigator.pop(context),
-          ),
-          TextButton(
-            child: Text('확인'),
-            onPressed: () {
-              selectedColor = tempColor;
-              onColorChanged(tempColor);
-              Navigator.pop(context);
-            },
           ),
         ],
       );
