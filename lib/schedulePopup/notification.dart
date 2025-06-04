@@ -41,14 +41,14 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
       firstDate : firstDate,
       lastDate : lastDate,
       holidays: await loadSavedHolidays());
-
+  // 알림 날짜 설정
   late DateTime notificationDate;
   if(isHaveholiday) {
     notificationDate = firstDate.subtract(Duration(days: 5));
   } else {
     notificationDate = firstDate.subtract(Duration(days: 3));
   }
-
+  final int num_day = notificationDate.difference(DateTime.now()).inDays;
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 저장
@@ -106,11 +106,11 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
       ),
     );
   }
-  else if(DateTime.now().isAfter(notificationDate) && changer==1) {
+  else if(DateTime.now().isAfter(notificationDate)) {
     await flutterLocalNotificationsPlugin.show(
       notificationId + 1, // 알림 ID
       title, //title
-      '일정 시작까지 얼마 안남았어요!', //body
+      '$num_day 남았어요!', //body
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -121,9 +121,32 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
       ),
     );
   }
-
   else {
-    print("Not showing notification");
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      notificationId, // 알림 ID
+      title, //title
+      '$num_day일 뒤 출발입니다!', //body
+      scheduledDate,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+            'deadline_channel',
+            '예약 알림',
+            importance: Importance.high,
+            priority: Priority.high,
+            actions: <AndroidNotificationAction>[
+              AndroidNotificationAction(
+                'booking',
+                '예약하러 가기',
+                showsUserInterface: true,
+              ),
+            ]
+        ),
+      ),
+      androidAllowWhileIdle: true, // 절전모드에서도 작동
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time, // 1일마다 반복
+    );
   }
 
   await flutterLocalNotificationsPlugin.show(
@@ -138,32 +161,6 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
         priority: Priority.low,
       ),
     ),
-  );
-
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-    notificationId, // 알림 ID
-    title, //title
-    '3일 뒤 출발입니다!', //body
-    scheduledDate,
-    const NotificationDetails(
-      android: AndroidNotificationDetails(
-        'deadline_channel',
-        '예약 알림',
-        importance: Importance.high,
-        priority: Priority.high,
-        actions: <AndroidNotificationAction>[
-          AndroidNotificationAction(
-            'booking',
-            '예약하러 가기',
-            showsUserInterface: true,
-          ),
-        ]
-      ),
-    ),
-    androidAllowWhileIdle: true, // 절전모드에서도 작동
-    uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
-    matchDateTimeComponents: DateTimeComponents.time, // 1일마다 반복
   );
 }
 
