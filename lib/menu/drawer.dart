@@ -3,7 +3,6 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 final List<String> _errorReports = []; //오류들 저장할 리스트 리스트가 초기화 되지 않게 밖으로 빼놨습니다.
 Color _selectedColor = Colors.blue; // 색을 저장할 변수
-bool _highlightWeekend = true;
 
 class MenuDrawer extends StatefulWidget {
   const MenuDrawer({
@@ -235,18 +234,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
             trailing: Transform.scale(
               scale: 0.68,
               child: Switch(
-                value: _highlightWeekend,
+                value: widget.highlightWeekend,
                 onChanged: (value) {
-                  setState(() {
-                    _highlightWeekend = value;
-                  });
+                  widget.onWeekendToggle(value);
                 },
               ),
             ),
             onTap: () {
-              setState(() {
-                _highlightWeekend = !_highlightWeekend;
-              });
+              widget.onWeekendToggle(!widget.highlightWeekend);
             },
           ),
         ],
