@@ -60,6 +60,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   final now = DateTime.now();
   print("NOW: $now");
   print("NOTIFICATION DATE: $notificationDate");
+  print("Changer : $changer");
   // 긴급 알람 함수
   if (DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==true) {
     await flutterLocalNotificationsPlugin.show(
@@ -211,8 +212,10 @@ bool calculateNotificationDate({
 
   if (holidayInRange) {
     // firstDate를 기준으로 5일 전 날짜 계산
+    print("공휴일 포함");
     return true;
   } else {
+    print("공휴일 미포함");
     return false; // 조건에 맞는 공휴일이 없음
   }
 }

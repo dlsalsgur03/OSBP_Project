@@ -58,7 +58,7 @@ void showBookingOptions(BuildContext context, String title, DateTime firstdate, 
 Future<void> launchURL(String url) async {
   Uri uri = Uri.parse(url);
   if (await canLaunchUrl(uri)) {
-    launchUrl(
+    await launchUrl(
       uri,
       mode: LaunchMode.externalApplication, // 외부 애플리케이션에서 열기
     );

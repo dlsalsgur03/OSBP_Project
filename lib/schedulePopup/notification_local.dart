@@ -46,6 +46,7 @@ Future<int> compareMyRegionWith() async {
   final myRegion2 = myRegion['region_2depth_name'];
   final myRegion3 = myRegion['region_3depth_name'];
   final otherRegion = RegionStorage.selectedDoc!;
+  print(otherRegion);
   final otherRegion1 = otherRegion['region_1depth_name'];
   final otherRegion2 = otherRegion['region_2depth_name'];
   final otherRegion3 = otherRegion['region_3depth_name'];
@@ -63,11 +64,32 @@ Future<void> notificationChanger(int notificationId ,String title, DateTime firs
   scheduleNotification(matchLevel, notificationId, title, firstDate, lastDate);
 }
 
-Future<void> saveSelectedDoc(Map<String, dynamic> doc) async {
-  RegionStorage.selectedDoc = {
-    'region_1depth_name': doc['region_1depth_name'],
-    'region_2depth_name': doc['region_2depth_name'],
-    'region_3depth_name': doc['region_3depth_name'],
-  };
-  print('✅ 선택된 지역 저장 완료: ${RegionStorage.selectedDoc}');
+Future<void> saveSelectedDoc(Map<String,dynamic> doc) async {
+  try {
+    print('saveSelectedDoc 호출됨');
+    if (doc == null) {
+      print('doc is null');
+      return;
+    }
+    final double longitude = double.parse(doc['x']);
+    final double latitude = double.parse(doc['y']);
+    //Map<String, dynamic> -> Postion : 받아오는 값에 x,y 좌표하고 주소만 있어서 변형 필요
+    final pos = Position(
+        longitude: longitude,
+        latitude: latitude,
+        timestamp: DateTime.now(),
+        accuracy: 1.0,
+        altitude: 0.0,
+        heading: 0.0,
+        speed: 0.0,
+        speedAccuracy: 0.0,
+        altitudeAccuracy: 0.0,
+        headingAccuracy: 0.0);
+    final region = await getRegion(pos);
+    RegionStorage.selectedDoc = region;
+    print('✅ 선택된 지역 저장 완료: ${RegionStorage.selectedDoc}');
+  } catch (e, st) {
+    print('saveSelectedDoc 에러: $e');
+    print(st);
+  }
 }
