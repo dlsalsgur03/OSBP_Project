@@ -203,7 +203,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             leading: Icon(Icons.newspaper),
             hoverColor: Color(0xffdee2e6),
             title: Text("공지사항"),
-            onTap: () {},
+            onTap: () => _showNoticeDialog(context),
             trailing: Icon(Icons.navigate_next),
           ),
           ListTile(
@@ -255,10 +255,26 @@ void _showNoticeDialog(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
     builder: (context) {
       return Container(
         height: MediaQuery.of(context).size.height * 0.5,
         padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.announcement, color: Colors.orange, size: 30),
+                SizedBox(width: 8),
+                Text('공지사항', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ],
+        ),
       );
     },
   );
