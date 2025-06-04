@@ -4,6 +4,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../reservation/transportation_popup.dart';
 import 'getHolyday.dart';
+import '../reservation/transportation_recommend.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin(); // 플러그인으로 알림등록 간결화
@@ -61,12 +62,13 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   print("NOW: $now");
   print("NOTIFICATION DATE: $notificationDate");
   print("Changer : $changer");
+  final rTransportaion = await findNearestStation();
   // 긴급 알람 함수
   if (DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==true) {
     await flutterLocalNotificationsPlugin.show(
       notificationId+1, // 알림 ID
       title, //title
-      '연휴포함! 얘매 서두르세요!', //body
+      '연휴포함! 얘매 서두르세요! 추천 : ${rTransportaion['place_name']}', //body
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -88,7 +90,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
     await flutterLocalNotificationsPlugin.show(
       notificationId + 1, // 알림 ID
       title, //title
-      '얼마 안남았습니다! 얘매 서두르세요!', //body
+      '얼마 안남았습니다! 얘매 서두르세요! 추천 : ${rTransportaion['place_name']}', //body
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',

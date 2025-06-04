@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../schedulePopup/search_func.dart';
 
 const int searchRadius = 50000; // 50km 반경
 
-Future<Map<String, dynamic>> findNearestStation(double x, double y) async {
+Future<Map<String, dynamic>> findNearestStation() async {
+  final myRegion = await getCurrentLocation();
+  final double x = myRegion.longitude;
+  final double y = myRegion.latitude;
   final busResults = await searchKakaoPlaces('버스 터미널', x, y);
   final trainResults = await searchKakaoPlaces('기차역', x, y);
 
