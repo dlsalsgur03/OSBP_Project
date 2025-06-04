@@ -6,8 +6,16 @@ Color _selectedColor = Colors.blue; // 색을 저장할 변수
 bool _highlightWeekend = true;
 
 class MenuDrawer extends StatefulWidget {
-  const MenuDrawer({super.key,required this.onColorChanged});
+  const MenuDrawer({
+    super.key,
+    required this.onColorChanged,
+    required this.highlightWeekend,
+    required this.onWeekendToggle,
+  });
+
   final Function(Color) onColorChanged;
+  final bool highlightWeekend;
+  final Function(bool) onWeekendToggle;
   @override
   State<MenuDrawer> createState() => _MenuDrawerState();
 }
