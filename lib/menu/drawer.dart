@@ -5,8 +5,8 @@ final List<String> _errorReports = []; //오류들 저장할 리스트 리스트
 Color _selectedColor = Colors.blue; // 색을 저장할 변수
 
 class MenuDrawer extends StatefulWidget {
-  const MenuDrawer({super.key});
-
+  const MenuDrawer({super.key,required this.onColorChanged});
+  final Function(Color) onColorChanged;
   @override
   State<MenuDrawer> createState() => _MenuDrawerState();
 }
@@ -85,6 +85,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 return GestureDetector(
                   onTap: () {
                     print('선택된 색상: $color');
+                    setState(() {
+                      _selectedColor = color; // 내부 상태도 업데이트
+                    });
+                    widget.onColorChanged(color);
                     Navigator.of(context).pop();
                   },
                   child: Container(
@@ -105,37 +109,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
 
 
   void _showReportDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('색상 선택'),
-        content: SingleChildScrollView(
-          child: ColorPicker(
-            pickerColor: tempColor,
-            onColorChanged: (color) {
-              tempColor = color;
-            },
-            showLabel: true,
-            pickerAreaHeightPercent: 0.8,
-          ),
-        ),
-        actions: [
-          TextButton(
-            child: const Text('취소'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            child: const Text('확인'),
-            onPressed: () {
-              setState(() {
-                _selectedColor = tempColor;
-              });
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(

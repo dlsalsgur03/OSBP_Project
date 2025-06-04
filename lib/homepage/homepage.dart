@@ -18,6 +18,14 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<ScheduleListWidgetState> _scheduleKey = GlobalKey<ScheduleListWidgetState>();
   final GlobalKey<CalendarState> _calendarKey = GlobalKey<CalendarState>();
+  Color _selectedColor = const Color(0xffADB5BD);
+  Color _markerColor = const Color(0xFF800020);
+
+  void _changeMarkerColor(Color newColor) {
+    setState(() {
+      _markerColor = newColor;
+    });
+  }
 
   // selectedDate를 hompage.dart에서 관리하기 위한 것
   DateTime _selectedDate = DateTime.now();
@@ -26,7 +34,11 @@ class _HomePageState extends State<HomePage> {
       _selectedDate = newDate;
     });
   }
-
+  void _changeColor(Color newColor) {
+    setState(() {
+      _selectedColor = newColor;
+    });
+  }
   @override
   void initState() {
     super.initState();
@@ -57,13 +69,13 @@ class _HomePageState extends State<HomePage> {
             titleTextStyle: const TextStyle(
               fontSize: 30, color: Color(0xff212529), fontWeight: FontWeight.bold,
             ),
-            backgroundColor: const Color(0xffADB5BD),
+            backgroundColor:_selectedColor,
             elevation: 10,
             shadowColor: Color(0xffB0B0B0),
           ),
         ),
       ),
-      drawer: MenuDrawer(),
+      drawer: MenuDrawer(onColorChanged: _changeColor,),
       body: Container(
         color: Colors.white,
         child: Column(
@@ -73,6 +85,7 @@ class _HomePageState extends State<HomePage> {
               key: _calendarKey,
               selectedDate: _selectedDate,
               onDaySelected: _handleDateChanged,
+              markerColor: _markerColor,
             ), // 달력 위치
             Padding(  // 달력과 일정 사이에 날짜 출력
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -92,12 +105,13 @@ class _HomePageState extends State<HomePage> {
                   _scheduleKey.currentState?.refresh();
                   _calendarKey.currentState?.loadScheduledDates();
                 },
+                onColorChanged: _changeMarkerColor,
             ),)
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xffADB5BD),
+        backgroundColor: _selectedColor,
         onPressed: () async {
           final didAdd = await showDialog<bool>(
             context: context,

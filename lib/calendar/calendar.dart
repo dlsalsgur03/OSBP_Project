@@ -7,11 +7,13 @@ import '../reservation/reading_json.dart';
 class Calendar extends StatefulWidget {
   final DateTime selectedDate;
   final Function(DateTime) onDaySelected;
+  final Color markerColor;
 
   const Calendar({
     super.key,
     required this.selectedDate,
     required this.onDaySelected,
+    this.markerColor = const Color(0xffa7385c),
   });
 
   @override
@@ -130,7 +132,7 @@ class CalendarState extends State<Calendar> {
                   height: 2,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: const Color(0xffa7385c),
+                    color: widget.markerColor,
                     borderRadius: BorderRadius.horizontal(
                       left: hasPrev ? Radius.zero : Radius.circular(3),
                       right: hasNext ? Radius.zero : Radius.circular(3),
