@@ -15,6 +15,7 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
     required this.scrollController
   });
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -69,7 +70,7 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
                     if (context.mounted) {
                       Navigator.pop(context, true);
                     }
-                  },
+                  },)],
                 )
               ],
             ),
@@ -216,4 +217,24 @@ class ScheduleDetailBottomSheet extends StatelessWidget {
       )
     );
   }
+}
+void _showColorPickerDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      Color tempColor = selectedColor;
+      return AlertDialog(
+        title: Text('색상 선택'),
+        content: SingleChildScrollView(
+          child: ColorPicker(
+            pickerColor: tempColor,
+            onColorChanged: (color) {
+              tempColor = color;
+            },
+            showLabel: false,
+          ),
+        ),
+      );
+    },
+  );
 }
