@@ -4,6 +4,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../reservation/transportation_popup.dart';
 import 'getHolyday.dart';
+import '../reservation/transportation_recommend.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin(); // 플러그인으로 알림등록 간결화
@@ -28,20 +29,32 @@ Future<void> initializeNotifications() async {
         int? id = response.id;
         removeId(id!); // ID 삭제
       }
+      else if(response.actionId == 'booking_train') {
+        launchURL('https://www.letskorail.com/');
+        int? id = response.id;
+        removeId(id!); // ID 삭제
+      }
     },
   );
-
   // 타임존 초기화
   tz.initializeTimeZones();
 }
 
 // 알림 예약 함수
-Future<void> scheduleNotification(int notificationId ,String title, DateTime firstDate, DateTime lastDate) async {
-  // 마감일 3일 전 오전 9시
-  final notificationDate = calculateNotificationDate(
+Future<void> scheduleNotification(int changer, int notificationId ,String title, DateTime firstDate, DateTime lastDate) async {
+  // 날짜 비교, 사이에 공휴일이 있는지 확인
+  bool isHaveholiday = calculateNotificationDate(
       firstDate : firstDate,
       lastDate : lastDate,
       holidays: await loadSavedHolidays());
+  // 알림 날짜 설정
+  late DateTime notificationDate;
+  if(isHaveholiday) {
+    notificationDate = firstDate.subtract(Duration(days: 5));
+  } else {
+    notificationDate = firstDate.subtract(Duration(days: 3));
+  }
+  final int num_day = notificationDate.difference(DateTime.now()).inDays;
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 저장
@@ -49,16 +62,83 @@ Future<void> scheduleNotification(int notificationId ,String title, DateTime fir
   if(!existedId) {
     await storeId(notificationId);
   }
-
+  // 확인용
   final now = DateTime.now();
   print("NOW: $now");
   print("NOTIFICATION DATE: $notificationDate");
-
-  if (DateTime.now().isAfter(notificationDate)) {
+  print("Changer : $changer");
+  final rTransportaion = await findNearestStation();
+  final tcategory = rTransportaion['category_name'];
+  String booking = 'booking';
+  if(tcategory.contains('기차역')) {
+    booking = 'booking_train';
+  }
+  // 긴급 알람 함수
+  if (DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==true) {
     await flutterLocalNotificationsPlugin.show(
       notificationId+1, // 알림 ID
       title, //title
-      '3일도 안남았습니다!', //body
+      '연휴포함! 얘매 서두르세요! 추천 : ${rTransportaion['place_name']}', //body
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+            'deadline_channel',
+            '긴급 알림',
+            importance: Importance.high,
+            priority: Priority.high,
+            actions: <AndroidNotificationAction>[
+              AndroidNotificationAction(
+                booking,
+                '예약하러 가기',
+                showsUserInterface: true,
+              ),
+            ]
+        ),
+      ),
+    );
+  }
+  else if(DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==false) {
+    await flutterLocalNotificationsPlugin.show(
+      notificationId + 1, // 알림 ID
+      title, //title
+      '얼마 안남았습니다! 얘매 서두르세요! 추천 : ${rTransportaion['place_name']}', //body
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+            'deadline_channel',
+            '긴급 알림',
+            importance: Importance.high,
+            priority: Priority.high,
+            actions: <AndroidNotificationAction>[
+              AndroidNotificationAction(
+                'booking',
+                '예약하러 가기',
+                showsUserInterface: true,
+              ),
+            ]
+        ),
+      ),
+    );
+  }
+  else if(DateTime.now().isAfter(notificationDate)) {
+    await flutterLocalNotificationsPlugin.show(
+      notificationId + 1, // 알림 ID
+      title, //title
+      '$num_day 남았어요!', //body
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+            'deadline_channel',
+            '알림',
+            importance: Importance.high,
+            priority: Priority.high,
+        ),
+      ),
+    );
+  }
+  else {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      notificationId, // 알림 ID
+      title, //title
+      '$num_day일 뒤 출발입니다!', //body
+      scheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -74,9 +154,11 @@ Future<void> scheduleNotification(int notificationId ,String title, DateTime fir
             ]
         ),
       ),
+      androidAllowWhileIdle: true, // 절전모드에서도 작동
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time, // 1일마다 반복
     );
-  } else {
-    print("Not showing notification");
   }
 
   await flutterLocalNotificationsPlugin.show(
@@ -91,32 +173,6 @@ Future<void> scheduleNotification(int notificationId ,String title, DateTime fir
         priority: Priority.low,
       ),
     ),
-  );
-
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-    notificationId, // 알림 ID
-    title, //title
-    '3일 뒤 출발입니다!', //body
-    scheduledDate,
-    const NotificationDetails(
-      android: AndroidNotificationDetails(
-        'deadline_channel',
-        '예약 알림',
-        importance: Importance.high,
-        priority: Priority.high,
-        actions: <AndroidNotificationAction>[
-          AndroidNotificationAction(
-            'booking',
-            '예약하러 가기',
-            showsUserInterface: true,
-          ),
-        ]
-      ),
-    ),
-    androidAllowWhileIdle: true, // 절전모드에서도 작동
-    uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
-    matchDateTimeComponents: DateTimeComponents.time, // 1일마다 반복
   );
 }
 
@@ -142,7 +198,7 @@ Future<void> removeId(int id) async {
   await prefs.setStringList('notification_ids', ids);
 }
 
-DateTime calculateNotificationDate({
+bool calculateNotificationDate({
   required DateTime firstDate,
   required DateTime lastDate,
   required List<DateTime> holidays,
@@ -165,8 +221,10 @@ DateTime calculateNotificationDate({
 
   if (holidayInRange) {
     // firstDate를 기준으로 5일 전 날짜 계산
-    return firstDate.subtract(Duration(days: 5));
+    print("공휴일 포함");
+    return true;
   } else {
-    return firstDate.subtract(Duration(days: 3)); // 조건에 맞는 공휴일이 없음
+    print("공휴일 미포함");
+    return false; // 조건에 맞는 공휴일이 없음
   }
 }
