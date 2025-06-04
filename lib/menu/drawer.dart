@@ -251,3 +251,15 @@ class SettingsPanel extends StatelessWidget {
     );
   }
 }
+void _showNoticeDialog(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (context) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.5,
+        padding: const EdgeInsets.all(16.0),
+      );
+    },
+  );
+}
