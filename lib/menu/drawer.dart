@@ -298,6 +298,7 @@ void _showCreatorsDialog(BuildContext context) {
     builder: (context) {
       return AlertDialog(
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.group, color: Colors.blue),
             SizedBox(width: 8),
@@ -309,10 +310,10 @@ void _showCreatorsDialog(BuildContext context) {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("인민혁"),
-              Text("박민석"),
-              Text("김윤태"),
-              Text("김주완"),
+              Text("인민혁", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              Text("박민석", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              Text("김윤태", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              Text("김주완", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
             ],
           ),
         ),
