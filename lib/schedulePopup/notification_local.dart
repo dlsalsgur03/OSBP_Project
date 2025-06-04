@@ -73,7 +73,7 @@ Future<void> saveSelectedDoc(Map<String,dynamic> doc) async {
     }
     final double longitude = double.parse(doc['x']);
     final double latitude = double.parse(doc['y']);
-    //Map<String, dynamic> -> Postion : 받아오는 값에 x,y 좌표하고 주소만 있어서 변형 필요
+    //Map<String, dynamic> -> Postion
     final pos = Position(
         longitude: longitude,
         latitude: latitude,

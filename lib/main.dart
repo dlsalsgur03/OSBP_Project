@@ -7,7 +7,6 @@ import 'schedulePopup/getHolyday.dart';
 import 'dart:async';
 import 'homepage/homepage.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/.env");

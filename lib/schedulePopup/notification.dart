@@ -29,6 +29,11 @@ Future<void> initializeNotifications() async {
         int? id = response.id;
         removeId(id!); // ID 삭제
       }
+      else if(response.actionId == 'booking_train') {
+        launchURL('https://www.letskorail.com/');
+        int? id = response.id;
+        removeId(id!); // ID 삭제
+      }
     },
   );
   // 타임존 초기화
@@ -63,13 +68,18 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   print("NOTIFICATION DATE: $notificationDate");
   print("Changer : $changer");
   final rTransportaion = await findNearestStation();
+  final tcategory = rTransportaion['category_name'];
+  String booking = 'booking';
+  if(tcategory.contains('기차역')) {
+    booking = 'booking_train';
+  }
   // 긴급 알람 함수
   if (DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==true) {
     await flutterLocalNotificationsPlugin.show(
       notificationId+1, // 알림 ID
       title, //title
       '연휴포함! 얘매 서두르세요! 추천 : ${rTransportaion['place_name']}', //body
-      const NotificationDetails(
+      NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
             '긴급 알림',
@@ -77,7 +87,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
             priority: Priority.high,
             actions: <AndroidNotificationAction>[
               AndroidNotificationAction(
-                'booking',
+                booking,
                 '예약하러 가기',
                 showsUserInterface: true,
               ),
