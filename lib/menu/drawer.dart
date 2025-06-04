@@ -273,6 +273,18 @@ void _showNoticeDialog(BuildContext context) {
                 Text('공지사항', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               ],
             ),
+            Divider(),
+            SizedBox(height: 12),
+            Text("미리캘린더를 이용해 주셔서 감사합니다!!", style: TextStyle(fontSize: 16)),
+            SizedBox(height: 12),
+            Spacer(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("닫기"),
+              ),
+            ),
           ],
         ),
       );
