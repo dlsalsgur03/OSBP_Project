@@ -47,14 +47,14 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
             decoration: const InputDecoration(labelText: "일정 제목"),
           ),
           TextField(
-            controller: locationController,
-            decoration: const InputDecoration(labelText: "장소"),
-            onTap: () async {
-              final result = await showAddressSearchModal(context);
-              if(result != null) {
-                locationController.text = result['address'] ?? '';
+              controller: locationController,
+              decoration: const InputDecoration(labelText: "장소"),
+              onTap: () async {
+                final result = await showAddressSearchModal(context);
+                if(result != null) {
+                  locationController.text = result['address'] ?? '';
+                }
               }
-            }
           ),
           TextField(
             controller: startDateController,
@@ -97,23 +97,23 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
             ),
           ),
           Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: emojiController,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    labelText: "이모티콘",
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: emojiController,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: "이모티콘",
+                    ),
                   ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.emoji_emotions),
-                onPressed: () {
-                  _showEmojiPicker(context, emojiController);
-                },
-              )
-            ]
+                IconButton(
+                  icon: const Icon(Icons.emoji_emotions),
+                  onPressed: () {
+                    _showEmojiPicker(context, emojiController);
+                  },
+                )
+              ]
           ),
           const SizedBox(height: 20,),
           Row(
@@ -124,28 +124,28 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
                 onPressed: () => Navigator.of(context).pop(),
               ),
               ElevatedButton(
-                child: const Text("다음"),
-                onPressed: () async {
-                  if (startDate == null || endDate == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('시작일과 종료일을 모두 선택해주세요.')),
+                  child: const Text("다음"),
+                  onPressed: () async {
+                    if (startDate == null || endDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('시작일과 종료일을 모두 선택해주세요.')),
+                      );
+                      return;
+                    }
+                    await save_schedule_web(
+                      title: titleController.text,
+                      location: locationController.text,
+                      firstdate: startDate,
+                      lastdate: endDate,
+                      emoji: emojiController.text,
+                      memo: memoController.text,
                     );
-                  return;
-                  }
-                  await save_schedule_web(
-                    title: titleController.text,
-                    location: locationController.text,
-                    firstdate: startDate,
-                    lastdate: endDate,
-                    emoji: emojiController.text,
-                    memo: memoController.text,
-                  );
-                  read_data();
-                  getSchedule(startDate!);
+                    read_data();
+                    getSchedule(startDate!);
 
-                  Navigator.of(context).pop(); // 바텀시트 닫기
-                  showBookingOptions(context, titleController.text, startDate!, endDate!);
-                }
+                    Navigator.of(context).pop(true); // 바텀시트 닫기
+                    showBookingOptions(context, titleController.text, startDate!, endDate!);
+                  }
               )
             ],
           )
