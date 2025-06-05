@@ -1,9 +1,11 @@
 import 'package:OBSP_Project/calendar/dateInfo/show_date_info.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import '../schedulePopup/notification.dart';
 import '../weather/weather.dart';
 import '../reservation/reading_json.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 class Calendar extends StatefulWidget {
   final DateTime selectedDate;
   final Function(DateTime) onDaySelected;
@@ -20,6 +22,11 @@ class Calendar extends StatefulWidget {
 
   @override
   State<Calendar> createState() => CalendarState();
+}
+
+Color getColorForType(int type) {
+  final colors = [Colors.red, Colors.orange, Colors.green, Colors.purple];
+  return colors[type % colors.length];
 }
 
 class CalendarState extends State<Calendar> {
