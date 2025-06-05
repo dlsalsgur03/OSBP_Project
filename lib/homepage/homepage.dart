@@ -6,6 +6,7 @@ import '../menu/drawer.dart';
 import '../menu/menu.dart';
 import '../calendar/dateInfo/under_calendar_info.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../schedulePopup/shcedule_add_func.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -113,18 +114,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: _selectedColor,
         onPressed: () async {
-          final didAdd = await showModalBottomSheet<bool>(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-            ),
-            builder: (context) {
-              return ScheduleBottomSheetContent(scrollController: ScrollController());
-            },
-          );
-
+          final didAdd = await showScheduleBottomSheet(context);
           if (didAdd == true) {
             _scheduleKey.currentState?.refresh();
             _calendarKey.currentState?.loadScheduledDates();
