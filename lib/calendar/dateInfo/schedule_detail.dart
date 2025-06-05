@@ -1,10 +1,6 @@
 import 'package:OBSP_Project/calendar/dateInfo/pinmark.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-
 
 import '../../reservation/reading_json.dart';
 
@@ -31,22 +27,35 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
   TextEditingController _memoController = TextEditingController();
 
   late Schedule _editableSchedule;
+  late FocusNode _memoFocusNode;
   @override
   void initState() {
     super.initState();
     _editableSchedule = widget.schedule;
-    _memoController.text = widget.schedule.memo;
+    _memoFocusNode = FocusNode();
+
+    _memoFocusNode.addListener(() {
+      if(!_memoFocusNode.hasFocus){
+        _autoSaveMemo();
+      }
+    });
+
     _loadLatestSchedule();
+  }
+
+  @override
+  void dispose() {
+    _memoController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadLatestSchedule() async {
     // 저장된 모든 일정 불러오기
     final schedules = await getAllSchedules();
     // 현재 일정과 일치하는 일정 찾기 (예: title + firstdate 기준)
-    final updatedSchedule = schedules.firstWhere(
-          (sch) =>
-      sch.title == _editableSchedule.title &&
-          sch.firstdate == _editableSchedule.firstdate,
+    final updatedSchedule = schedules.firstWhere((sch) =>
+    sch.title == _editableSchedule.title &&
+        sch.firstdate == _editableSchedule.firstdate,
       orElse: () => _editableSchedule,
     );
 
@@ -56,41 +65,23 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
       _memoController.text = updatedSchedule.memo;
     });
   }
-
-  Future<void> _saveMemo() async {
-    // 저장소에 저장된 모든 일정 불러오기
-    final schedules = await getAllSchedules();
-
-    // 일정 목록에서 현재 일정 찾기
-    final index = schedules.indexWhere((sch) =>
-      sch.title == _editableSchedule.title &&
-      sch.firstdate == _editableSchedule.firstdate);
-
-    if (index != -1) {
-      // memo만 변경된 복사본으로 대체
-      final updatedSchedule = schedules[index].copyWith(memo: _memoController.text);
-      schedules[index] = updatedSchedule;
-
-      // 변경된 리스트 저장
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('schedules_storage', jsonEncode(schedules));
-
-      setState(() {
-        _editableSchedule = updatedSchedule;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('메모가 저장되었습니다.')),
+  Future<void> _autoSaveMemo() async {
+    if (_memoController.text != _editableSchedule.memo) {
+      await updateScheduleMemo(
+        _editableSchedule.firstdate,
+        _editableSchedule.title,
+        _memoController.text,
       );
+      setState(() {
+        _editableSchedule = _editableSchedule.copyWith(memo: _memoController.text);
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('메모가 자동 저장되었습니다.')),
+        );
+      }
     }
   }
-
-  @override
-  void dispose() {
-    _memoController.dispose();
-    super.dispose();
-  }
-
 
   Color selectedColor = const Color(0xFF800020);
   void _showColorPickerDialog(BuildContext context) {
@@ -311,20 +302,6 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(Icons.save),
-                      onPressed: () async {
-                        // 저장 함수 호출
-                        await updateScheduleMemo(_editableSchedule.firstdate, _editableSchedule.title, _memoController.text);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('메모가 저장되었습니다.')),
-                        );
-                        setState(() {
-                          _editableSchedule = _editableSchedule.copyWith(memo: _memoController.text);
-                        });
-                      },
-                    )
                   ],
                 ),
                 Container(
@@ -344,7 +321,8 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
                   ),
                   child: TextField(
                     controller: _memoController,
-                    maxLines: null,
+                    focusNode: _memoFocusNode,
+                    maxLines: 4,
                     decoration: InputDecoration.collapsed(hintText: "메모을 입력하세요"),
                     style: TextStyle(fontSize: 16),
                   ),
