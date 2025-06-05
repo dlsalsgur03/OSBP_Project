@@ -40,12 +40,15 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
       child: ListView(
         controller: widget.scrollController,
         children: [
-          const Text("일정 추가", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 12),
+          SizedBox(height: 10,),
+          const Text("일정 추가", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+          Divider(),
+          SizedBox(height: 10,),
           TextField(
             controller: titleController,
             decoration: const InputDecoration(labelText: "일정 제목"),
           ),
+          SizedBox(height: 10,),
           TextField(
               controller: locationController,
               decoration: const InputDecoration(labelText: "장소"),
@@ -56,6 +59,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
                 }
               }
           ),
+          SizedBox(height: 10,),
           TextField(
             controller: startDateController,
             readOnly: true,
@@ -73,6 +77,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
               }
             },
           ),
+          SizedBox(height: 10,),
           TextField(
             controller: endDateController,
             readOnly: true,
@@ -90,12 +95,14 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
               }
             },
           ),
+          SizedBox(height: 10,),
           TextField(
             controller: memoController,
             decoration: const InputDecoration(
               labelText: "메모",
             ),
           ),
+          SizedBox(height: 10,),
           Row(
               children: [
                 Expanded(
