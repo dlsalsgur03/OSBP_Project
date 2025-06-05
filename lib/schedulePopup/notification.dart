@@ -25,14 +25,18 @@ Future<void> initializeNotifications() async {
       initSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
       if(response.actionId == 'booking') {
-        launchURL('https://www.kobus.co.kr/main.do');
+        print("버스 예약 URL 열기 시도");
+        launchURL('https://www.bustago.or.kr/newweb/kr/index.do');
         int? id = response.id;
         removeId(id!); // ID 삭제
+        flutterLocalNotificationsPlugin.cancel(id);
       }
       else if(response.actionId == 'booking_train') {
+        print("기차 예약 URL 열기 시도");
         launchURL('https://www.letskorail.com/');
         int? id = response.id;
         removeId(id!); // ID 삭제
+        flutterLocalNotificationsPlugin.cancel(id);
       }
     },
   );
@@ -54,7 +58,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   } else {
     notificationDate = firstDate.subtract(Duration(days: 3));
   }
-  final int num_day = notificationDate.difference(DateTime.now()).inDays;
+  final int num_day = (firstDate.difference(DateTime.now()).inDays).abs();
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 저장
@@ -78,7 +82,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
     await flutterLocalNotificationsPlugin.show(
       notificationId+1, // 알림 ID
       title, //title
-      '연휴포함! 얘매 서두르세요! 추천 : ${rTransportaion['place_name']}', //body
+      '연휴포함! 얘매 서두르세요!\n 추천 : ${rTransportaion['place_name']}', //body
       NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -100,7 +104,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
     await flutterLocalNotificationsPlugin.show(
       notificationId + 1, // 알림 ID
       title, //title
-      '얼마 안남았습니다! 얘매 서두르세요! 추천 : ${rTransportaion['place_name']}', //body
+      '얼마 안남았습니다! 얘매 서두르세요!\n 추천 : ${rTransportaion['place_name']}', //body
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -122,7 +126,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
     await flutterLocalNotificationsPlugin.show(
       notificationId + 1, // 알림 ID
       title, //title
-      '$num_day 남았어요!', //body
+      '일정 시작이 얼마 안남았어요!', //body
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -137,7 +141,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
     await flutterLocalNotificationsPlugin.zonedSchedule(
       notificationId, // 알림 ID
       title, //title
-      '$num_day일 뒤 출발입니다!', //body
+      '$num_day일 뒤 시작입니다!', //body
       scheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
