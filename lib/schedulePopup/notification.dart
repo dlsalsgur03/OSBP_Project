@@ -25,11 +25,13 @@ Future<void> initializeNotifications() async {
       initSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
       if(response.actionId == 'booking') {
-        launchURL('https://www.kobus.co.kr/main.do');
+        print("버스 예약 URL 열기 시도");
+        launchURL('https://www.bustago.or.kr/newweb/kr/index.do');
         int? id = response.id;
         removeId(id!); // ID 삭제
       }
       else if(response.actionId == 'booking_train') {
+        print("기차 예약 URL 열기 시도");
         launchURL('https://www.letskorail.com/');
         int? id = response.id;
         removeId(id!); // ID 삭제

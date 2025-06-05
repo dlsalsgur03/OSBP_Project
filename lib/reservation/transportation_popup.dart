@@ -25,7 +25,7 @@ void showBookingOptions(BuildContext context, String title, DateTime firstdate, 
                   await removeId(notificationId);
                 }
                 Navigator.of(context).pop(); // 팝업 닫기
-                launchURL('https://www.kobus.co.kr/main.do'); // 고속버스 예매 사이트로 이동
+                launchURL('https://www.bustago.or.kr/newweb/kr/index.do'); // 시외버스 예매 사이트로 이동
               },
             ),
             ListTile(
