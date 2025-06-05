@@ -133,6 +133,10 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
               ElevatedButton(
                   child: const Text("다음"),
                   onPressed: () async {
+                    final titleText = titleController.text.trim().isEmpty
+                      ? '제목 없음'
+                      : titleController.text.trim();
+
                     if (startDate == null || endDate == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('시작일과 종료일을 모두 선택해주세요.')),
@@ -140,7 +144,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
                       return;
                     }
                     await save_schedule_web(
-                      title: titleController.text,
+                      title: titleText,
                       location: locationController.text,
                       firstdate: startDate,
                       lastdate: endDate,
