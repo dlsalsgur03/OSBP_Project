@@ -65,6 +65,7 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
       _memoController.text = updatedSchedule.memo;
     });
   }
+  bool _isMemoSaved = false;
   Future<void> _autoSaveMemo() async {
     if (_memoController.text != _editableSchedule.memo) {
       await updateScheduleMemo(
@@ -73,13 +74,18 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
         _memoController.text,
       );
       setState(() {
-        _editableSchedule = _editableSchedule.copyWith(memo: _memoController.text);
+        _editableSchedule =
+            _editableSchedule.copyWith(memo: _memoController.text);
+        _isMemoSaved = true;
       });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('메모가 자동 저장되었습니다.')),
-        );
-      }
+
+      Future.delayed(Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _isMemoSaved = false;
+          });
+        }
+      });
     }
   }
 
@@ -327,6 +333,19 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AnimatedOpacity(
+                      opacity: _isMemoSaved ? 1.0 : 0.0,
+                      duration: Duration(milliseconds: 300),
+                      child: Text(
+                        '✓ 저장됨',
+                        style: TextStyle(color: Colors.green, fontSize: 14),
+                      )
+                    )
+                  ],
+                )
               ],
             ),
 
