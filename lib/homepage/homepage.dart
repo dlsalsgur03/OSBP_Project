@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../calendar/calendar.dart';
-import '../schedulePopup/schedulePopup.dart';
+import '../schedulePopup/schedule_add.dart';
 import '../menu/drawer.dart';
 import '../menu/menu.dart';
 import '../calendar/dateInfo/under_calendar_info.dart';
@@ -113,10 +113,15 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: _selectedColor,
         onPressed: () async {
-          final didAdd = await showDialog<bool>(
+          final didAdd = await showModalBottomSheet<bool>(
             context: context,
-            builder: (BuildContext context) {
-              return SchedulePopup();
+            isScrollControlled: true,
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            ),
+            builder: (context) {
+              return ScheduleBottomSheetContent(scrollController: ScrollController());
             },
           );
 
