@@ -25,6 +25,17 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
   final memoController = TextEditingController();
   final emojiController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+
+    startDate = DateTime.now();
+    endDate = startDate!.add(const Duration(hours: 1));
+
+    startDateController.text = formatDateTime(startDate!);
+    endDateController.text = formatDateTime(endDate!);
+  }
+
   String formatDate(DateTime dt) => "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
   String formatDateTime(DateTime dt) => "${formatDate(dt)} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
 
@@ -72,7 +83,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
               if (pickedDate != null){
                 setState(() {
                   startDate = pickedDate;
-                  startDateController.text = formatDate(pickedDate);
+                  startDateController.text = formatDateTime(pickedDate);
                 });
               }
             },
@@ -90,17 +101,10 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
               if(pickedDate != null){
                 setState(() {
                   endDate = pickedDate;
-                  endDateController.text = formatDate(pickedDate);
+                  endDateController.text = formatDateTime(pickedDate);
                 });
               }
             },
-          ),
-          SizedBox(height: 10,),
-          TextField(
-            controller: memoController,
-            decoration: const InputDecoration(
-              labelText: "메모",
-            ),
           ),
           SizedBox(height: 10,),
           Row(
@@ -122,6 +126,28 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
                 )
               ]
           ),
+          SizedBox(height: 10,),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+            padding: const EdgeInsets.all(12.0),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              border: Border.all(color: Colors.grey.shade50),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 5,
+                  offset: Offset(0, 2),
+                )
+              ],
+            ),
+            child: TextField(
+              controller: memoController,
+              maxLines: 4,
+              decoration: InputDecoration.collapsed(hintText: "메모"),
+            ),
+          ),
           const SizedBox(height: 20,),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -133,6 +159,10 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
               ElevatedButton(
                   child: const Text("다음"),
                   onPressed: () async {
+                    final titleText = titleController.text.trim().isEmpty
+                      ? '제목 없음'
+                      : titleController.text.trim();
+
                     if (startDate == null || endDate == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('시작일과 종료일을 모두 선택해주세요.')),
@@ -140,7 +170,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
                       return;
                     }
                     await save_schedule_web(
-                      title: titleController.text,
+                      title: titleText,
                       location: locationController.text,
                       firstdate: startDate,
                       lastdate: endDate,

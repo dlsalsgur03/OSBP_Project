@@ -23,6 +23,24 @@ class Schedule {
     required this.memo,
   });
 
+  Schedule copyWith({
+    String? title,
+    String? location,
+    String? firstdate,
+    String? lastdate,
+    String? emoji,
+    String? memo,
+  }) {
+    return Schedule(
+      title: title ?? this.title,
+      location: location ?? this.location,
+      firstdate: firstdate ?? this.firstdate,
+      lastdate: lastdate ?? this.lastdate,
+      emoji: emoji ?? this.emoji,
+      memo: memo ?? this.memo,
+    );
+  }
+
   factory Schedule.fromJson(Map<String, dynamic> json) {
     return Schedule(
       title: json['title'] ?? '',
@@ -239,4 +257,23 @@ Future<List<Schedule>> getSchedule(DateTime? firstdate) async {
     print('일정 필터링 완료: 해당 날짜에 일정이 없습니다.');
   }
   return filteredSchedules;
+}
+
+Future<void> updateScheduleMemo(String firstdate, String title, String newMemo) async {
+  final prefs = await SharedPreferences.getInstance();
+  final existingData = prefs.getString('schedules_storage');
+
+  if (existingData == null) return;
+
+  final List<Map<String, dynamic>> scheduleList =
+  List<Map<String, dynamic>>.from(jsonDecode(existingData));
+
+  for (var schedule in scheduleList) {
+    if (schedule['firstdate'] == firstdate && schedule['title'] == title) {
+      schedule['memo'] = newMemo;
+      break;
+    }
+  }
+
+  await prefs.setString('schedules_storage', jsonEncode(scheduleList));
 }
