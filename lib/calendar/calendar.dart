@@ -121,7 +121,11 @@ class CalendarState extends State<Calendar> {
               textColor = const Color(0xff2D2D2D);
             }
           } else {
-            textColor = const Color(0xff2D2D2D);
+            if (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday) {
+              textColor = const Color(0xFFB0B0B0); // 주말 회색
+            } else {
+              textColor = const Color(0xFF2D2D2D); // 주중
+            }
           }
 
           return Center(
