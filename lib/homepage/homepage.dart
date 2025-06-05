@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../calendar/calendar.dart';
-import '../schedulePopup/schedulePopup.dart';
 import '../menu/drawer.dart';
 import '../menu/menu.dart';
 import '../calendar/dateInfo/under_calendar_info.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../schedulePopup/shcedule_add_func.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -123,13 +123,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: _selectedColor,
         onPressed: () async {
-          final didAdd = await showDialog<bool>(
-            context: context,
-            builder: (BuildContext context) {
-              return SchedulePopup();
-            },
-          );
-
+          final didAdd = await showScheduleBottomSheet(context);
           if (didAdd == true) {
             _scheduleKey.currentState?.refresh();
             _calendarKey.currentState?.loadScheduledDates();
