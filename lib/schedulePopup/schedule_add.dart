@@ -107,13 +107,6 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
             },
           ),
           SizedBox(height: 10,),
-          TextField(
-            controller: memoController,
-            decoration: const InputDecoration(
-              labelText: "메모",
-            ),
-          ),
-          SizedBox(height: 10,),
           Row(
               children: [
                 Expanded(
@@ -132,6 +125,28 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
                   },
                 )
               ]
+          ),
+          SizedBox(height: 10,),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+            padding: const EdgeInsets.all(12.0),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              border: Border.all(color: Colors.grey.shade50),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 5,
+                  offset: Offset(0, 2),
+                )
+              ],
+            ),
+            child: TextField(
+              controller: memoController,
+              maxLines: 4,
+              decoration: InputDecoration.collapsed(hintText: "메모"),
+            ),
           ),
           const SizedBox(height: 20,),
           Row(
