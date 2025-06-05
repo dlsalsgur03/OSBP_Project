@@ -25,6 +25,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
   final memoController = TextEditingController();
   final emojiController = TextEditingController();
 
+  @override
   void initState() {
     super.initState();
 
