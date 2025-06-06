@@ -6,6 +6,15 @@ import '../menu/menu.dart';
 import '../calendar/dateInfo/under_calendar_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../schedulePopup/shcedule_add_func.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+Future<void> saveSettings(Color selectedColor, bool highlightWeekend, Color markerColor) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('selectedColor', selectedColor.value);
+  await prefs.setBool('highlightWeekend', highlightWeekend);
+  await prefs.setInt('markerColor', markerColor.value);
+}
+
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -20,13 +29,30 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<CalendarState> _calendarKey = GlobalKey<CalendarState>();
   Color _selectedColor = const Color(0xffADB5BD);
   Color _markerColor = const Color(0xFF800020);
+  bool _highlightWeekend = true;
 
+  Future<void> loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedColor = Color(prefs.getInt('selectedColor') ?? Colors.blue.value);
+      _highlightWeekend = prefs.getBool('highlightWeekend') ?? true;
+      _markerColor = Color(prefs.getInt('markerColor') ?? const Color(0xff800020).value);
+    });
+  }
   void _changeMarkerColor(Color newColor) {
     setState(() {
       _markerColor = newColor;
     });
+    saveSettings(_selectedColor, _highlightWeekend, newColor);
+    loadSettings();
   }
-
+  void _toggleHighlightWeekend(bool value) {
+    setState(() {
+      _highlightWeekend = value;
+    });
+    saveSettings(_selectedColor, value, _markerColor);
+    loadSettings();
+  }
   // selectedDate를 hompage.dart에서 관리하기 위한 것
   DateTime _selectedDate = DateTime.now();
   void _handleDateChanged(DateTime newDate){
@@ -38,6 +64,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _selectedColor = newColor;
     });
+    saveSettings(newColor, _highlightWeekend, _markerColor);
+    loadSettings();
   }
   @override
   void initState() {
@@ -45,6 +73,7 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestNotificationPermission();
     });
+    loadSettings();
   }
 
   void _requestNotificationPermission() async {
@@ -75,7 +104,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      drawer: MenuDrawer(onColorChanged: _changeColor,),
+      drawer: MenuDrawer(
+        onColorChanged: _changeColor,
+        highlightWeekend: _highlightWeekend,
+        onWeekendToggle: _toggleHighlightWeekend,
+      ),
       body: Container(
         color: Colors.white,
         child: Column(
@@ -86,6 +119,7 @@ class _HomePageState extends State<HomePage> {
               selectedDate: _selectedDate,
               onDaySelected: _handleDateChanged,
               markerColor: _markerColor,
+              highlightWeekend: _highlightWeekend,
             ), // 달력 위치
             Padding(  // 달력과 일정 사이에 날짜 출력
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),

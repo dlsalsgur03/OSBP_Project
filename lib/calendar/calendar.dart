@@ -1,23 +1,32 @@
 import 'package:OBSP_Project/calendar/dateInfo/show_date_info.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import '../schedulePopup/notification.dart';
 import '../weather/weather.dart';
 import '../reservation/reading_json.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 class Calendar extends StatefulWidget {
   final DateTime selectedDate;
   final Function(DateTime) onDaySelected;
   final Color markerColor;
+  final bool highlightWeekend;
 
   const Calendar({
     super.key,
     required this.selectedDate,
     required this.onDaySelected,
     this.markerColor = const Color(0xffa7385c),
+    required this.highlightWeekend,
   });
 
   @override
   State<Calendar> createState() => CalendarState();
+}
+
+Color getColorForType(int type) {
+  final colors = [Colors.red, Colors.orange, Colors.green, Colors.purple];
+  return colors[type % colors.length];
 }
 
 class CalendarState extends State<Calendar> {
@@ -31,6 +40,8 @@ class CalendarState extends State<Calendar> {
     super.initState();
     loadScheduledDates(); // 앱 시작할 때 저장된 일정 날짜 로딩
   }
+  @override
+
   Map<String, int> scheduledDateCounts = {};
 
   Future<void> loadScheduledDates() async {
@@ -104,6 +115,29 @@ class CalendarState extends State<Calendar> {
               );
           }
           return const Center();
+        },
+        defaultBuilder: (context, date, _) {
+          Color textColor;
+
+          if (widget.highlightWeekend) {
+            if (date.weekday == DateTime.sunday) {
+              textColor = Colors.red;
+            } else if (date.weekday == DateTime.saturday) {
+              textColor = Colors.blue;
+            } else {
+              textColor = const Color(0xff2D2D2D);
+            }
+          } else {
+            if (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday) {
+              textColor = const Color(0xFFB0B0B0); // 주말 회색
+            } else {
+              textColor = const Color(0xFF2D2D2D); // 주중
+            }
+          }
+
+          return Center(
+            child: Text('${date.day}', style: TextStyle(color: textColor)),
+          );
         },
         markerBuilder: (context, date, events) {
           final normalizedDate = DateTime(date.year, date.month, date.day);

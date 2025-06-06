@@ -1,7 +1,6 @@
 import 'package:OBSP_Project/calendar/dateInfo/pinmark.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../../reservation/reading_json.dart';
 
@@ -23,6 +22,73 @@ class ScheduleDetailBottomSheet extends StatefulWidget {
 }
 
 class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
+
+  // memo 재설정에 관한 함수 및 변수
+  TextEditingController _memoController = TextEditingController();
+
+  late Schedule _editableSchedule;
+  late FocusNode _memoFocusNode;
+  @override
+  void initState() {
+    super.initState();
+    _editableSchedule = widget.schedule;
+    _memoFocusNode = FocusNode();
+
+    _memoFocusNode.addListener(() {
+      if(!_memoFocusNode.hasFocus){
+        _autoSaveMemo();
+      }
+    });
+
+    _loadLatestSchedule();
+  }
+
+  @override
+  void dispose() {
+    _memoController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadLatestSchedule() async {
+    // 저장된 모든 일정 불러오기
+    final schedules = await getAllSchedules();
+    // 현재 일정과 일치하는 일정 찾기 (예: title + firstdate 기준)
+    final updatedSchedule = schedules.firstWhere((sch) =>
+    sch.title == _editableSchedule.title &&
+        sch.firstdate == _editableSchedule.firstdate,
+      orElse: () => _editableSchedule,
+    );
+
+    // 상태 업데이트
+    setState(() {
+      _editableSchedule = updatedSchedule;
+      _memoController.text = updatedSchedule.memo;
+    });
+  }
+  bool _isMemoSaved = false;
+  Future<void> _autoSaveMemo() async {
+    if (_memoController.text != _editableSchedule.memo) {
+      await updateScheduleMemo(
+        _editableSchedule.firstdate,
+        _editableSchedule.title,
+        _memoController.text,
+      );
+      setState(() {
+        _editableSchedule =
+            _editableSchedule.copyWith(memo: _memoController.text);
+        _isMemoSaved = true;
+      });
+
+      Future.delayed(Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _isMemoSaved = false;
+          });
+        }
+      });
+    }
+  }
+
   Color selectedColor = const Color(0xFF800020);
   void _showColorPickerDialog(BuildContext context) {
     final List<Color> presetColors = [
@@ -229,6 +295,7 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
 
             // Memo
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -237,17 +304,15 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
                     Text(
                       "메모",
                       style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                    )
+                    ),
                   ],
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   padding: const EdgeInsets.all(12.0),
-                  width: double.infinity,
-                  constraints: BoxConstraints(minHeight: 100),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade100,
                     border: Border.all(color: Colors.grey.shade50),
@@ -260,16 +325,30 @@ class _ScheduleDetailBottomSheetState extends State<ScheduleDetailBottomSheet> {
                       )
                     ],
                   ),
-                  child: Text(
-                    widget.schedule.memo.isNotEmpty ? widget.schedule.memo : "내용이 없습니다.",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
+                  child: TextField(
+                    controller: _memoController,
+                    focusNode: _memoFocusNode,
+                    maxLines: 4,
+                    decoration: InputDecoration.collapsed(hintText: "메모을 입력하세요"),
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AnimatedOpacity(
+                      opacity: _isMemoSaved ? 1.0 : 0.0,
+                      duration: Duration(milliseconds: 300),
+                      child: Text(
+                        '✓ 저장됨',
+                        style: TextStyle(color: Colors.green, fontSize: 14),
+                      )
+                    )
+                  ],
+                )
               ],
             ),
+
 
             Align(
               alignment: Alignment.centerRight,

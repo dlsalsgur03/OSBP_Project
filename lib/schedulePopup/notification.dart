@@ -9,11 +9,11 @@ import '../reservation/transportation_recommend.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin(); // 플러그인으로 알림등록 간결화
 
+// 알람 알림 id 생성 함수
 int notification_Id(DateTime lastDate, String title) {
   int notificaionId = (lastDate.hashCode + title.hashCode) % 2147483647;
   return notificaionId;
 }
-
 
 // 알림 초기화 함수
 Future<void> initializeNotifications() async {
@@ -21,26 +21,46 @@ Future<void> initializeNotifications() async {
   const InitializationSettings initSettings = InitializationSettings(
     android: androidInitSettings,
   );
+  final NotificationAppLaunchDetails? details = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   await flutterLocalNotificationsPlugin.initialize(
       initSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-      if(response.actionId == 'booking') {
-        launchURL('https://www.kobus.co.kr/main.do');
-        int? id = response.id;
-        removeId(id!); // ID 삭제
-      }
-      else if(response.actionId == 'booking_train') {
-        launchURL('https://www.letskorail.com/');
-        int? id = response.id;
-        removeId(id!); // ID 삭제
-      }
-    },
+      onDidReceiveNotificationResponse: handleNotificationAction,
   );
+  if (details?.didNotificationLaunchApp ?? false) {
+    final response = details!.notificationResponse;
+    if (response != null) {
+      handleNotificationAction(response);
+    }
+  }
   // 타임존 초기화
   tz.initializeTimeZones();
 }
 
-// 알림 예약 함수
+// notification url 설정 및 notification 제거 함수
+void handleNotificationAction(NotificationResponse response) {
+  String? url;
+  switch (response.actionId) {
+    case 'booking':
+      url = 'https://www.bustago.or.kr/newweb/kr/index.do';
+      print("버스 예약 URL 열기 시도");
+      break;
+    case 'booking_train':
+      url = 'https://www.letskorail.com/';
+      print("기차 예약 URL 열기 시도");
+      break;
+  }
+  if (url != null) {
+    launchURL(url);
+  }
+  // 알림 ID 삭제 및 취소
+  final id = response.id;
+  if (id != null) {
+    removeId(id);
+    flutterLocalNotificationsPlugin.cancel(id);
+  }
+}
+
+// 알림 예약 및 제공 함수
 Future<void> scheduleNotification(int changer, int notificationId ,String title, DateTime firstDate, DateTime lastDate) async {
   // 날짜 비교, 사이에 공휴일이 있는지 확인
   bool isHaveholiday = calculateNotificationDate(
@@ -54,7 +74,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   } else {
     notificationDate = firstDate.subtract(Duration(days: 3));
   }
-  final int num_day = notificationDate.difference(DateTime.now()).inDays;
+  final int num_day = (firstDate.difference(DateTime.now()).inDays).abs();
 
   final tz.TZDateTime scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
   // 알림 ID 저장
@@ -73,12 +93,12 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
   if(tcategory.contains('기차역')) {
     booking = 'booking_train';
   }
-  // 긴급 알람 함수
+  // 긴급 알람 기능
   if (DateTime.now().isAfter(notificationDate) && changer==0 && isHaveholiday==true) {
     await flutterLocalNotificationsPlugin.show(
       notificationId+1, // 알림 ID
       title, //title
-      '연휴포함! 얘매 서두르세요! 추천 : ${rTransportaion['place_name']}', //body
+      '연휴포함! 얘매 서두르세요!\n 추천 : ${rTransportaion['place_name']}', //body
       NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -100,7 +120,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
     await flutterLocalNotificationsPlugin.show(
       notificationId + 1, // 알림 ID
       title, //title
-      '얼마 안남았습니다! 얘매 서두르세요! 추천 : ${rTransportaion['place_name']}', //body
+      '$num_day일 남았습니다! 얘매 서두르세요!\n 추천 : ${rTransportaion['place_name']}', //body
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -122,7 +142,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
     await flutterLocalNotificationsPlugin.show(
       notificationId + 1, // 알림 ID
       title, //title
-      '$num_day 남았어요!', //body
+      '일정 시작이 $num_day일 남음', //body
       const NotificationDetails(
         android: AndroidNotificationDetails(
             'deadline_channel',
@@ -133,37 +153,35 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
       ),
     );
   }
-  else {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      notificationId, // 알림 ID
-      title, //title
-      '$num_day일 뒤 출발입니다!', //body
-      scheduledDate,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-            'deadline_channel',
-            '예약 알림',
-            importance: Importance.high,
-            priority: Priority.high,
-            actions: <AndroidNotificationAction>[
-              AndroidNotificationAction(
-                'booking',
-                '예약하러 가기',
-                showsUserInterface: true,
-              ),
-            ]
-        ),
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+    notificationId, // 알림 ID
+    title, //title
+    '$num_day일 뒤 일정 시작입니다!', //body
+    scheduledDate,
+    const NotificationDetails(
+      android: AndroidNotificationDetails(
+          'deadline_channel',
+          '예약 알림',
+          importance: Importance.high,
+          priority: Priority.high,
+          actions: <AndroidNotificationAction>[
+            AndroidNotificationAction(
+              'booking',
+              '예약하러 가기',
+              showsUserInterface: true,
+            ),
+          ]
       ),
-      androidAllowWhileIdle: true, // 절전모드에서도 작동
-      uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time, // 1일마다 반복
-    );
-  }
+    ),
+    androidAllowWhileIdle: true, // 절전모드에서도 작동
+    uiLocalNotificationDateInterpretation:
+    UILocalNotificationDateInterpretation.absoluteTime,
+    matchDateTimeComponents: DateTimeComponents.time, // 1일마다 반복
+  );
 
   await flutterLocalNotificationsPlugin.show(
     notificationId,
-    '알람 예약 완료',
+    '알람 예약 완료 $num_day일 남음',
     title,
     const NotificationDetails(
       android: AndroidNotificationDetails(
@@ -175,7 +193,7 @@ Future<void> scheduleNotification(int changer, int notificationId ,String title,
     ),
   );
 }
-
+// 알람 Id 저장 함수
 Future<void> storeId(int id) async {
   final prefs = await SharedPreferences.getInstance();
   List<String> ids = prefs.getStringList('ids') ?? [];
@@ -184,13 +202,13 @@ Future<void> storeId(int id) async {
     await prefs.setStringList('notification_ids', ids);
   }
 }
-
+// 알람 Id 존재 확인 함수
 Future<bool> isIdStored(int id) async {
   final prefs = await SharedPreferences.getInstance();
   List<String> ids = prefs.getStringList('notification_ids') ?? [];
   return ids.contains(id.toString());
 }
-
+// 알람 Id 삭제 함수
 Future<void> removeId(int id) async {
   final prefs = await SharedPreferences.getInstance();
   List<String> ids = prefs.getStringList('notification_ids') ?? [];
@@ -198,6 +216,7 @@ Future<void> removeId(int id) async {
   await prefs.setStringList('notification_ids', ids);
 }
 
+// 예약 일정 사이에 공휴일 유무 확인 함수
 bool calculateNotificationDate({
   required DateTime firstDate,
   required DateTime lastDate,

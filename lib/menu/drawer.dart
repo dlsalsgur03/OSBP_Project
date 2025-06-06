@@ -5,8 +5,16 @@ final List<String> _errorReports = []; //오류들 저장할 리스트 리스트
 Color _selectedColor = Colors.blue; // 색을 저장할 변수
 
 class MenuDrawer extends StatefulWidget {
-  const MenuDrawer({super.key,required this.onColorChanged});
+  const MenuDrawer({
+    super.key,
+    required this.onColorChanged,
+    required this.highlightWeekend,
+    required this.onWeekendToggle,
+  });
+
   final Function(Color) onColorChanged;
+  final bool highlightWeekend;
+  final Function(bool) onWeekendToggle;
   @override
   State<MenuDrawer> createState() => _MenuDrawerState();
 }
@@ -221,6 +229,21 @@ class _MenuDrawerState extends State<MenuDrawer> {
             onTap: () => _showColorPickerDialog(context),
             trailing: Icon(Icons.navigate_next),
           ),
+          ListTile(
+            title: Text("주말 색상 표시"),
+            trailing: Transform.scale(
+              scale: 0.68,
+              child: Switch(
+                value: widget.highlightWeekend,
+                onChanged: (value) {
+                  widget.onWeekendToggle(value);
+                },
+              ),
+            ),
+            onTap: () {
+              widget.onWeekendToggle(!widget.highlightWeekend);
+            },
+          ),
         ],
       ),
     );
@@ -244,9 +267,6 @@ class SettingsPanel extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           )
         ],
-      ),
-      body: const Center(
-        child: Text("  "), //앞으로 여기에 설정 기능들을 추가할 예정
       ),
     );
   }

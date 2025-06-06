@@ -6,10 +6,12 @@ import 'schedulePopup/notification.dart';
 import 'schedulePopup/getHolyday.dart';
 import 'dart:async';
 import 'homepage/homepage.dart';
+import 'request_location/request_loc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/.env");
+  await requestLocationPermission();
   await initializeNotifications();
   await updateHolidays();
   initializeDateFormatting().then((_) => runApp(const MyApp()));
