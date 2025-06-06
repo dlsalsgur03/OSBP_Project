@@ -134,6 +134,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
       ),
       child: ListView(
         controller: widget.scrollController,
+        shrinkWrap: true,
         children: [
           SizedBox(height: 10,),
           const Text("일정 추가", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
