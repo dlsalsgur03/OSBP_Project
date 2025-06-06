@@ -15,6 +15,29 @@ class ScheduleBottomSheetContent extends StatefulWidget {
 }
 
 class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent> {
+  FocusNode inFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    startDate = DateTime.now();
+    endDate = startDate!.add(const Duration(hours: 1));
+
+    startDateController.text = formatDateTime(startDate!);
+    endDateController.text = formatDateTime(endDate!);
+
+    inFocusNode.addListener((){
+      if(inFocusNode.hasFocus){
+        Future.delayed(Duration(milliseconds: 300), () {
+          widget.scrollController.animateTo(
+              widget.scrollController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut
+          );
+        });
+      }
+    });
+  }
   DateTime? startDate;
   DateTime? endDate;
 
@@ -24,17 +47,6 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
   final endDateController = TextEditingController();
   final memoController = TextEditingController();
   final emojiController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-
-    startDate = DateTime.now();
-    endDate = startDate!.add(const Duration(hours: 1));
-
-    startDateController.text = formatDateTime(startDate!);
-    endDateController.text = formatDateTime(endDate!);
-  }
 
   String formatDate(DateTime dt) => "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
   String formatDateTime(DateTime dt) => "${formatDate(dt)} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
@@ -56,11 +68,13 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
           Divider(),
           SizedBox(height: 10,),
           TextField(
+            focusNode: inFocusNode,
             controller: titleController,
             decoration: const InputDecoration(labelText: "일정 제목"),
           ),
           SizedBox(height: 10,),
           TextField(
+              focusNode: inFocusNode,
               controller: locationController,
               decoration: const InputDecoration(labelText: "장소"),
               onTap: () async {
@@ -72,6 +86,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
           ),
           SizedBox(height: 10,),
           TextField(
+            focusNode: inFocusNode,
             controller: startDateController,
             readOnly: true,
             decoration: const InputDecoration(
@@ -90,6 +105,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
           ),
           SizedBox(height: 10,),
           TextField(
+            focusNode: inFocusNode,
             controller: endDateController,
             readOnly: true,
             decoration: const InputDecoration(
@@ -107,10 +123,19 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
             },
           ),
           SizedBox(height: 10,),
+          TextField(
+            focusNode: inFocusNode,
+            controller: memoController,
+            decoration: const InputDecoration(
+              labelText: "메모",
+            ),
+          ),
+          SizedBox(height: 10,),
           Row(
               children: [
                 Expanded(
                   child: TextField(
+                    focusNode: inFocusNode,
                     controller: emojiController,
                     readOnly: true,
                     decoration: const InputDecoration(
