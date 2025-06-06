@@ -21,7 +21,7 @@
 - 인민혁 @dlsalsgur03 (E-mail: dlsalsgur2@gmail.com)
 
 ## ⚙️설치 방법
- **[➡️ APK 다운로드 (v1.0.0)](https://drive.google.com/file/d/1Whw_8fLvr-isC9NmrPQWKC2YHXWQvPJ8/view?usp=sharing)**
+ **[➡️ APK 다운로드 (v1.0.0)](https://drive.google.com/drive/folders/1GoEasAmvdNneZ-mNyP_71v8ukRFesI3m?usp=sharing)**
 ### 설치 방법 안내
 안드로이드에서는 보안을 위해 기본적으로 스토어 외부 앱 설치를 차단합니다. 아래 안내에 따라 설치를 진행해주세요.
 
