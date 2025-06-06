@@ -15,7 +15,12 @@ class ScheduleBottomSheetContent extends StatefulWidget {
 }
 
 class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent> {
-  FocusNode inFocusNode = FocusNode();
+  final titleFocusNode = FocusNode();
+  final locationFocusNode = FocusNode();
+  final startDateFocusNode = FocusNode();
+  final endDateFocusNode = FocusNode();
+  final memoFocusNode = FocusNode();
+  final emojiFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -26,8 +31,63 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
     startDateController.text = formatDateTime(startDate!);
     endDateController.text = formatDateTime(endDate!);
 
-    inFocusNode.addListener((){
-      if(inFocusNode.hasFocus){
+    titleFocusNode.addListener((){
+      if(titleFocusNode.hasFocus){
+        Future.delayed(Duration(milliseconds: 300), () {
+          widget.scrollController.animateTo(
+              widget.scrollController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut
+          );
+        });
+      }
+    });
+    locationFocusNode.addListener((){
+      if(locationFocusNode.hasFocus){
+        Future.delayed(Duration(milliseconds: 300), () {
+          widget.scrollController.animateTo(
+              widget.scrollController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut
+          );
+        });
+      }
+    });
+    startDateFocusNode.addListener((){
+      if(startDateFocusNode.hasFocus){
+        Future.delayed(Duration(milliseconds: 300), () {
+          widget.scrollController.animateTo(
+              widget.scrollController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut
+          );
+        });
+      }
+    });
+    endDateFocusNode.addListener((){
+      if(endDateFocusNode.hasFocus){
+        Future.delayed(Duration(milliseconds: 300), () {
+          widget.scrollController.animateTo(
+              widget.scrollController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut
+          );
+        });
+      }
+    });
+    memoFocusNode.addListener((){
+      if(memoFocusNode.hasFocus){
+        Future.delayed(Duration(milliseconds: 300), () {
+          widget.scrollController.animateTo(
+              widget.scrollController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut
+          );
+        });
+      }
+    });
+    emojiFocusNode.addListener((){
+      if(emojiFocusNode.hasFocus){
         Future.delayed(Duration(milliseconds: 300), () {
           widget.scrollController.animateTo(
               widget.scrollController.position.maxScrollExtent,
@@ -38,6 +98,18 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
       }
     });
   }
+
+  @override
+  void dispose() {
+    titleFocusNode.dispose();
+    locationFocusNode.dispose();
+    startDateFocusNode.dispose();
+    endDateFocusNode.dispose();
+    memoFocusNode.dispose();
+    emojiFocusNode.dispose();
+    super.dispose();
+  }
+
   DateTime? startDate;
   DateTime? endDate;
 
@@ -68,13 +140,13 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
           Divider(),
           SizedBox(height: 10,),
           TextField(
-            focusNode: inFocusNode,
+            focusNode: titleFocusNode,
             controller: titleController,
             decoration: const InputDecoration(labelText: "일정 제목"),
           ),
           SizedBox(height: 10,),
           TextField(
-              focusNode: inFocusNode,
+              focusNode: locationFocusNode,
               controller: locationController,
               decoration: const InputDecoration(labelText: "장소"),
               onTap: () async {
@@ -86,7 +158,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
           ),
           SizedBox(height: 10,),
           TextField(
-            focusNode: inFocusNode,
+            focusNode: startDateFocusNode,
             controller: startDateController,
             readOnly: true,
             decoration: const InputDecoration(
@@ -105,7 +177,7 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
           ),
           SizedBox(height: 10,),
           TextField(
-            focusNode: inFocusNode,
+            focusNode: endDateFocusNode,
             controller: endDateController,
             readOnly: true,
             decoration: const InputDecoration(
@@ -123,19 +195,11 @@ class _ScheduleBottomSheetContentState extends State<ScheduleBottomSheetContent>
             },
           ),
           SizedBox(height: 10,),
-          TextField(
-            focusNode: inFocusNode,
-            controller: memoController,
-            decoration: const InputDecoration(
-              labelText: "메모",
-            ),
-          ),
-          SizedBox(height: 10,),
           Row(
               children: [
                 Expanded(
                   child: TextField(
-                    focusNode: inFocusNode,
+                    focusNode: emojiFocusNode,
                     controller: emojiController,
                     readOnly: true,
                     decoration: const InputDecoration(
