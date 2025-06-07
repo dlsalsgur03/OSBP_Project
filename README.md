@@ -33,41 +33,49 @@
 
 
 ## 🖥️실행 화면
-![image](image/image0.jpg)
+<img src="image/image0.jpg" width="400">  
+
 앱을 실행하면 다음과 같은 화면이 표시됩니다.
 화면 오른쪽 아래에 있는 + 버튼을 눌러 일정을 추가할 수 있습니다.
-![image](image/image2.jpg)
+
+<img src="image/image2.jpg" width="400">    
+
 팝업창이 생성되면 원하는 일정의 정보를 입력할 수 있습니다.
-![image](image/image1.jpg)
+
+<img src="image/image1.jpg" width="400">  
+
 위 이미지는 일정이 입력된 예시 이미지 입니다.
-![image](image/image3.jpg)
+
+<img src="image/image3.jpg" width="400">
+
 일정까지 남은 시간이 3일 이내라면 대중교통 예매를 권고하는 알림이 전송됩니다.
+
 ## 📦의존성
 ```yaml
 dependencies:
-    flutter:
-        sdk: flutter
-    emoji_picker_flutter: ^1.6.1
-    flutter_colorpicker: ^1.0.3
-    flutter_localizations:
-        sdk: flutter
-    url_launcher: ^6.0.0
-    cupertino_icons: ^1.0.8
-    csv: ^6.0.0
-    http: ^1.4.0
-    intl: ^0.19.0
-    table_calendar: ^3.1.3
-    timezone: ^0.9.1
-    path_provider: ^2.1.5
-    flutter_dotenv: ^5.2.1
-    shared_preferences: ^2.2.3
-    permission_handler: ^11.1.0
-    flutter_local_notifications: ^16.3.0
-    flutter_native_splash: ^2.4.6
-    animated_splash_screen: ^1.3.0
-    flutter_map: ^6.1.0
-    latlong2: ^0.9.0
-    geolocator: ^11.0.0
+  flutter:
+    sdk: flutter
+  emoji_picker_flutter: ^1.6.1
+  flutter_colorpicker: ^1.0.3
+  flutter_localizations:
+    sdk: flutter
+  url_launcher: ^6.0.0
+  cupertino_icons: ^1.0.8
+  csv: ^6.0.0
+  http: ^1.4.0
+  intl: ^0.19.0
+  table_calendar: ^3.1.3
+  timezone: ^0.9.1
+  path_provider: ^2.1.5
+  flutter_dotenv: ^5.2.1
+  shared_preferences: ^2.2.3
+  permission_handler: ^11.1.0
+  flutter_local_notifications: ^16.3.0
+  flutter_native_splash: ^2.4.6
+  animated_splash_screen: ^1.3.0
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
+  geolocator: ^11.0.0
 ```
 
 ## 📄 LICENSE
