@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
-import 'notification_local.dart';
+import '../schedulePopup/notification_local.dart';
 
 Future<List<dynamic>> searchAddress(String query) async {
   final apiKey = dotenv.env['KAKAO_API_KEY'] ?? '';

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import '../calendar/calendar.dart';
 import '../menu/drawer.dart';
 import '../menu/menu.dart';
-import '../calendar/dateInfo/under_calendar_info.dart';
+import '../calendar/underCalender/under_calendar_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../schedulePopup/shcedule_add_func.dart';
 import 'package:shared_preferences/shared_preferences.dart';

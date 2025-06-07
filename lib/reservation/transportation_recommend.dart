@@ -1,4 +1,4 @@
-import '../schedulePopup/search_func.dart';
+import '../LatLng/search_func.dart';
 
 Future<Map<String, dynamic>> findNearestStation() async {
   final busResults = await searchAddress('버스 터미널');

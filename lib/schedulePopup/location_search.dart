@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'search_func.dart';
+import '../LatLng/search_func.dart';
 
 Future<Map<String, dynamic>?> showAddressSearchModal(BuildContext context) async {
   final TextEditingController searchController = TextEditingController();

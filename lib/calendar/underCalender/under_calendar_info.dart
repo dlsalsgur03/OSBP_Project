@@ -1,4 +1,4 @@
-import 'package:OBSP_Project/calendar/dateInfo/schedule_detail.dart';
+import 'package:OBSP_Project/calendar/underCalender/schedule_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../reservation/reading_json.dart';

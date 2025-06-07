@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-import 'findLatLng.dart';
+import '../../LatLng/findLatLng.dart';
 
 class LocationMap extends StatefulWidget {
   final String locationName; // 예: "스타벅스 충북대학교병원점"

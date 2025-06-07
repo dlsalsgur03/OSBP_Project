@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'search_func.dart';
+import '../LatLng/search_func.dart';
 import 'notification.dart';
 
 class RegionStorage {
